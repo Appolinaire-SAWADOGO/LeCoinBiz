@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "publika",
-    "slug": "publika",
+    "name": "LeCoinBiz",
+    "slug": "LeCoinBiz",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "publika",
+    "scheme": "LeCoinBiz",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -14,14 +14,16 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#2e8b57"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.appolinaire_sdg.LeCoinBiz"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "ok": 1
     },
     "plugins": [
       "expo-router",
@@ -31,12 +33,19 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#2e8b57"
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "owner": "appolinaire_sdg",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "180ef98d-089f-4c23-9637-d86ce0d46608"
+      }
     }
   }
 }
