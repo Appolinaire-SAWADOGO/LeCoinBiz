@@ -2,6 +2,7 @@ import Announcements from "@/components/annoucement/Announcements";
 import Container from "@/components/Container";
 import HeaderHideAnimation from "@/components/HeaderHideAnimation";
 import SearchHeaderSection from "@/components/search/SearchHeaderSection";
+import Users from "@/components/user/Users";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import React, { useEffect, useState } from "react";
 import { Animated, StyleSheet } from "react-native";
@@ -13,7 +14,9 @@ export default function Search() {
   const [search, setSearch] = useState<string>("");
   const [isSearching, setIsSearching] = useState(false);
   const scrollY = new Animated.Value(0);
-
+  const [userOrAdValue, setUserOrAdValue] = React.useState<
+    "annonces" | "utilisateurs"
+  >("annonces");
   const insets = useSafeAreaInsets();
 
   const handleSearch = () => {
@@ -38,15 +41,23 @@ export default function Search() {
           setSearch={setSearch}
           handleSearch={handleSearch}
           isSearching={isSearching}
+          userOrAdValue={userOrAdValue}
+          setUserOrAdvalue={setUserOrAdValue}
         />
       </HeaderHideAnimation>
 
-      {/* <View style={styles.main}> */}
-      <Announcements
-        scrollY={scrollY}
-        style={{ paddingBottom: 0, paddingTop: 165 }}
-      />
-      {/* </View> */}
+      {/* annonces */}
+      {userOrAdValue === "annonces" && (
+        <Announcements
+          scrollY={scrollY}
+          style={{ paddingBottom: 0, paddingTop: 165 }}
+        />
+      )}
+
+      {/* utilisateurs */}
+      {userOrAdValue === "utilisateurs" && (
+        <Users scrollY={scrollY} style={{ paddingTop: 153 }} />
+      )}
     </Container>
   );
 }

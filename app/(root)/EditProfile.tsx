@@ -2,7 +2,7 @@ import Container from "@/components/Container";
 import AppButton from "@/components/custom/AppButton";
 import AppInput from "@/components/custom/AppInput";
 import AppText from "@/components/custom/AppText";
-import EditProfilePhotoSection from "@/components/EditProfile/EditProfilePhotoSection";
+import EditImageSection from "@/components/EditProfile/EditProfileImageSection";
 import EditProfileSection from "@/components/EditProfile/EditProfileSection";
 import PageHeader from "@/components/PageHeader";
 import { useAppTheme } from "@/hooks/useAppTheme";
@@ -29,7 +29,7 @@ export default function EditProfile() {
             paddingHorizontal: 20,
           }}
         >
-          <EditProfilePhotoSection />
+          <EditImageSection />
           <EditProfileSection label="Prenom" placeHolder="John" />
           <EditProfileSection label="Nom de famille" placeHolder="Doe" />
           <EditProfileSection label="Email">

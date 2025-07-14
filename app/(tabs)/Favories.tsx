@@ -2,20 +2,17 @@ import Announcements from "@/components/annoucement/Announcements";
 import Container from "@/components/Container";
 import FavoriesSearchHeaderSection from "@/components/favorites/FavoritesHeaderSection";
 import HeaderHideAnimation from "@/components/HeaderHideAnimation";
+import Users from "@/components/user/Users";
 import React from "react";
 import { Animated, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Favories() {
-  const [search, setSearch] = React.useState<string>("");
-  const [isSearching, setIsSearching] = React.useState(false);
-
+  const [value, setValue] = React.useState<"annonces" | "utilisateurs">(
+    "annonces"
+  );
   const insets = useSafeAreaInsets();
-
   const scrollY = new Animated.Value(0);
-  const handleSearch = () => {
-    setIsSearching(true);
-  };
 
   return (
     <Container withBottom={false} style={{ backgroundColor: "#fff" }}>
@@ -26,15 +23,19 @@ export default function Favories() {
         style={[styles.HeaderHideAnimation, { top: insets.top }]}
       >
         {/* search header */}
-        <FavoriesSearchHeaderSection
-          search={search}
-          setSearch={setSearch}
-          handleSearch={handleSearch}
-        />
+        <FavoriesSearchHeaderSection value={value} setValue={setValue} />
       </HeaderHideAnimation>
 
       {/* announce */}
-      <Announcements scrollY={scrollY} style={{ paddingTop: 150 }} />
+      {value === "annonces" && (
+        <Announcements scrollY={scrollY} style={{ paddingTop: 95 }} />
+      )}
+      {value === "utilisateurs" && (
+        <Users
+          scrollY={scrollY}
+          style={{ paddingTop: 80, paddingBottom: 10 }}
+        />
+      )}
     </Container>
   );
 }

@@ -1,7 +1,7 @@
 import AppButton from "@/components/custom/AppButton";
-import GoogleDynSvg from "@/components/svg/GoogleDynSvg";
 import MailDynSvg from "@/components/svg/MailDynSvg";
 import PhoneDynSvg from "@/components/svg/PhoneDynSvg";
+import GoogleDynSvg from "@/components/svg/social-media/GoogleDynSvg";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { router } from "expo-router";
 import React from "react";

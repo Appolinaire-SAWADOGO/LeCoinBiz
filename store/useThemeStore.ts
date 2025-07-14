@@ -6,6 +6,6 @@ type Theme = {
 };
 
 export const useThemeStore = create<Theme>((set) => ({
-  primary: "#2e8b57",
+  primary: "#641BB4",
   setPrimary: (color: string) => set({ primary: color }),
 }));

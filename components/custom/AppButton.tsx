@@ -19,6 +19,7 @@ export default function AppButton({
   Icon,
   textColor = "#fff",
   textWeight = "Medium",
+  variant = "primary",
 }: {
   onPress?: () => void;
   title: string;
@@ -28,8 +29,30 @@ export default function AppButton({
   Icon?: any;
   textColor?: string;
   textWeight?: "Black" | "Bold" | "Medium" | "Light" | "Regular";
+  variant?: "primary" | "secondary";
 }) {
   const { designSystem } = useAppTheme();
+
+  const buttonVariant = () => {
+    const primary = {
+      enable: designSystem.colors.primary,
+      disable: designSystem.colors.primaryDisabled,
+    };
+
+    const secondary = {
+      enable: designSystem.colors.secondary,
+      disable: designSystem.colors.secondaryDisabled,
+    };
+
+    switch (variant) {
+      case "primary":
+        return primary;
+      case "secondary":
+        return secondary;
+      default:
+        return primary;
+    }
+  };
 
   return (
     <TouchableOpacity
@@ -40,8 +63,8 @@ export default function AppButton({
         styles.appButtonContainer,
         {
           backgroundColor: disabled
-            ? designSystem.colors.disabled
-            : designSystem.colors.primary,
+            ? buttonVariant().disable
+            : buttonVariant().enable,
         },
         style,
       ]}

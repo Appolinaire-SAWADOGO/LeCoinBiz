@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import AppText from "../custom/AppText";
 
-export default function EditProfilePhotoSection() {
+export default function EditImageSection() {
   const [imageUri, setImageUri] = useState<string | null>(null);
 
   const pickImage = async () => {

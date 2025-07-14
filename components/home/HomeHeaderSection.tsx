@@ -5,7 +5,7 @@ import FilterModal from "@/components/modals/filter-modal/FilterModal";
 import { appName } from "@/constants";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { router } from "expo-router";
-import { Search, SlidersHorizontal } from "lucide-react-native";
+import { BellRing, Search, SlidersHorizontal } from "lucide-react-native";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import SectionHeaderText from "../SectionHeaderText";
@@ -35,6 +35,12 @@ export default function HomeHeaderSection() {
           <AppText style={styles.logo} font="Bold">
             {appName}
           </AppText>
+          <TouchableOpacity
+            onPress={() => router.push("/(root)/Notifications")}
+            style={styles.notificationIcon}
+          >
+            <BellRing size={18} color={"#fff"} />
+          </TouchableOpacity>
         </View>
 
         {/* search and filter */}
@@ -95,10 +101,21 @@ const styles = StyleSheet.create({
   },
   header: {},
   top: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingTop: 50,
     paddingBottom: 10,
     zIndex: 100,
+  },
+  notificationIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 50,
+    backgroundColor: "#6C27B8",
+    alignItems: "center",
+    justifyContent: "center",
   },
   logo: {
     fontSize: 28,
@@ -152,8 +169,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 7,
     paddingHorizontal: 20,
-    borderTopRightRadius: 14,
-    borderTopLeftRadius: 14,
+    // borderTopRightRadius: 14,
+    // borderTopLeftRadius: 14,
     gap: 12,
   },
 });

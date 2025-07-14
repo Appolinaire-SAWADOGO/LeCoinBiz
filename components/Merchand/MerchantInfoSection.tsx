@@ -1,5 +1,5 @@
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { CornerDownRight, MapPin, Star } from "lucide-react-native";
+import { CornerDownRight, MapPin } from "lucide-react-native";
 import React from "react";
 import { Image, StyleSheet, View } from "react-native";
 import AppText from "../custom/AppText";
@@ -11,16 +11,21 @@ export default function MerchantInfoSection() {
     <View style={styles.container}>
       {/* left */}
       <View>
-        <AppText style={styles.name} fontSize={24} font={"Bold"}>
+        <AppText
+          color={designSystem.colors.bigText}
+          style={styles.name}
+          fontSize={24}
+          font={"Bold"}
+        >
           sawadogo appolinaire
         </AppText>
-        <View style={styles.flex}>
+        {/* <View style={styles.flex}>
           <Star fill={"#000"} width={13} height={13} />
           <AppText fontSize={14}>4.8</AppText>
           <AppText fontSize={14} color={designSystem.colors.subText}>
             (115 Reviews)
           </AppText>
-        </View>
+        </View> */}
         <View style={styles.flex}>
           <MapPin color={designSystem.colors.bigText} width={15} height={15} />
           <AppText fontSize={14}>Ouagadougou, Burkina</AppText>

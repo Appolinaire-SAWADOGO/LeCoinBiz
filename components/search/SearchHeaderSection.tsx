@@ -1,8 +1,9 @@
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { router } from "expo-router";
-import { ArrowLeft, Search as SearchIcon, X } from "lucide-react-native";
+import { ArrowLeft } from "lucide-react-native";
 import React from "react";
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import AppSearchInput from "../custom/AppSearchInput";
 import FilterModal from "../modals/filter-modal/FilterModal";
 
 export default function SearchHeaderSection({
@@ -11,12 +12,18 @@ export default function SearchHeaderSection({
   handleSearch,
   isSearching,
   useCase = "Search",
+  userOrAdValue,
+  setUserOrAdvalue,
 }: {
   search: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
   handleSearch: () => void;
   isSearching: boolean;
   useCase?: "Search" | "Favory";
+  userOrAdValue: string;
+  setUserOrAdvalue: React.Dispatch<
+    React.SetStateAction<"annonces" | "utilisateurs">
+  >;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -36,37 +43,23 @@ export default function SearchHeaderSection({
             color={designSystem.colors.bigText}
           />
         </TouchableOpacity>
-        <View
-          style={[
-            styles.search,
-            { borderColor: designSystem.colors.inputBorder },
-          ]}
-        >
-          <SearchIcon
-            width={16}
-            height={16}
-            color={designSystem.colors.bigText}
-          />
-          <TextInput
-            value={search}
-            onSubmitEditing={handleSearch}
-            onChangeText={(text) => {
-              setSearch(text);
-            }}
-            style={styles.textInput}
-            placeholderTextColor={""}
-            placeholder={"Search..."}
-          />
-          {search && (
-            <TouchableOpacity style={styles.x} onPress={() => setSearch("")}>
-              <X color={"white"} width={12} height={12} />
-            </TouchableOpacity>
-          )}
-        </View>
+
+        {/* search input  */}
+        <AppSearchInput
+          search={search}
+          setSearch={setSearch}
+          handleSearch={handleSearch}
+        />
       </View>
 
       {/* filtrage */}
-      {useCase === "Search" && <FilterModal useCase={"Search"} />}
+      {useCase === "Search" && (
+        <FilterModal
+          useCase={"Search"}
+          userOrAdValue={userOrAdValue}
+          setUserOrAdvalue={setUserOrAdvalue}
+        />
+      )}
     </View>
   );
 }
@@ -83,30 +76,5 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     gap: 15,
     borderBottomWidth: 0.5,
-  },
-  search: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: 12,
-    height: 44,
-    borderWidth: 1,
-    borderRadius: 50,
-
-    paddingHorizontal: 20,
-    flex: 1,
-  },
-  textInput: {
-    fontSize: 14,
-    flex: 1,
-    fontFamily: "BasisGrotesqueArabicPro-Regular",
-  },
-  x: {
-    height: 16,
-    width: 16,
-    borderRadius: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#313131",
   },
 });

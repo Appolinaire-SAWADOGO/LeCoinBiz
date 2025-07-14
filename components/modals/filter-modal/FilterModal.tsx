@@ -9,10 +9,16 @@ export default function FilterModal({
   useCase,
   isOpenProps,
   setIsOpenProps,
+  userOrAdValue,
+  setUserOrAdvalue,
 }: {
   useCase: FilterModalUseCaseType;
   isOpenProps?: boolean;
   setIsOpenProps?: React.Dispatch<React.SetStateAction<boolean>>;
+  userOrAdValue?: string;
+  setUserOrAdvalue?: React.Dispatch<
+    React.SetStateAction<"annonces" | "utilisateurs">
+  >;
 }) {
   const {
     isOpen,
@@ -39,7 +45,13 @@ export default function FilterModal({
     <>
       {/* Filter button */}
       {useCase !== "Home" && (
-        <FilterModalButton isFiltered={isFiltered} setIsOpen={setModalOpen} />
+        <FilterModalButton
+          isFiltered={isFiltered}
+          setIsOpen={setModalOpen}
+          useCase={useCase}
+          userOrAdValue={userOrAdValue}
+          setUserOrAdvalue={setUserOrAdvalue}
+        />
       )}
 
       {/* modal */}
