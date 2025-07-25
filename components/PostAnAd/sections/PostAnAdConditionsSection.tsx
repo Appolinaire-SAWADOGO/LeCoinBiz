@@ -1,6 +1,6 @@
 import AppButton from "@/components/custom/AppButton";
-import AppInput from "@/components/custom/AppInput";
 import AppText from "@/components/custom/AppText";
+import AppInput from "@/components/custom/input/AppInput";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { Trash } from "lucide-react-native";
 import React, { useState } from "react";

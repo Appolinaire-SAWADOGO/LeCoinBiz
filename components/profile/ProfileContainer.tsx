@@ -11,12 +11,14 @@ export default function ProfileContainer({
   data,
   useCase,
   contentHeadTop = 99,
+  mandatoryLogin = false,
 }: {
   titleSection: React.ReactNode;
   infoSection: React.ReactNode;
   data: any[];
   useCase: "profile" | "merchant";
   contentHeadTop?: number;
+  mandatoryLogin?: boolean;
 }) {
   const [contentHeadSelected, setContentHeadSelected] = useState(0);
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -80,7 +82,11 @@ export default function ProfileContainer({
   );
 
   return (
-    <Container withBottom={useCase === "merchant"} style={styles.container}>
+    <Container
+      mandatoryLogin={mandatoryLogin}
+      withBottom={useCase === "merchant"}
+      style={styles.container}
+    >
       {/* title */}
       {titleSection}
 

@@ -16,10 +16,14 @@ export default function PageHeader({
   name,
   style,
   children,
+  iconColor,
+  onBack,
 }: {
   name?: string;
   style?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
+  iconColor?: string;
+  onBack?: () => void;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -31,8 +35,14 @@ export default function PageHeader({
         style,
       ]}
     >
-      <TouchableOpacity onPress={() => router.back()} hitSlop={10}>
-        <ArrowLeft size={22} color={designSystem.colors.bigText} />
+      <TouchableOpacity
+        onPress={() => {
+          if (onBack) onBack();
+          else router.back();
+        }}
+        hitSlop={10}
+      >
+        <ArrowLeft size={22} color={iconColor || designSystem.colors.bigText} />
       </TouchableOpacity>
 
       {name && (

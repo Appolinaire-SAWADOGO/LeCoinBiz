@@ -1,8 +1,8 @@
 import { useAppTheme } from "@/hooks/useAppTheme";
 import React from "react";
 import { StyleProp, TextStyle, View } from "react-native";
-import AppInput from "../custom/AppInput";
 import AppText from "../custom/AppText";
+import AppInput from "../custom/input/AppInput";
 
 export default function PostAnAdSection({
   label,

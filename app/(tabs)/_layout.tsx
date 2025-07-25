@@ -43,6 +43,7 @@ export default function TabLayout() {
         name="Favories"
         options={{
           title: "Favories",
+
           tabBarIcon: ({ color }) => (
             <Heart size={24} fill={fill(color)} color={color} />
           ),

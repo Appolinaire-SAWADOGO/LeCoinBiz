@@ -4,6 +4,7 @@ import HomeCategories from "@/components/home/HomeHeaderCategories";
 import FilterModal from "@/components/modals/filter-modal/FilterModal";
 import { appName } from "@/constants";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { useCheckUserAcces } from "@/hooks/useCheckUserAcces";
 import { router } from "expo-router";
 import { BellRing, Search, SlidersHorizontal } from "lucide-react-native";
 import React from "react";
@@ -15,80 +16,92 @@ export default function HomeHeaderSection() {
 
   const { designSystem } = useAppTheme();
 
+  const { checkUserAccess } = useCheckUserAcces();
+
   return (
-    <View
-      style={[styles.header, { backgroundColor: designSystem.colors.primary }]}
-    >
-      {/* filter modal */}
-      <FilterModal
-        useCase={"Home"}
-        isOpenProps={isOpen}
-        setIsOpenProps={setIsOpen}
-      />
-
-      <View>
-        {/* texture */}
-        <Image style={[styles.headerTexture2]} source={HeaderTexture2} />
-
-        {/* logo */}
-        <View style={styles.top}>
-          <AppText style={styles.logo} font="Bold">
-            {appName}
-          </AppText>
-          <TouchableOpacity
-            onPress={() => router.push("/(root)/Notifications")}
-            style={styles.notificationIcon}
-          >
-            <BellRing size={18} color={"#fff"} />
-          </TouchableOpacity>
-        </View>
-
-        {/* search and filter */}
-        <View style={styles.searchRow}>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => router.push("/(root)/Search")}
-            style={styles.searchChip}
-          >
-            <Search size={18} color={designSystem.colors.bigText} />
-            <AppText
-              style={[
-                styles.searchText,
-                { color: designSystem.colors.bigText },
-              ]}
-            >
-              Rechercher une annonce
-            </AppText>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.filterButton}
-            onPress={() => setIsOpen(true)}
-          >
-            <SlidersHorizontal size={16} color={designSystem.colors.bigText} />
-            <AppText
-              style={[
-                styles.filterText,
-                { color: designSystem.colors.bigText },
-              ]}
-            >
-              Filtrer
-            </AppText>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* popular categories */}
-      <View style={styles.category}>
-        <SectionHeaderText name={"Catégories"} withViewAll />
-        <HomeCategories />
-        <SectionHeaderText
-          withViewAll={false}
-          name="Annonces Recentes"
-          style={{ marginBottom: 0 }}
+    <>
+      <View
+        style={[
+          styles.header,
+          { backgroundColor: designSystem.colors.primary },
+        ]}
+      >
+        {/* filter modal */}
+        <FilterModal
+          useCase={"Home"}
+          isOpenProps={isOpen}
+          setIsOpenProps={setIsOpen}
         />
+
+        <View>
+          {/* texture */}
+          <Image style={[styles.headerTexture2]} source={HeaderTexture2} />
+
+          {/* logo */}
+          <View style={styles.top}>
+            <AppText style={styles.logo} font="Bold">
+              {appName}
+            </AppText>
+            <TouchableOpacity
+              onPress={() =>
+                checkUserAccess(() => router.push("/(root)/Notifications"))
+              }
+              style={styles.notificationIcon}
+            >
+              <BellRing size={18} color={"#fff"} />
+            </TouchableOpacity>
+          </View>
+
+          {/* search and filter */}
+          <View style={styles.searchRow}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => router.push("/(root)/Search")}
+              style={styles.searchChip}
+            >
+              <Search size={18} color={designSystem.colors.bigText} />
+              <AppText
+                style={[
+                  styles.searchText,
+                  { color: designSystem.colors.bigText },
+                ]}
+              >
+                Rechercher une annonce
+              </AppText>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.filterButton}
+              onPress={() => setIsOpen(true)}
+            >
+              <SlidersHorizontal
+                size={16}
+                color={designSystem.colors.bigText}
+              />
+              <AppText
+                style={[
+                  styles.filterText,
+                  { color: designSystem.colors.bigText },
+                ]}
+              >
+                Filtrer
+              </AppText>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* popular categories */}
+        <View style={styles.category}>
+          <SectionHeaderText name={"Catégories"} withViewAll />
+          <HomeCategories />
+          <SectionHeaderText
+            withViewAll={false}
+            name="Annonces Recentes"
+            style={{ marginBottom: 0 }}
+          />
+        </View>
       </View>
-    </View>
+    </>
   );
 }
 

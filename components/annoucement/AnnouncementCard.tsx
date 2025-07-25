@@ -1,5 +1,6 @@
 import AppText from "@/components/custom/AppText";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { useCheckUserAcces } from "@/hooks/useCheckUserAcces";
 import { router } from "expo-router";
 import { Clock3, Eye, Heart, MapPin } from "lucide-react-native";
 import React, { useState } from "react";
@@ -36,6 +37,8 @@ export default function AnnouncementCard({
 
   const isSimilarType = type === "similar";
 
+  const { checkUserAccess } = useCheckUserAcces();
+
   return (
     <TouchableOpacity
       activeOpacity={0.7}
@@ -50,7 +53,7 @@ export default function AnnouncementCard({
       {useCase === "OtherPage" && (
         <TouchableOpacity
           style={styles.favButton}
-          onPress={() => setSelected(!selected)}
+          onPress={() => checkUserAccess(() => setSelected(!selected))}
         >
           <Heart
             size={16}

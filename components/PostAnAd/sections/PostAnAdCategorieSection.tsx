@@ -1,5 +1,5 @@
 import React from "react";
-import AppCategoriePicker from "../../custom/AppCategoriePicker";
+import AppCategoriePicker from "../../custom/picker/AppCategoriePicker";
 import PostAnAdSection from "../PostAnAdSection";
 
 export default function PostAnAdCategorieSection() {

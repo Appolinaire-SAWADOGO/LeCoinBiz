@@ -1,5 +1,6 @@
 import AppText from "@/components/custom/AppText";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { useCheckUserAcces } from "@/hooks/useCheckUserAcces";
 import { router } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity } from "react-native";
@@ -8,9 +9,13 @@ import PostImage from "../assets/images/Post.png";
 export default function PostAnAdButton() {
   const { designSystem } = useAppTheme();
 
+  const { checkUserAccess } = useCheckUserAcces();
+
   return (
     <TouchableOpacity
-      onPress={() => router.push("/(root)/(announcement)/PostAnAd")}
+      onPress={() =>
+        checkUserAccess(() => router.push("/(root)/(announcement)/PostAnAd"))
+      }
       style={[
         styles.container,
         { backgroundColor: designSystem.colors.primary },

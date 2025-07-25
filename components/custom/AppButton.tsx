@@ -2,6 +2,7 @@ import AppText from "@/components/custom/AppText";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import React from "react";
 import {
+  ActivityIndicator,
   StyleProp,
   StyleSheet,
   TextStyle,
@@ -20,6 +21,8 @@ export default function AppButton({
   textColor = "#fff",
   textWeight = "Medium",
   variant = "primary",
+  isLoading = false,
+  iconColor = "#fff",
 }: {
   onPress?: () => void;
   title: string;
@@ -30,6 +33,8 @@ export default function AppButton({
   textColor?: string;
   textWeight?: "Black" | "Bold" | "Medium" | "Light" | "Regular";
   variant?: "primary" | "secondary";
+  isLoading?: boolean;
+  iconColor?: string;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -57,7 +62,10 @@ export default function AppButton({
   return (
     <TouchableOpacity
       activeOpacity={0.8}
-      onPress={onPress}
+      onPress={() => {
+        if (disabled) return;
+        onPress?.();
+      }}
       disabled={disabled}
       style={[
         styles.appButtonContainer,
@@ -69,27 +77,33 @@ export default function AppButton({
         style,
       ]}
     >
-      {Icon && <Icon width={16} height={16} />}
+      {!isLoading ? (
+        <>
+          {Icon && <Icon width={16} height={16} fill={iconColor} />}
 
-      <View
-        style={{
-          height: "100%",
-          width: "auto",
-          overflow: "hidden",
-          justifyContent: "center",
-        }}
-      >
-        <AppText
-          font={textWeight}
-          style={[
-            styles.appButtonText,
-            { color: textColor && textColor },
-            textStyle,
-          ]}
-        >
-          {title}
-        </AppText>
-      </View>
+          <View
+            style={{
+              height: "100%",
+              width: "auto",
+              overflow: "hidden",
+              justifyContent: "center",
+            }}
+          >
+            <AppText
+              font={textWeight}
+              style={[
+                styles.appButtonText,
+                { color: textColor && textColor },
+                textStyle,
+              ]}
+            >
+              {title}
+            </AppText>
+          </View>
+        </>
+      ) : (
+        <ActivityIndicator color={"#fff"} />
+      )}
     </TouchableOpacity>
   );
 }

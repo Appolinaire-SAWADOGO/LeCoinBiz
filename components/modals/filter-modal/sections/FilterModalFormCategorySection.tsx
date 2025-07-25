@@ -1,5 +1,5 @@
-import AppCategoriePicker from "@/components/custom/AppCategoriePicker";
 import AppText from "@/components/custom/AppText";
+import AppCategoriePicker from "@/components/custom/picker/AppCategoriePicker";
 import { FilterModalUseCaseType } from "@/types";
 import React from "react";
 import { StyleSheet, View } from "react-native";

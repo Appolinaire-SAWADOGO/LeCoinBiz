@@ -1,5 +1,5 @@
 import React from "react";
-import AppCityPicker from "../../custom/AppCityPicker";
+import AppCityPicker from "../../custom/picker/AppCityPicker";
 import PostAnAdSection from "../PostAnAdSection";
 
 export default function PostAnAdCitySection() {

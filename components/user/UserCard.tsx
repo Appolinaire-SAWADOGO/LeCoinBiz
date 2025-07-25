@@ -1,3 +1,4 @@
+import { ifUserIsConnected } from "@/functions/firebase-auth";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -50,7 +51,12 @@ export default function UserCard() {
       </View>
 
       {/* Action */}
-      <TouchableOpacity style={styles.iconBtn}>
+      <TouchableOpacity
+        onPress={() => {
+          if (!ifUserIsConnected()) return router.push("/(root)/(auth)/Index");
+        }}
+        style={styles.iconBtn}
+      >
         <Heart
           size={19}
           color={designSystem.colors.primary}

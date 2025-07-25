@@ -1,4 +1,4 @@
-import AppUserOrAdPicker from "@/components/custom/AppUserOrAdPicker";
+import AppUserOrAdPicker from "@/components/custom/picker/AppUserOrAdPicker";
 import CaretDownDynSvg from "@/components/svg/CaretDownDynSvg";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { FilterModalUseCaseType } from "@/types";

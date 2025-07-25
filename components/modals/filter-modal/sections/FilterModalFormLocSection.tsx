@@ -1,5 +1,5 @@
-import AppCityPicker from "@/components/custom/AppCityPicker";
 import AppText from "@/components/custom/AppText";
+import AppCityPicker from "@/components/custom/picker/AppCityPicker";
 import React from "react";
 import { StyleSheet } from "react-native";
 

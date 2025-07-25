@@ -2,7 +2,7 @@ import { useAppTheme } from "@/hooks/useAppTheme";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import AppText from "../custom/AppText";
-import AppUserOrAdPicker from "../custom/AppUserOrAdPicker";
+import AppUserOrAdPicker from "../custom/picker/AppUserOrAdPicker";
 
 export default function FavoriesSearchHeaderSection({
   value,

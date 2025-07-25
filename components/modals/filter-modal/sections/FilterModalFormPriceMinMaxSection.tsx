@@ -1,5 +1,5 @@
-import AppInput from "@/components/custom/AppInput";
 import AppText from "@/components/custom/AppText";
+import AppInput from "@/components/custom/input/AppInput";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import React from "react";
 import { StyleSheet, View } from "react-native";

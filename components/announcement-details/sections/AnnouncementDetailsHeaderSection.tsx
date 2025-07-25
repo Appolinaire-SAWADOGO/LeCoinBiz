@@ -1,5 +1,6 @@
 import PageHeader from "@/components/PageHeader";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { useCheckUserAcces } from "@/hooks/useCheckUserAcces";
 import { Heart, Share2 } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
@@ -15,12 +16,23 @@ export default function AnnouncementDetailsHeaderSection({
 }) {
   const { designSystem } = useAppTheme();
 
+  const [selected, setSelected] = React.useState(false);
+
+  const { checkUserAccess } = useCheckUserAcces();
+
   return (
     <PageHeader style={{ paddingHorizontal: 20 }} name={name}>
       <View style={styles.rightIcons}>
         {from === "OtherPage" && (
-          <TouchableOpacity hitSlop={10}>
-            <Heart size={22} color={designSystem.colors.primary} />
+          <TouchableOpacity
+            onPress={() => checkUserAccess(() => setSelected(!selected))}
+            hitSlop={10}
+          >
+            <Heart
+              fill={selected ? designSystem.colors.primary : "transparent"}
+              size={22}
+              color={designSystem.colors.primary}
+            />
           </TouchableOpacity>
         )}
 

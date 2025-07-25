@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import AppSearchInput from "../custom/AppSearchInput";
+import AppSearchInput from "../custom/input/AppSearchInput";
 import FilterModal from "../modals/filter-modal/FilterModal";
 
 export default function SearchHeaderSection({

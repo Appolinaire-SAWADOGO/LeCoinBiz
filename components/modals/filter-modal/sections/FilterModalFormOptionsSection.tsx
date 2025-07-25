@@ -1,5 +1,5 @@
-import AppAdOptionsPicker from "@/components/custom/AppAdOptionsPicker";
 import AppText from "@/components/custom/AppText";
+import AppAdOptionsPicker from "@/components/custom/picker/AppAdOptionsPicker";
 import { filterOptions } from "@/constants";
 import { AdOptionsPickerType } from "@/types";
 import React from "react";

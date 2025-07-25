@@ -1,10 +1,13 @@
 import AppText from "@/components/custom/AppText";
+import { useSignOut } from "@/hooks/firebase/auth/signIn/useSignOut";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
 export default function SettingsLogoutOrdelAcntSection() {
   const { designSystem } = useAppTheme();
+
+  const { disconnect } = useSignOut();
 
   return (
     <View
@@ -15,7 +18,7 @@ export default function SettingsLogoutOrdelAcntSection() {
         marginBottom: 24,
       }}
     >
-      <TouchableOpacity>
+      <TouchableOpacity onPress={disconnect}>
         <AppText font="Medium" fontSize={15}>
           se deconnecter
         </AppText>

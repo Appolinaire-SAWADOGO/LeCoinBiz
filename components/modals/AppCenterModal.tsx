@@ -21,6 +21,8 @@ export default function AppCenterModal({
   setIsOpen,
   children,
   footerStyle,
+
+  onSubmit,
 }: {
   title: string;
   submitText: string;
@@ -28,6 +30,7 @@ export default function AppCenterModal({
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   children: React.ReactNode;
   footerStyle?: StyleProp<ViewStyle>;
+  onSubmit?: () => void;
 }) {
   const { designSystem } = useAppTheme();
   return (
@@ -39,10 +42,13 @@ export default function AppCenterModal({
       size="md"
     >
       <ModalBackdrop />
-      <ModalContent>
+      <ModalContent style={{ backgroundColor: "#fff" }}>
         <ModalHeader>
           <Heading
-            style={{ fontFamily: "BasisGrotesqueArabicPro-Regular" }}
+            style={{
+              fontFamily: "BasisGrotesqueArabicPro-Regular",
+              color: designSystem.colors.bigText,
+            }}
             size="md"
             className="text-typography-950"
           >
@@ -53,6 +59,7 @@ export default function AppCenterModal({
               as={CloseIcon}
               size="md"
               className="stroke-background-400 group-[:hover]/modal-close-button:stroke-background-700 group-[:active]/modal-close-button:stroke-background-900 group-[:focus-visible]/modal-close-button:stroke-background-900"
+              style={{ color: designSystem.colors.bigText }}
             />
           </ModalCloseButton>
         </ModalHeader>
@@ -64,18 +71,22 @@ export default function AppCenterModal({
             onPress={() => {
               setIsOpen(false);
             }}
+            style={{
+              width: 100,
+            }}
           >
             <ButtonText>Annuler</ButtonText>
           </Button>
           <Button
             style={{
               backgroundColor: designSystem.colors.primary,
+              width: 100,
             }}
             onPress={() => {
-              setIsOpen(false);
+              onSubmit?.();
             }}
           >
-            <ButtonText>{submitText}</ButtonText>
+            <ButtonText style={{ color: "#fff" }}>{submitText}</ButtonText>
           </Button>
         </ModalFooter>
       </ModalContent>

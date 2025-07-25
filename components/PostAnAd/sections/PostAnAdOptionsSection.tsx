@@ -1,4 +1,4 @@
-import AppAdOptionsPicker from "@/components/custom/AppAdOptionsPicker";
+import AppAdOptionsPicker from "@/components/custom/picker/AppAdOptionsPicker";
 import { adOptions } from "@/constants";
 import { AdOptionsPickerType } from "@/types";
 import React from "react";

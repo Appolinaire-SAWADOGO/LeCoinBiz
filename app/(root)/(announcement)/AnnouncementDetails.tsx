@@ -10,7 +10,7 @@ import Container from "@/components/Container";
 import { announcements } from "@/constants/announcements";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useLocalSearchParams } from "expo-router";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Animated, ScrollView, StyleSheet, View } from "react-native";
 
 export default function AnnouncementDetails() {
@@ -26,6 +26,10 @@ export default function AnnouncementDetails() {
       useNativeDriver: false,
     }
   );
+
+  useEffect(() => {
+    console.log("Page montée");
+  }, []);
 
   return (
     <Container withBottom>
@@ -70,7 +74,7 @@ export default function AnnouncementDetails() {
 
             {/* similar ad  */}
 
-            {/* report la publication */}
+            {/* report la publication and similar ad */}
             {from === "OtherPage" && (
               <>
                 <AnnouncementDetailsSimilarAdSection />

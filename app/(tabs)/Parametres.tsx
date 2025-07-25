@@ -7,6 +7,7 @@ import SettingContactSection from "@/components/settings/sections/SettingContact
 import SettingLegalInformationSection from "@/components/settings/sections/SettingLegalInformationSection";
 import SettingSecuritySection from "@/components/settings/sections/SettingSecuritySection";
 import SettingsLogoutOrdelAcntSection from "@/components/settings/sections/SettingsLogoutOrdelAcntSection";
+import { ifUserIsConnected } from "@/functions/firebase-auth";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
@@ -45,7 +46,7 @@ export default function Parametres() {
         <SettingSecuritySection />
 
         {/* supprimer ou se deconnecter */}
-        <SettingsLogoutOrdelAcntSection />
+        {ifUserIsConnected() && <SettingsLogoutOrdelAcntSection />}
 
         {/* 📦 Version de l'app */}
         <SettingAppVersionSection />

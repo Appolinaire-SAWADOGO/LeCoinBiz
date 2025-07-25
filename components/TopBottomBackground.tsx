@@ -29,6 +29,8 @@ export default function TopBottomBackground({
         }}
       />
 
+      
+
       {/* {Bottom */}
       {withBottom && (
         <View

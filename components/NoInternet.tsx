@@ -12,19 +12,26 @@ export default function NoInternet() {
     <View style={styles.container}>
       {/* <TopBottomBackground withBottom={false} /> */}
       <NoInternetDynSvg width={390} height={211} />
-      <AppText
-        fontSize={17}
-        color={designSystem.colors.smallText}
-        font={"Black"}
-        style={styles.title}
+      <View
+        style={{
+          paddingHorizontal: 20,
+          alignItems: "center",
+        }}
       >
-        votre internet n&lsquo;est pas disponible
-      </AppText>
-      <AppText color={designSystem.colors.subText} style={styles.text}>
-        Essayez de passer à une autre connexion ou de réinitialiser votre
-        connexion Internet pour trouver un professionnel.
-      </AppText>
-      <AppButton textColor={"white"} style={styles.button} title={"Retry"} />
+        <AppText
+          fontSize={17}
+          color={designSystem.colors.smallText}
+          font={"Black"}
+          style={styles.title}
+        >
+          votre internet n&lsquo;est pas disponible
+        </AppText>
+        <AppText color={designSystem.colors.subText} style={styles.text}>
+          Essayez de passer à une autre connexion ou de réinitialiser votre
+          connexion Internet pour trouver un professionnel.
+        </AppText>
+        <AppButton textColor={"white"} style={styles.button} title={"Retry"} />
+      </View>
     </View>
   );
 }
@@ -42,6 +49,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     marginBottom: 8,
     marginTop: 30,
+    textAlign: "center",
   },
   text: {
     textAlign: "center",

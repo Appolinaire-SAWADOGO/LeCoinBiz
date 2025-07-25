@@ -1,19 +1,14 @@
-import AppInput from "@/components/custom/AppInput";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import React from "react";
 import { View } from "react-native";
-import AppMobileNumberInput from "../../custom-app-component/input/AppMobileNumberInput";
-import AppPasswordInput from "../../custom-app-component/input/AppPasswordInput";
 import AppText from "../../custom/AppText";
 
 export default function AuthFormInputSection({
   label,
-  placeholder,
-  type = "text",
+  children,
 }: {
   label: string;
-  placeholder?: string;
-  type?: "mobile number" | "text" | "password";
+  children: React.ReactNode;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -27,13 +22,8 @@ export default function AuthFormInputSection({
       >
         {label}
       </AppText>
-      {type === "mobile number" && <AppMobileNumberInput />}
 
-      {type === "text" && (
-        <AppInput placeholder={placeholder!} model="withBorder" />
-      )}
-
-      {type === "password" && <AppPasswordInput placeholder="*****" />}
+      {children}
     </View>
   );
 }

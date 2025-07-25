@@ -4,7 +4,13 @@ import { StyleSheet, View } from "react-native";
 import AppText from "../../custom/AppText";
 import InfoDynSvg from "../../svg/InfoDynSvg";
 
-export default function AuthFormInfoCard({ label }: { label: string }) {
+export default function AuthFormInfoCard({
+  label,
+  children,
+}: {
+  label?: string;
+  children?: React.ReactNode;
+}) {
   const { designSystem } = useAppTheme();
 
   return (
@@ -13,6 +19,7 @@ export default function AuthFormInfoCard({ label }: { label: string }) {
       <AppText fontSize={12} color={designSystem.colors.smallText}>
         {label}
       </AppText>
+      {children}
     </View>
   );
 }

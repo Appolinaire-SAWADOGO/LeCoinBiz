@@ -24,7 +24,7 @@ export default function SettingsEvaluateApp({
         style={{
           alignItems: "center",
           justifyContent: "center",
-          paddingVertical: 10,
+          paddingTop: 10,
         }}
       >
         <AppRate setRating={setRating} rating={rating} />

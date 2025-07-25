@@ -1,24 +1,36 @@
+import AddYourUsernameModal from "@/components/auth/AddYourUsernameModal";
+import AuthModal from "@/components/auth/AuthModal";
+import { SplashScreenController } from "@/components/splash-screen/SplashScreenController";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
 import { useNetworkStore } from "@/store/useNetworkStore";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+// import * as NavigationBar from "expo-navigation-bar";
+import { Slot } from "expo-router";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { View } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-
-// const statusBarHeight =
-//   Platform.OS === "android" ? RNStatusBar.currentHeight || 24 : 0;
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 export default function RootLayout() {
+  const insets = useSafeAreaInsets();
+
   const initNetworkListener = useNetworkStore();
 
-  // const { designSystem } = useAppTheme();
-
   useEffect(() => {
-    initNetworkListener.initNetwokListener(); // écoute réseau démarrée une seule fois
+    initNetworkListener.initNetwokListener();
   }, [initNetworkListener]);
+
+  // useEffect(() => {
+  //   async function changeNavigationBarColor() {
+  //     await NavigationBar.setBackgroundColorAsync("#ffffff");
+  //   }
+
+  //   changeNavigationBarColor();
+  // }, []);
 
   const [fontsLoaded] = useFonts({
     "BasisGrotesqueArabicPro-Black": require("../assets/fonts/BasisGrotesqueArabicPro-Black.ttf"),
@@ -31,26 +43,36 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
-    <GluestackUIProvider mode="light">
-      <SafeAreaProvider>
-        <View style={{ flex: 1, backgroundColor: "#fff" }}>
-          {/* Patch pour fond de la status bar */}
+    <>
+      <SplashScreenController />
 
-          {/* <View
-            style={{
-              height: statusBarHeight,
-              backgroundColor: designSystem.colors.primary,
-            }}
-          /> */}
+      <GluestackUIProvider mode="light">
+        <SafeAreaProvider>
+          <View style={{ flex: 1, backgroundColor: "#fff" }}>
+            {/* <TopBottomBackground withBottom={false} bgColor="rgba(0,0,0,.5)" /> */}
 
-          {/* <TopBottomBackground withBottom={false} bgColor="rgba(0,0,0,.5)" /> */}
+            <ExpoStatusBar style="dark" />
 
-          <ExpoStatusBar style="dark" />
+            {/* <Stack screenOptions={{ headerShown: false }} /> */}
+            <Slot />
+            <AuthModal />
+            <AddYourUsernameModal />
 
-          <Stack screenOptions={{ headerShown: false }} />
-        </View>
-      </SafeAreaProvider>
-    </GluestackUIProvider>
+            {/* menu bar bg */}
+            <View
+              style={{
+                position: "absolute",
+                backgroundColor: "#fff",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: insets.bottom,
+              }}
+            />
+          </View>
+        </SafeAreaProvider>
+      </GluestackUIProvider>
+    </>
   );
 }
 

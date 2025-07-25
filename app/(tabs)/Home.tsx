@@ -1,12 +1,14 @@
 import Announcements from "@/components/annoucement/Announcements";
 import Container from "@/components/Container";
 import HeaderHideAnimation from "@/components/HeaderHideAnimation";
+import HomeGoBackMoadal from "@/components/home/HomeGoBackMoadal";
 import HomeHeaderSection from "@/components/home/HomeHeaderSection";
 import PostAnAdButton from "@/components/PostAnAdButton";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { useBackPress } from "@/hooks/useBackPress";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect } from "react";
-import { Animated, Image, StyleSheet, View } from "react-native";
+import { Animated, BackHandler, Image, StyleSheet, View } from "react-native";
 import HeaderTexture1 from "../../assets/images/textures/HeaderTexture1.png";
 
 export default function Home() {
@@ -14,6 +16,7 @@ export default function Home() {
 
   const [country, setCountry] = React.useState<any>();
   const scrollY = new Animated.Value(0);
+  const [goBackIsModalOpen, setGoBackIsModalOpen] = React.useState(false);
 
   // country find
   useEffect(() => {
@@ -28,15 +31,24 @@ export default function Home() {
     getCountry();
   });
 
+  useBackPress(() => {
+    setGoBackIsModalOpen(true);
+  });
+
   return (
     <>
-      <Container
-        style={[
-          styles.container,
-          { backgroundColor: designSystem.colors.primary },
-        ]}
-        withBottom={false}
-      >
+      {/* go back modal */}
+      <HomeGoBackMoadal
+        goBackIsModalOpen={goBackIsModalOpen}
+        setGoBackIsModalOpen={setGoBackIsModalOpen}
+        onSubmit={() => {
+          setGoBackIsModalOpen(false);
+          BackHandler.exitApp();
+        }}
+      />
+
+      {/* content */}
+      <Container style={styles.container} withBottom={false}>
         {/* button ajouter une annonce */}
         <PostAnAdButton />
 

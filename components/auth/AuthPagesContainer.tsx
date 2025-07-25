@@ -1,4 +1,3 @@
-import { useAppTheme } from "@/hooks/useAppTheme";
 import { router } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React from "react";
@@ -17,24 +16,36 @@ export default function AuthPagesContainer({
   children,
   style,
   scrollViewContentStyle,
+  onBack,
+  backRef,
 }: {
   iconColor?: string;
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   scrollViewContentStyle?: StyleProp<ViewStyle>;
+  onBack?: () => void;
+  backRef?: React.Ref<View>;
 }) {
-  const { designSystem } = useAppTheme();
-
   return (
     <Container style={[style]}>
       <ScrollView
         style={{ paddingHorizontal: 20 }}
+        showsVerticalScrollIndicator
         contentContainerStyle={{
-          flex: 1,
+          paddingBottom: 40,
         }}
       >
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} hitSlop={10}>
+          <TouchableOpacity
+            ref={backRef}
+            onPress={() => {
+              if (onBack) {
+                onBack();
+                return;
+              } else router.back();
+            }}
+            hitSlop={10}
+          >
             <ArrowLeft size={22} color={iconColor} />
           </TouchableOpacity>
           <View />
@@ -50,6 +61,7 @@ export default function AuthPagesContainer({
 const styles = StyleSheet.create({
   header: {
     paddingVertical: 20,
+    marginBottom: 24,
     flexDirection: "row",
     alignItems: "center",
     gap: 20,

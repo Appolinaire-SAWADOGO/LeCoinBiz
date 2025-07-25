@@ -18,5 +18,5 @@
     "expo-env.d.ts",
     "declarations.d.ts",
     "nativewind-env.d.ts"
-  ]
+, "hooks/firebase/auth/SignUp/use]SignUpWithEmailts"  ]
 }

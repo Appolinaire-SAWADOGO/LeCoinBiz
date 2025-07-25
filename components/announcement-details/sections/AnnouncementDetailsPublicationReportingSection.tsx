@@ -3,6 +3,7 @@ import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import AppText from "../../custom/AppText";
 
+
 export default function AnnouncementDetailsPublicationReportingSection() {
   const { designSystem } = useAppTheme();
   return (

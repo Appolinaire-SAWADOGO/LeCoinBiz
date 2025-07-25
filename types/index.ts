@@ -51,3 +51,15 @@ export type AdOptionsPickerType = {
 }[];
 
 export type FilterModalUseCaseType = "Home" | "Search" | "Category";
+
+export type ContinousWithPhomeNumberStepType =
+  | "enterPhoneNumber"
+  | "enterOTP"
+  | "addUserName";
+
+export type AuthModalType =
+  | "Index"
+  | "continousWithPhoneNumber"
+  | "signInWithEmail"
+  | "signUpWithEmail"
+  | "continousWithGoogle";
