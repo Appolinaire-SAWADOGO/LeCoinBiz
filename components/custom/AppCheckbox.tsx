@@ -34,9 +34,9 @@ export default function AppCheckbox({
         isChecked={isChecked()}
         onChange={() => {
           setOptions((prev) => {
-            const finded = prev.find((item) => item.label === label);
-            finded!.active = !finded!.active;
-            return [...prev, finded!];
+            return prev.map((item) =>
+              item.label === label ? { ...item, active: !item.active } : item
+            );
           });
         }}
       >

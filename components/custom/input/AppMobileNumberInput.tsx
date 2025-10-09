@@ -1,17 +1,29 @@
 import AppText from "@/components/custom/AppText";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import {
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 import AppInput from "./AppInput";
 
 export default function AppMobileNumberInput({
   phoneNumber,
   setPhoneNumber,
   editable = true,
+  onChange,
+  style,
+  leftStyle,
 }: {
-  phoneNumber: string;
-  setPhoneNumber: React.Dispatch<React.SetStateAction<string>>;
+  phoneNumber?: string;
+  setPhoneNumber?: React.Dispatch<React.SetStateAction<string>>;
   editable?: boolean | undefined;
+  onChange?: (text: string) => void;
+  style?: StyleProp<TextStyle>;
+  leftStyle?: StyleProp<ViewStyle>;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -21,6 +33,7 @@ export default function AppMobileNumberInput({
         style={[
           styles.mobileNumber,
           { borderColor: designSystem.colors.inputBorder },
+          leftStyle,
         ]}
       >
         <AppText font="Medium" fontSize={12}>
@@ -30,7 +43,7 @@ export default function AppMobileNumberInput({
       <View style={{ flex: 1 }}>
         <AppInput
           editable={editable}
-          keyboardType="phone-pad"
+          keyboardType="numeric"
           maxLength={8}
           placeholder="xxxxxxxx"
           model="withBorder"
@@ -38,8 +51,10 @@ export default function AppMobileNumberInput({
           onChangeText={(text) => {
             // Ne garder que les chiffres (bloque les points, virgules, lettres, etc.)
             const digitsOnly = text.replace(/[^0-9]/g, "");
-            setPhoneNumber(digitsOnly);
+            setPhoneNumber?.(digitsOnly);
+            onChange?.(digitsOnly);
           }}
+          style={style}
         />
       </View>
     </View>

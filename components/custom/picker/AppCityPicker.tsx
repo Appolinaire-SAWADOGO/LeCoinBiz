@@ -1,7 +1,7 @@
-import { burkinaCity } from "@/constants/burkina-city";
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import AppDropDownPicker from "./AppDropDownPicker";
+import {BURKINA_CITIES} from "@/constants/burkinaCities";
 
 export default function AppCityPicker({
   cityPickerOpen,
@@ -18,11 +18,12 @@ export default function AppCityPicker({
   withAllCity?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
+
   return (
     <AppDropDownPicker
-      withSearch
+      withSearch={false}
       placeholder="Choisissez une Ville"
-      items={burkinaCity(withAllCity).map((city) => ({
+      items={BURKINA_CITIES.map((city) => ({
         label: city,
         value: city,
       }))}

@@ -30,10 +30,7 @@ export type SortByType = {
   icon: ImageSourcePropType;
 }[];
 
-export type BurkinaCitiesByRegionType = {
-  region: string;
-  cities: string[];
-}[];
+export type BurkinaCitiesType = string[];
 
 export type FilterOptionsType = {
   label: "Annonces Populaire" | "Livraison Gratuite" | "Neuf";

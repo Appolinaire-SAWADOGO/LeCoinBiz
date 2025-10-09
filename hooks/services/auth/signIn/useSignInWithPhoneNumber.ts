@@ -1,4 +1,4 @@
-import { checkIfUserNameIsAdded } from "@/functions/firebase-auth";
+import { checkIfUserNameIsAdded } from "../../../../functions/auth";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ContinousWithPhomeNumberStepType } from "@/types";

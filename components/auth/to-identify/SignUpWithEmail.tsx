@@ -6,9 +6,9 @@ import AppEmailInput from "@/components/custom/input/AppEmailInput";
 import AppInput from "@/components/custom/input/AppInput";
 import AppPasswordInput from "@/components/custom/input/AppPasswordInput";
 import InfoDynSvg from "@/components/svg/InfoDynSvg";
-import { appName } from "@/constants";
+import { APP_NAME } from "@/constants";
 import { isValidEmail, isValidPassword } from "@/functions/auth-form";
-import { useSignUpWithEmail } from "@/hooks/firebase/auth/SignUp/useSignUpWithEmail";
+import { useSignUpWithEmail } from "@/hooks/services/auth/SignUp/useSignUpWithEmail";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useBackPress } from "@/hooks/useBackPress";
 import { AuthModalType } from "@/types";
@@ -45,7 +45,7 @@ export default function SignUpWithEmail({
         color={designSystem.colors.bigText}
         style={{ marginBottom: 32 }}
       >
-        {`Inscrivez-vous à ${appName}`}
+        {`Inscrivez-vous à ${APP_NAME}`}
       </AppText>
 
       <View style={styles.inputsSection}>
@@ -104,7 +104,7 @@ export default function SignUpWithEmail({
             {" "}
             les Règles de Diffusion
           </Link>{" "}
-          de {appName}.
+          de {APP_NAME}.
         </AppText>
       </View>
 

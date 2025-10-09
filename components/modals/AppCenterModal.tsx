@@ -21,8 +21,8 @@ export default function AppCenterModal({
   setIsOpen,
   children,
   footerStyle,
-
   onSubmit,
+  withCancelButton = true,
 }: {
   title: string;
   submitText: string;
@@ -31,6 +31,7 @@ export default function AppCenterModal({
   children: React.ReactNode;
   footerStyle?: StyleProp<ViewStyle>;
   onSubmit?: () => void;
+  withCancelButton?: boolean;
 }) {
   const { designSystem } = useAppTheme();
   return (
@@ -65,18 +66,20 @@ export default function AppCenterModal({
         </ModalHeader>
         <ModalBody>{children}</ModalBody>
         <ModalFooter style={footerStyle}>
-          <Button
-            variant="outline"
-            action="secondary"
-            onPress={() => {
-              setIsOpen(false);
-            }}
-            style={{
-              width: 100,
-            }}
-          >
-            <ButtonText>Annuler</ButtonText>
-          </Button>
+          {withCancelButton && (
+            <Button
+              variant="outline"
+              action="secondary"
+              onPress={() => {
+                setIsOpen(false);
+              }}
+              style={{
+                width: 100,
+              }}
+            >
+              <ButtonText>Annuler</ButtonText>
+            </Button>
+          )}
           <Button
             style={{
               backgroundColor: designSystem.colors.primary,

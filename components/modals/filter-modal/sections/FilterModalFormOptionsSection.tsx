@@ -1,9 +1,9 @@
 import AppText from "@/components/custom/AppText";
 import AppAdOptionsPicker from "@/components/custom/picker/AppAdOptionsPicker";
-import { filterOptions } from "@/constants";
 import { AdOptionsPickerType } from "@/types";
 import React from "react";
 import { StyleSheet } from "react-native";
+import {FILTER_OPTIONS} from "@/constants";
 
 export default function FilterModalFormOptionsSection({
   options,
@@ -18,7 +18,7 @@ export default function FilterModalFormOptionsSection({
       <AppAdOptionsPicker
         options={options}
         setOptions={setOptions}
-        items={filterOptions}
+        items={FILTER_OPTIONS}
       />
     </>
   );

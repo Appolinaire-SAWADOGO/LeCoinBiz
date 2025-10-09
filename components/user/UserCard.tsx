@@ -1,4 +1,4 @@
-import { ifUserIsConnected } from "@/functions/firebase-auth";
+import { ifUserIsConnected } from "../../functions/auth";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { Image } from "expo-image";
 import { router } from "expo-router";

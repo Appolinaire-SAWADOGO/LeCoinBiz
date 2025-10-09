@@ -1,5 +1,5 @@
-import { HapticTab } from "@/app-example/components/HapticTab";
-import TabBarBackground from "@/app-example/components/ui/TabBarBackground";
+// import { HapticTab } from "@/app-example/components/HapticTab";
+// import TabBarBackground from "@/app-example/components/ui/TabBarBackground";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { Tabs } from "expo-router";
 import { Heart, HomeIcon, Settings, User } from "lucide-react-native";
@@ -20,8 +20,8 @@ export default function TabLayout() {
         tabBarInactiveTintColor: "#5D5D5D",
         tabBarActiveTintColor: designSystem.colors.primary,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
+        // tabBarButton: HapticTab,
+        // tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
             position: "absolute",

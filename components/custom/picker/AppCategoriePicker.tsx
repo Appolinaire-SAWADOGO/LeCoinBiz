@@ -1,21 +1,23 @@
 import AllCategoriesImage from "@/assets/images/categories/Menu.png";
-import { categories } from "@/constants/categories";
 import React from "react";
-import { Image } from "react-native";
+import {Image, StyleProp, ViewStyle} from "react-native";
 import AppDropDownPicker from "./AppDropDownPicker";
+import {CATEGORIES} from "@/constants/categories";
 
 export default function AppCategoriePicker({
-  catPickerOpen,
-  setCatPickerOpen,
-  catValue,
-  setCatValue,
-  withAllCat = true,
+    catPickerOpen,
+    setCatPickerOpen,
+    catValue,
+    setCatValue,
+    withAllCat = true,
+    style,
 }: {
   catPickerOpen: boolean;
   setCatPickerOpen: React.Dispatch<React.SetStateAction<boolean>>;
   catValue: string | null;
-  setCatValue: React.Dispatch<React.SetStateAction<string | null>>;
+  setCatValue: React.Dispatch<React.SetStateAction<string | null>>  ;
   withAllCat?: boolean;
+  style?: StyleProp<ViewStyle>;
 }) {
   const items = () => {
     if (withAllCat)
@@ -31,7 +33,7 @@ export default function AppCategoriePicker({
             />
           ),
         },
-        ...categories.map((category) => ({
+        ...CATEGORIES.map((category) => ({
           label: category.name,
           value: category.name,
           icon: () => (
@@ -44,7 +46,7 @@ export default function AppCategoriePicker({
         })),
       ];
     return [
-      ...categories.map((category) => ({
+      ...CATEGORIES.map((category) => ({
         label: category.name,
         value: category.name,
         icon: () => (
@@ -68,6 +70,7 @@ export default function AppCategoriePicker({
       setValue={
         setCatValue as React.Dispatch<React.SetStateAction<string | null>>
       }
+      style={style}
     />
   );
 }

@@ -46,7 +46,6 @@ export default function AppDropDownPicker({
             borderColor: value
               ? designSystem.colors.primary
               : designSystem.colors.inputBorder,
-            //   borderColor: designSystem.colors.inputBorder,
             borderWidth: 1,
             paddingHorizontal: 14,
             paddingVertical: 10,

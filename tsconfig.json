@@ -3,12 +3,8 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "tailwind.config": [
-        "./tailwind.config.js"
-      ]
+      "@/*": ["./*"],
+      "tailwind.config": ["./tailwind.config.js"]
     }
   },
   "include": [
@@ -17,6 +13,7 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "declarations.d.ts",
-    "nativewind-env.d.ts"
-, "hooks/firebase/auth/SignUp/use]SignUpWithEmailts"  ]
+    "nativewind-env.d.ts",
+    "hooks/services/auth/SignUp/useSignUpWithEmailts"
+  ]
 }

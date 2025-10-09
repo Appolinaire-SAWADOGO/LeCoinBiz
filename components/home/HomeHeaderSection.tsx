@@ -2,7 +2,6 @@ import HeaderTexture2 from "@/assets/images/textures/HeaderTexture2.png";
 import AppText from "@/components/custom/AppText";
 import HomeCategories from "@/components/home/HomeHeaderCategories";
 import FilterModal from "@/components/modals/filter-modal/FilterModal";
-import { appName } from "@/constants";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useCheckUserAcces } from "@/hooks/useCheckUserAcces";
 import { router } from "expo-router";
@@ -10,6 +9,7 @@ import { BellRing, Search, SlidersHorizontal } from "lucide-react-native";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import SectionHeaderText from "../SectionHeaderText";
+import {APP_NAME} from "@/constants";
 
 export default function HomeHeaderSection() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -40,7 +40,7 @@ export default function HomeHeaderSection() {
           {/* logo */}
           <View style={styles.top}>
             <AppText style={styles.logo} font="Bold">
-              {appName}
+              {APP_NAME}
             </AppText>
             <TouchableOpacity
               onPress={() =>
@@ -48,6 +48,7 @@ export default function HomeHeaderSection() {
               }
               style={styles.notificationIcon}
             >
+
               <BellRing size={18} color={"#fff"} />
             </TouchableOpacity>
           </View>

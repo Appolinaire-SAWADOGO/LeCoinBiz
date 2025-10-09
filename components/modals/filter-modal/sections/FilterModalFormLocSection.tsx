@@ -10,13 +10,13 @@ export default function FilterModalFormLocSection({
   city: string;
   setCity: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const [cityPickeropen, setCityPickerOpen] = React.useState(false);
+  const [cityPickerOpen, setCityPickerOpen] = React.useState(false);
 
   return (
     <>
       <AppText style={styles.label}>Région / Ville</AppText>
       <AppCityPicker
-        cityPickerOpen={cityPickeropen}
+        cityPickerOpen={cityPickerOpen}
         setCityPickerOpen={setCityPickerOpen}
         cityValue={city}
         setCityValue={setCity}

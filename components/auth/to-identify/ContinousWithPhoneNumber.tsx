@@ -5,8 +5,7 @@ import AuthFormOtpCheck from "@/components/auth/form/AuthFormOtpCheck";
 import AppButton from "@/components/custom/AppButton";
 import AppText from "@/components/custom/AppText";
 import AppMobileNumberInput from "@/components/custom/input/AppMobileNumberInput";
-import { appName } from "@/constants";
-import { useSignInWithPhoneNumber } from "@/hooks/firebase/auth/signIn/useSignInWithPhoneNumber";
+import { useSignInWithPhoneNumber } from "@/hooks/services/auth/signIn/useSignInWithPhoneNumber";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useBackPress } from "@/hooks/useBackPress";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
@@ -15,6 +14,7 @@ import { router } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import AuthAddUserNameContent from "../AuthAddUserNameContent";
+import {APP_NAME} from "@/constants";
 
 export default function ContinousWithPhoneNumber({
   setBigStep,
@@ -59,7 +59,7 @@ export default function ContinousWithPhoneNumber({
         color={designSystem.colors.bigText}
         style={{ marginBottom: step === "enterOTP" ? 12 : 32 }}
       >
-        {step === "enterPhoneNumber" && `Bienvenue à ${appName}`}
+        {step === "enterPhoneNumber" && `Bienvenue à ${APP_NAME}`}
 
         {step === "enterOTP" && "Vérifiez votre numéro de téléphone"}
 

@@ -9,7 +9,7 @@ export const useAddUserName = () => {
   const [error, setError] = React.useState("");
 
   const { setUserNameIsAdded } = useAuthStore();
-  const { onClose } = useAddYourUsernameModalStore();
+  const {onClose } = useAddYourUsernameModalStore();
 
   const addUserName = async (userName: string) => {
     if (!userName) return;
@@ -27,10 +27,11 @@ export const useAddUserName = () => {
         userName: userName,
       });
 
-      console.log("User name is added!");
       setUserNameIsAdded(true);
       setIsLoading(false);
       onClose();
+
+      console.log("User name is added!");
     } catch (error: any) {
       setError(error.message);
       setIsLoading(false);

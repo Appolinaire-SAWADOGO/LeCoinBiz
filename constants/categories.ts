@@ -11,7 +11,7 @@ import Sport from "@/assets/images/categories/Sport.png";
 import Vehicules from "@/assets/images/categories/Vehicules.png";
 import { CategoriesType } from "@/types";
 
-export const categories: CategoriesType = [
+export const CATEGORIES: CategoriesType = [
   {
     id: 1,
     name: "Imobilier",
@@ -145,3 +145,5 @@ export const categories: CategoriesType = [
     ],
   },
 ];
+
+export const CATEGORIES_NAMES =  CATEGORIES.map((category) => category.name);

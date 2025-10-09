@@ -4,9 +4,9 @@ import AppButton from "@/components/custom/AppButton";
 import AppText from "@/components/custom/AppText";
 import AppEmailInput from "@/components/custom/input/AppEmailInput";
 import AppPasswordInput from "@/components/custom/input/AppPasswordInput";
-import { appName } from "@/constants";
+import { APP_NAME } from "@/constants";
 import { isValidEmail, isValidPassword } from "@/functions/auth-form";
-import { useSignInWithEmail } from "@/hooks/firebase/auth/signIn/useSignInWithEmail";
+import { useSignInWithEmail } from "@/hooks/services/auth/signIn/useSignInWithEmail";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useBackPress } from "@/hooks/useBackPress";
 import { AuthModalType } from "@/types";
@@ -42,7 +42,7 @@ export default function SignInWithEmail({
         color={designSystem.colors.bigText}
         style={{ marginBottom: 32 }}
       >
-        Connecter vous à {appName}
+        Connecter vous à {APP_NAME}
       </AppText>
 
       <View style={styles.inputsSection}>
@@ -80,7 +80,7 @@ export default function SignInWithEmail({
                 styles.link,
                 { color: designSystem.colors.primary, marginTop: 10 },
               ]}
-              href={"/(root)/(auth)/ForgotPassword"}
+              href={"/Home"}
             >
               Mot de passe oublie ?
             </Link>

@@ -83,7 +83,7 @@ export default function ProfileContainer({
 
   return (
     <Container
-      mandatoryLogin={mandatoryLogin}
+      // mandatoryLogin={mandatoryLogin}
       withBottom={useCase === "merchant"}
       style={styles.container}
     >

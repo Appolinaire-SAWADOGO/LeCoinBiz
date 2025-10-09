@@ -27,7 +27,7 @@ export default function CategoryCard({
   return (
     <TouchableOpacity
       style={[styles.card, style]}
-      onPress={() => router.push(`/(root)/Category?category=${name}`)}
+      onPress={() => router.push(`/(root)/(category)/Category?category=${name}`)}
     >
       <Image source={icon} style={styles.icon} />
       <AppText

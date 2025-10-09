@@ -1,7 +1,7 @@
-import { categories } from "@/constants/categories";
 import React, { useEffect, useRef, useState } from "react";
 import { FlatList, ImageSourcePropType, StyleSheet, View } from "react-native";
 import CategoryCard from "../categories/CategoryCard";
+import {CATEGORIES} from "@/constants/categories";
 
 type Category = {
   id: number;
@@ -16,7 +16,7 @@ export default function HomeCategories() {
   useEffect(() => {
     const intervalId = setInterval(() => {
       let nextIndex = currentIndex + 1;
-      if (nextIndex >= categories.length) {
+      if (nextIndex >= CATEGORIES.length) {
         nextIndex = 0;
       }
       flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
@@ -24,12 +24,12 @@ export default function HomeCategories() {
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [currentIndex, categories.length]);
+  }, [currentIndex, CATEGORIES.length]);
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={categories}
+        data={CATEGORIES}
         style={styles.list}
         horizontal
         showsHorizontalScrollIndicator={false}

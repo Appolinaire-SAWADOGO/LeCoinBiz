@@ -1,4 +1,4 @@
-import { useAddUserName } from "@/hooks/firebase/auth/SignUp/useAddUserName";
+import { useAddUserName } from "@/hooks/services/auth/SignUp/useAddUserName";
 import { useBackPress } from "@/hooks/useBackPress";
 import { router } from "expo-router";
 import React from "react";
@@ -7,13 +7,14 @@ import AppButton from "../custom/AppButton";
 import AppInput from "../custom/input/AppInput";
 import AuthFormInputSection from "./form/AuthFormInputSection";
 import AuthFormLegalCard from "./form/AuthFormLegalCard";
+import {useAddYourUsernameModalStore} from "@/store/useAddYourUsernameModalStore";
 
 export default function AuthAddUserNameContent() {
   const [userName, setUserName] = React.useState("");
-
   const { addUserName, isLoading } = useAddUserName();
+  const { onClose } = useAddYourUsernameModalStore();
 
-  useBackPress(() => router.dismiss());
+  useBackPress(() => onClose());
 
   return (
     <>
