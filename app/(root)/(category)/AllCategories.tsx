@@ -1,7 +1,7 @@
 import CategoryCard from "@/components/categories/CategoryCard";
 import Container from "@/components/Container";
 import PageHeader from "@/components/PageHeader";
-import { categories } from "@/constants/categories";
+import { CATEGORIES } from "@/constants/categories";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -18,7 +18,7 @@ export default function AllCategories() {
           justifyContent: "center",
         }}
       >
-        {categories.map((category) => (
+        {CATEGORIES.map((category) => (
           <CategoryCard
             key={category.id}
             id={category.id}

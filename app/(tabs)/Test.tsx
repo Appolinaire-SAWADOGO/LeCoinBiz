@@ -1,5 +1,6 @@
 import Container from "@/components/Container";
 import AppText from "@/components/custom/AppText";
+import AppToast from "@/components/custom/AppToast";
 import { useAddYourUsernameModalStore } from "@/store/useAddYourUsernameModalStore";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -85,6 +86,8 @@ export default function Test() {
       <TouchableOpacity onPress={() => onOpenAddUsernameModal()}>
         <AppText>open</AppText>
       </TouchableOpacity>
+
+      <AppToast />
     </Container>
   );
 }

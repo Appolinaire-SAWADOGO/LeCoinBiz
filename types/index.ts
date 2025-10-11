@@ -1,3 +1,4 @@
+import { UseFormReset } from "react-hook-form";
 import { ImageSourcePropType } from "react-native";
 
 export type CategoriesType = {
@@ -60,3 +61,19 @@ export type AuthModalType =
   | "signInWithEmail"
   | "signUpWithEmail"
   | "continousWithGoogle";
+
+export type ResetFormType = UseFormReset<{
+  title: string;
+  price: number;
+  category: string;
+  description: string;
+  conditions: string[];
+  images: string[];
+  options: {
+    label: string;
+    active: boolean;
+  }[];
+  city: string;
+  phoneNumber: string;
+  whatsappNumber: string;
+}>;

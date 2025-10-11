@@ -1,3 +1,4 @@
+import { ResetFormType } from "@/types";
 import { postAnAddSchema } from "@/zod/schema/postAnAd.schema";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
@@ -9,7 +10,7 @@ import { z } from "zod";
 type FormData = z.infer<typeof postAnAddSchema>;
 
 export const usePostAnAdd = () => {
-  const postAnAdd = async (data: FormData) => {
+  const postAnAdd = async (data: FormData, resetForm: ResetFormType) => {
     if (!data) return;
 
     // 1. Vérifie si l'utilisateur est authentifié
@@ -76,6 +77,8 @@ export const usePostAnAdd = () => {
           createdAt: firestore.FieldValue.serverTimestamp(),
           updatedAt: firestore.FieldValue.serverTimestamp(),
         });
+
+      resetForm();
 
       console.log("Annonce ajoutée avec succès !");
       return docId;
