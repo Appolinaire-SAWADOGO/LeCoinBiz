@@ -1,17 +1,25 @@
 import AppText from "@/components/custom/AppText";
 import AppAdOptionsPicker from "@/components/custom/picker/AppAdOptionsPicker";
+import { FILTER_OPTIONS } from "@/constants";
 import { AdOptionsPickerType } from "@/types";
 import React from "react";
 import { StyleSheet } from "react-native";
-import {FILTER_OPTIONS} from "@/constants";
 
 export default function FilterModalFormOptionsSection({
-  options,
-  setOptions,
+  onChange,
 }: {
-  options: AdOptionsPickerType;
-  setOptions: React.Dispatch<React.SetStateAction<AdOptionsPickerType>>;
+  onChange: (options: AdOptionsPickerType) => void;
 }) {
+  const [options, setOptions] = React.useState<AdOptionsPickerType>([
+    { label: "Annonces Populaire", active: false },
+    { label: "Livraison Gratuite", active: false },
+    { label: "Neuf", active: false },
+  ]);
+
+  React.useEffect(() => {
+    onChange(options);
+  }, [onChange, options]);
+
   return (
     <>
       <AppText style={styles.label}>Options</AppText>

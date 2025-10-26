@@ -5,10 +5,10 @@ import React from "react";
 import { Animated, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import HeaderHideAnimation from "../HeaderHideAnimation";
-import FilterModal from "../modals/filter-modal/FilterModal";
 import PageHeader from "../PageHeader";
+import FilterModal from "../modals/filter-modal/FilterModal";
 
-export default function CategoryPageHeader({
+export default function FiltersPageHeader({
   category,
   scrollY,
 }: {
@@ -35,7 +35,8 @@ export default function CategoryPageHeader({
           <Search size={22} color={designSystem.colors.bigText} />
         </TouchableOpacity>
       </PageHeader>
-      <FilterModal useCase="Category" />
+
+      <FilterModal />
     </HeaderHideAnimation>
   );
 }

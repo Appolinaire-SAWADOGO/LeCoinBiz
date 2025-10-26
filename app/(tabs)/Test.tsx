@@ -1,13 +1,14 @@
 import Container from "@/components/Container";
 import AppText from "@/components/custom/AppText";
-import AppToast from "@/components/custom/AppToast";
+import AppFullModal from "@/components/modals/AppFullModal";
+import { useBackPress } from "@/hooks/useBackPress";
 import { useAddYourUsernameModalStore } from "@/store/useAddYourUsernameModalStore";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAuth } from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { router } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -66,7 +67,10 @@ export default function Test() {
   }, [auth.currentUser?.uid]);
 
   const { onOpen: onOpenAuthModal } = useAuthModalStore();
+  const [open, setOpen] = useState(false);
   const { onOpen: onOpenAddUsernameModal } = useAddYourUsernameModalStore();
+
+  useBackPress(() => console.log("Hello"));
 
   return (
     <Container>
@@ -83,11 +87,20 @@ export default function Test() {
       <TouchableOpacity onPress={() => onOpenAuthModal()}>
         <AppText>open auth</AppText>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => onOpenAddUsernameModal()}>
+      <TouchableOpacity onPress={() => setOpen(true)}>
         <AppText>open</AppText>
       </TouchableOpacity>
 
-      <AppToast />
+      <AppFullModal isOpen={open} setIsOpen={setOpen} onClose={() => {}}>
+        <AppText>test</AppText>
+
+        <TouchableOpacity
+          style={{ marginTop: 20 }}
+          onPress={() => setOpen(false)}
+        >
+          <AppText>close</AppText>
+        </TouchableOpacity>
+      </AppFullModal>
     </Container>
   );
 }

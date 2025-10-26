@@ -1,23 +1,27 @@
 import AllCategoriesImage from "@/assets/images/categories/Menu.png";
+import { CATEGORIES } from "@/constants/categories";
 import React from "react";
-import {Image, StyleProp, ViewStyle} from "react-native";
+import { Image, StyleProp, ViewStyle } from "react-native";
 import AppDropDownPicker from "./AppDropDownPicker";
-import {CATEGORIES} from "@/constants/categories";
 
 export default function AppCategoriePicker({
-    catPickerOpen,
-    setCatPickerOpen,
-    catValue,
-    setCatValue,
-    withAllCat = true,
-    style,
+  catPickerOpen,
+  setCatPickerOpen,
+  catValue,
+  setCatValue,
+  withAllCat = true,
+  style,
+  isSelected,
 }: {
   catPickerOpen: boolean;
   setCatPickerOpen: React.Dispatch<React.SetStateAction<boolean>>;
   catValue: string | null;
-  setCatValue: React.Dispatch<React.SetStateAction<string | null>>  ;
+  setCatValue:
+    | React.Dispatch<React.SetStateAction<string | null>>
+    | ((value: string | null) => void);
   withAllCat?: boolean;
   style?: StyleProp<ViewStyle>;
+  isSelected?: boolean;
 }) {
   const items = () => {
     if (withAllCat)
@@ -67,10 +71,13 @@ export default function AppCategoriePicker({
       open={catPickerOpen}
       setOpen={setCatPickerOpen}
       value={catValue as string}
-      setValue={
-        setCatValue as React.Dispatch<React.SetStateAction<string | null>>
-      }
+      setValue={(callback: any) => {
+        const newValue =
+          typeof callback === "function" ? callback(catValue) : callback;
+        setCatValue(newValue);
+      }}
       style={style}
+      isSelected={isSelected}
     />
   );
 }

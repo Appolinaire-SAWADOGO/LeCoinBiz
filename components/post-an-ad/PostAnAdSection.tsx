@@ -1,19 +1,19 @@
 import { useAppTheme } from "@/hooks/useAppTheme";
-import React, {useState} from "react";
-import {KeyboardTypeOptions, StyleProp, TextStyle, View} from "react-native";
+import React from "react";
+import { KeyboardTypeOptions, StyleProp, TextStyle, View } from "react-native";
 import AppText from "../custom/AppText";
 import AppInput from "../custom/input/AppInput";
 
 export default function PostAnAdSection({
-    label,
-    placeholder,
-    optional = false,
-    children,
-    style,
-    onChangeText,
-    value,
-    keyboardType,
-    maxLength
+  label,
+  placeholder,
+  optional = false,
+  children,
+  style,
+  onChangeText,
+  value,
+  keyboardType,
+  maxLength,
 }: {
   label: string;
   placeholder?: string;
@@ -22,20 +22,20 @@ export default function PostAnAdSection({
   style?: StyleProp<TextStyle>;
   onChangeText?: (num: any) => void;
   value?: string;
-    keyboardType?: KeyboardTypeOptions | undefined,
-    maxLength?: number;
+  keyboardType?: KeyboardTypeOptions | undefined;
+  maxLength?: number;
 }) {
   const { designSystem } = useAppTheme();
 
-    const handleChangeText = (val: string) => {
-        if (keyboardType === "numeric") {
-            // Ne garde que les chiffres
-            const onlyNumbers = val.replace(/[^0-9]/g, "");
-            onChangeText?.(Number(onlyNumbers));
-        } else {
-            onChangeText?.(val);
-        }
-    };
+  const handleChangeText = (val: string) => {
+    if (keyboardType === "numeric") {
+      // Ne garde que les chiffres
+      const onlyNumbers = val.replace(/[^0-9]/g, "");
+      onChangeText?.(Number(onlyNumbers));
+    } else {
+      onChangeText?.(val);
+    }
+  };
 
   return (
     <View style={{ gap: 12 }}>
@@ -51,10 +51,10 @@ export default function PostAnAdSection({
       </View>
       {!children ? (
         <AppInput
-            value={value}
-            onChangeText={handleChangeText}
-            keyboardType={keyboardType}
-            maxLength={maxLength}
+          value={value}
+          onChangeText={handleChangeText}
+          keyboardType={keyboardType}
+          maxLength={maxLength}
           style={[
             {
               height: 48,

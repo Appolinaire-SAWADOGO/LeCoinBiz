@@ -1,7 +1,7 @@
+import { BURKINA_CITIES } from "@/constants/burkinaCities";
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import AppDropDownPicker from "./AppDropDownPicker";
-import {BURKINA_CITIES} from "@/constants/burkinaCities";
 
 export default function AppCityPicker({
   cityPickerOpen,
@@ -10,30 +10,44 @@ export default function AppCityPicker({
   setCityValue,
   withAllCity = true,
   style,
+  isSelected,
 }: {
   cityPickerOpen: boolean;
   setCityPickerOpen: React.Dispatch<React.SetStateAction<boolean>>;
   cityValue: string | null;
-  setCityValue: React.Dispatch<React.SetStateAction<string>>;
+  setCityValue:
+    | React.Dispatch<React.SetStateAction<string>>
+    | ((value: string) => void);
   withAllCity?: boolean;
   style?: StyleProp<ViewStyle>;
+  isSelected?: boolean;
 }) {
+  const itemsWithAllCity = () => {
+    const items = BURKINA_CITIES.map((city) => ({
+      label: city,
+      value: city,
+    }));
+
+    if (withAllCity)
+      items.unshift({ label: "Toutes les villes", value: "Toutes les villes" });
+    return items;
+  };
 
   return (
     <AppDropDownPicker
       withSearch={false}
       placeholder="Choisissez une Ville"
-      items={BURKINA_CITIES.map((city) => ({
-        label: city,
-        value: city,
-      }))}
+      items={itemsWithAllCity()}
       open={cityPickerOpen}
       setOpen={setCityPickerOpen}
       value={cityValue as string}
-      setValue={
-        setCityValue as React.Dispatch<React.SetStateAction<string | null>>
-      }
+      setValue={(callback: any) => {
+        const newValue =
+          typeof callback === "function" ? callback(cityValue) : callback;
+        setCityValue(newValue);
+      }}
       style={style}
+      isSelected={isSelected}
     />
   );
 }

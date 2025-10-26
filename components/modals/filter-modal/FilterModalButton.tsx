@@ -1,4 +1,3 @@
-import AppUserOrAdPicker from "@/components/custom/picker/AppUserOrAdPicker";
 import CaretDownDynSvg from "@/components/svg/CaretDownDynSvg";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { FilterModalUseCaseType } from "@/types";
@@ -9,13 +8,13 @@ import { Button, ButtonText } from "../../ui/button";
 
 export default function FilterModalButton({
   isFiltered,
-  setIsOpen,
+  open,
   useCase,
   userOrAdValue,
   setUserOrAdvalue,
 }: {
   isFiltered: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  open: () => void;
   useCase: FilterModalUseCaseType;
   userOrAdValue?: string;
   setUserOrAdvalue?: React.Dispatch<
@@ -38,7 +37,7 @@ export default function FilterModalButton({
             : designSystem.colors.inputBorder,
         },
       ]}
-      onPress={() => setIsOpen(true)}
+      onPress={() => open()}
     >
       <ButtonText>
         <View style={styles.buttonText}>
@@ -53,7 +52,7 @@ export default function FilterModalButton({
 
   return (
     <View style={styles.sort}>
-      <AppText
+      {/* <AppText
         fontSize={17}
         color={designSystem.colors.bigText}
         font="Bold"
@@ -66,54 +65,24 @@ export default function FilterModalButton({
           (useCase === "Search" &&
             userOrAdValue === "utilisateurs" &&
             "Utulisateurs Correspondants")}
-      </AppText>
+      </AppText> */}
 
-      <View style={{ flexDirection: "row", gap: 10 }}>
-        {/* filter button */}
-        {(useCase === "Search" && userOrAdValue === "annonces" && (
-          <FilterButton />
-        )) ||
-          (useCase !== "Search" && <FilterButton />)}
+      {/* <View style={{ flexDirection: "row", gap: 10 }}> */}
+      {/* filter button */}
+      {/* {(useCase === "Search" && userOrAdValue === "annonces" && ( */}
+      {/* <FilterButton /> */}
+      {/* )) || */}
+      {/* (useCase !== "Search" && <FilterButton />)} */}
 
-        {useCase === "Search" && userOrAdValue && setUserOrAdvalue && (
-          <AppUserOrAdPicker
-            value={userOrAdValue}
-            setValue={setUserOrAdvalue}
-          />
-        )}
+      {/* {useCase === "Search" && userOrAdValue && setUserOrAdvalue && ( */}
+      {/* // <AppUserOrAdPicker */}
+      {/* // value={userOrAdValue} */}
+      {/* setValue={setUserOrAdvalue} */}
+      {/* /> */}
+      {/* )} */}
+      {/* </View> */}
 
-        {/* filter list */}
-        {/* <FlatList
-          data={[0, 1, 2]}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 10 }}
-          renderItem={() => (
-            <>
-              <Button
-                style={[
-                  styles.button,
-
-                  {
-                    backgroundColor: designSystem.colors.secondary,
-                    borderWidth: 0,
-                  },
-                ]}
-                onPress={() => setIsOpen(true)}
-              >
-                <ButtonText>
-                  <View style={styles.buttonText}>
-                    <AppText fontSize={14} color="#fff">
-                      Filtrer par
-                    </AppText>
-                    <XDynSvg />
-                  </View>
-                </ButtonText>
-              </Button>
-            </>
-          )}
-        /> */}
-      </View>
+      <FilterButton />
     </View>
   );
 }
@@ -138,6 +107,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 50,
     paddingHorizontal: 12,
-    width: "auto",
+    width: 110,
   },
 });

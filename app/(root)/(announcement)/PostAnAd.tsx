@@ -10,9 +10,9 @@ import PostAnAdCitySection from "@/components/post-an-ad/sections/PostAnAdCitySe
 import PostAnAdConditionsSection from "@/components/post-an-ad/sections/PostAnAdConditionsSection";
 import PostAnAdOptionsSection from "@/components/post-an-ad/sections/PostAnAdOptionsSection";
 import PostAnAdPhotosSection from "@/components/post-an-ad/sections/PostAnAdPhotosSection";
-import { usePostAnAdd } from "@/hooks/services/post-an-ad/usePostAnAdd";
+import { usePostAnAd } from "@/hooks/services/ads/usePostAnAd";
 import { usePickerImageAlertModalStore } from "@/store/usePickerImageAlertModalStore";
-import { postAnAddSchema } from "@/zod/schema/postAnAd.schema";
+import { PostAnAddSchema } from "@/zod/schema/postAnAd.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -23,9 +23,10 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { z } from "zod";
 
-type FormData = z.infer<typeof postAnAddSchema>;
+type FormData = z.infer<typeof PostAnAddSchema>;
 
 export default function PostAnAd() {
   const [phoneNumber, setPhoneNumber] = React.useState("");
@@ -34,9 +35,10 @@ export default function PostAnAd() {
   const {
     control,
     handleSubmit,
+    reset: resetForm,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
-    resolver: zodResolver(postAnAddSchema),
+    resolver: zodResolver(PostAnAddSchema),
     defaultValues: {
       options: [
         { label: "Livraison gratuite", active: false },
@@ -45,56 +47,69 @@ export default function PostAnAd() {
     },
   });
 
-  const { postAnAdd } = usePostAnAdd();
+  const { postAnAdd } = usePostAnAd();
 
   const { close, isOpen, alertMsg } = usePickerImageAlertModalStore();
 
+  const insets = useSafeAreaInsets();
+
   return (
-    <Container>
-      {/* Alert modal  */}
-      <AppCenterModal
-        isOpen={isOpen}
-        setIsOpen={close}
-        title="Alerte"
-        submitText="Ok"
-        footerStyle={{ justifyContent: "center" }}
-        onSubmit={close}
-        withCancelButton={false}
+    <Container withBottom={false}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? insets.top + 20 : 0}
       >
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            paddingTop: 10,
-          }}
+        {/* Alert modal  */}
+        <AppCenterModal
+          isOpen={isOpen}
+          setIsOpen={close}
+          title="Alerte"
+          submitText="Ok"
+          footerStyle={{ justifyContent: "center" }}
+          onSubmit={close}
+          withCancelButton={false}
         >
-          <AppText
+          <View
             style={{
-              fontSize: 16,
-              lineHeight: 22,
-              color: "#333",
+              alignItems: "center",
+              justifyContent: "center",
+              paddingTop: 10,
             }}
           >
-            {alertMsg}
-          </AppText>
-        </View>
-      </AppCenterModal>
+            <AppText
+              style={{
+                fontSize: 16,
+                lineHeight: 22,
+                color: "#333",
+              }}
+            >
+              {alertMsg}
+            </AppText>
+          </View>
+        </AppCenterModal>
 
-      {/* page header */}
-      <PageHeader name="Poster une annonce" style={{ paddingHorizontal: 20 }} />
+        {/* page header */}
+        <PageHeader
+          name="Poster une annonce"
+          style={{ paddingHorizontal: 20 }}
+        />
 
-      {/* main */}
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
+        {/* main */}
+
         {/* scroll view */}
         <ScrollView
-          style={{
+          contentContainerStyle={{
             paddingHorizontal: 20,
             paddingTop: 20,
+            paddingBottom: insets.bottom + 10,
+            backgroundColor: "#fff",
+            gap: 20,
+            flexGrow: 1,
           }}
-          contentContainerStyle={{ gap: 20, paddingBottom: 50 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          automaticallyAdjustKeyboardInsets={true}
         >
           {/*titre*/}
           <View>
@@ -330,9 +345,9 @@ export default function PostAnAd() {
           {/* submit button  */}
           <AppButton
             title="Publier"
-            style={{ borderRadius: 8 }}
+            style={{ borderRadius: 8, elevation: 0 }}
             onPress={handleSubmit(async (data) => {
-              await postAnAdd(data);
+              await postAnAdd(data, resetForm);
             })}
             isLoading={isSubmitting}
             disabled={isSubmitting}

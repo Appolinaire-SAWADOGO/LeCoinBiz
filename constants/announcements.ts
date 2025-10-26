@@ -1,239 +1,244 @@
 import { AnnouncementsType } from "@/types";
 
 export const announcements: AnnouncementsType[] = [
-  // High-Tech & Multimédia
   {
-    id: 1,
-    name: "Ordinateur portable HP EliteBook",
+    id: "1",
+    title: "Ordinateur portable HP EliteBook",
+    description:
+      "Ordinateur portable HP EliteBook avec processeur Core i7, 16 Go de RAM et SSD 512 Go. Excellent pour le travail et les études.",
     price: 799,
     category: "High-Tech & Multimédia",
-    image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45",
-    description:
-      'Ordinateur portable HP EliteBook en excellent état avec processeur Core i7 de 10ème génération, 16GB de RAM DDR4, SSD NVMe ultra-rapide de 512GB, écran 15.6" Full HD anti-reflet. Clavier rétroéclairé et webcam HD intégrée. Idéal pour le travail ou les études.',
-    condition: "Occasion comme neuf",
-    freeDelivery: true,
-    subPhotos: [
+    city: "Ouagadougou",
+    phoneNumber: "+22670000001",
+    whatsappNumber: "+22670000001",
+    userId: "user_001",
+    conditions: ["Occasion", "Comme neuf"],
+    options: [
+      { label: "Livraison gratuite", active: true },
+      { label: "Garantie 6 mois", active: false },
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1593642632823-8f785ba67e45",
       "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?1",
       "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?2",
-      "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?3",
     ],
-    location: {
-      city: "Paris",
-      district: "15ème arrondissement",
-      distance: "2 km",
-      pays: "France",
-    },
+    createdAt: { seconds: 1717000000, nanoseconds: 0 },
+    updatedAt: { seconds: 1717000000, nanoseconds: 0 },
   },
   {
-    id: 2,
-    name: "iPhone 13 Pro 128GB",
+    id: "2",
+    title: "iPhone 13 Pro 128GB",
+    description:
+      "iPhone 13 Pro 128GB reconditionné, batterie à 100%, triple caméra pro et écran Super Retina XDR.",
     price: 899,
     category: "High-Tech & Multimédia",
-    image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb",
-    description:
-      'iPhone 13 Pro 128GB reconditionné par un professionnel avec batterie à 100% de sa capacité. Écran Super Retina XDR 6.1" sans aucune rayure, triple caméra professionnelle avec mode Night Mode. Livré avec une coque de protection en silicone originale Apple et câble Lightning.',
-    condition: "Reconditionné",
-    freeDelivery: false,
-    subPhotos: [
+    city: "Bobo-Dioulasso",
+    phoneNumber: "+22670000002",
+    whatsappNumber: "+22670000002",
+    userId: "user_002",
+    conditions: ["Reconditionné"],
+    options: [
+      { label: "Livraison gratuite", active: false },
+      { label: "Garantie 3 mois", active: true },
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb",
       "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?1",
       "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?2",
-      "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?3",
     ],
-    location: {
-      city: "Bruxelles",
-      district: "Ixelles",
-      distance: "5 km",
-      pays: "Belgique",
-    },
+    createdAt: { seconds: 1717001000, nanoseconds: 0 },
+    updatedAt: { seconds: 1717001000, nanoseconds: 0 },
   },
-
-  // Véhicules
   {
-    id: 3,
-    name: "Peugeot 208 GT Line",
+    id: "3",
+    title: "Peugeot 208 GT Line",
+    description:
+      "Peugeot 208 GT Line 2019, 45 000 km, moteur diesel BlueHDi 100ch, très bon état général.",
     price: 18500,
     category: "Véhicules",
-    image: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d",
-    description:
-      "Peugeot 208 GT Line année 2019 avec seulement 45 000 km au compteur. Motorisation diesel économique 1.5L BlueHDi 100ch. Toit ouvrant panoramique, jantes alliage 17\", système audio premium Focal, régulateur de vitesse. Contrôle technique récent et carnet d'entretien complet.",
-    condition: "Occasion",
-    freeDelivery: false,
-    subPhotos: [
+    city: "Ouagadougou",
+    phoneNumber: "+22670000003",
+    whatsappNumber: "+22670000003",
+    userId: "user_003",
+    conditions: ["Occasion"],
+    options: [
+      { label: "Livraison gratuite", active: false },
+      { label: "Contrôle technique", active: true },
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d",
       "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?1",
       "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?2",
-      "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?3",
     ],
-    location: {
-      city: "Genève",
-      district: "Eaux-Vives",
-      distance: "10 km",
-      pays: "Suisse",
-    },
+    createdAt: { seconds: 1717002000, nanoseconds: 0 },
+    updatedAt: { seconds: 1717002000, nanoseconds: 0 },
   },
   {
-    id: 4,
-    name: "Casque moto Shoei Neotec II",
+    id: "4",
+    title: "Casque moto Shoei Neotec II",
+    description:
+      "Casque intégral Shoei Neotec II neuf, visière Pinlock anti-buée, ventilation CWR-1, taille L.",
     price: 499,
     category: "Véhicules",
-    image: "https://images.unsplash.com/photo-1580522154071-c6ca47a859ad",
-    description:
-      "Casque intégral modulable Shoei Neotec II neuf jamais porté, taille L (58-59cm). Système de ventilation CWR-1, visière Pinlock anti-buée incluse, intérieur en 3D Max-Dry System ultra-confortable. Certifié ECE 22.05. Disponible immédiatement avec facture d'achat.",
-    condition: "Neuf",
-    freeDelivery: true,
-    subPhotos: [
+    city: "Koudougou",
+    phoneNumber: "+22670000004",
+    whatsappNumber: "+22670000004",
+    userId: "user_004",
+    conditions: ["Neuf"],
+    options: [
+      { label: "Livraison gratuite", active: true },
+      { label: "Facture disponible", active: true },
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1580522154071-c6ca47a859ad",
       "https://images.unsplash.com/photo-1580522154071-c6ca47a859ad?1",
       "https://images.unsplash.com/photo-1580522154071-c6ca47a859ad?2",
-      "https://images.unsplash.com/photo-1580522154071-c6ca47a859ad?3",
     ],
-    location: {
-      city: "Montréal",
-      district: "Vieux-Port",
-      distance: "1 km",
-      pays: "Canada",
-    },
+    createdAt: { seconds: 1717003000, nanoseconds: 0 },
+    updatedAt: { seconds: 1717003000, nanoseconds: 0 },
   },
-
-  // Immobilier
   {
-    id: 5,
-    name: "Appartement T3 centre-ville",
+    id: "5",
+    title: "Appartement T3 centre-ville",
+    description:
+      "Appartement T3 de 70m² avec deux chambres, cuisine équipée et salon lumineux, disponible immédiatement.",
     price: 1200,
     category: "Immobilier",
-    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
-    description:
-      "Magnifique appartement T3 de 70m² en plein cœur de la ville. Composé d'un séjour lumineux, deux chambres spacieuses, cuisine équipée moderne et salle de bain avec baignoire. Proche de tous commerces et transports en commun (métro à 50m). Chauffage collectif et ascenseur. Disponible immédiatement.",
-    condition: "Location",
-    freeDelivery: false,
-    subPhotos: [
+    city: "Ouagadougou",
+    phoneNumber: "+22670000005",
+    whatsappNumber: "+22670000005",
+    userId: "user_005",
+    conditions: ["Location"],
+    options: [
+      { label: "Proche commerces", active: true },
+      { label: "Ascenseur", active: true },
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
       "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?1",
       "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?2",
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?3",
     ],
-    location: {
-      city: "Berlin",
-      district: "Mitte",
-      distance: "0.5 km",
-      pays: "Allemagne",
-    },
+    createdAt: { seconds: 1717004000, nanoseconds: 0 },
+    updatedAt: { seconds: 1717004000, nanoseconds: 0 },
   },
-
-  // Mode
   {
-    id: 6,
-    name: "Veste en cuir véritable",
+    id: "6",
+    title: "Veste en cuir véritable",
+    description:
+      "Veste en cuir noir véritable, taille M, doublure en soie, très bon état, look élégant.",
     price: 150,
     category: "Mode & Accessoires",
-    image: "https://images.unsplash.com/photo-1551232864-3f0890e580d9",
-    description:
-      "Veste en cuir véritable de haute qualité, taille M (38-40), couleur noire intemporelle. Doublure en soie, fermeture à glissière métallique robuste et quatre poches fonctionnelles. Portée seulement quelques fois, aucun défaut visible. Parfaite pour un look élégant ou décontracté.",
-    condition: "Très bon état",
-    freeDelivery: true,
-    subPhotos: [
+    city: "Bobo-Dioulasso",
+    phoneNumber: "+22670000006",
+    whatsappNumber: "+22670000006",
+    userId: "user_006",
+    conditions: ["Très bon état"],
+    options: [
+      { label: "Livraison gratuite", active: true },
+      { label: "Retour possible", active: false },
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1551232864-3f0890e580d9",
       "https://images.unsplash.com/photo-1551232864-3f0890e580d9?1",
       "https://images.unsplash.com/photo-1551232864-3f0890e580d9?2",
-      "https://images.unsplash.com/photo-1551232864-3f0890e580d9?3",
     ],
-    location: {
-      city: "Londres",
-      district: "Soho",
-      distance: "3 km",
-      pays: "Royaume-Uni",
-    },
+    createdAt: { seconds: 1717005000, nanoseconds: 0 },
+    updatedAt: { seconds: 1717005000, nanoseconds: 0 },
   },
-
-  // Maison
   {
-    id: 7,
-    name: "Canapé d'angle en tissu",
+    id: "7",
+    title: "Canapé d'angle en tissu",
+    description:
+      "Canapé d'angle gris anthracite, 3 places + méridienne, tissu résistant, confortable et spacieux.",
     price: 450,
     category: "Maison & Déco",
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc",
-    description:
-      "Canapé d'angle spacieux en tissu résistant de couleur gris anthracite. Configuration 3 places + méridienne pour un couchage confortable. Mécanisme d'assise relevable. Quelques légères traces d'usure mais structure parfaite. Possibilité de livraison sur demande (frais supplémentaires selon distance).",
-    condition: "Occasion",
-    freeDelivery: false,
-    subPhotos: [
+    city: "Ouahigouya",
+    phoneNumber: "+22670000007",
+    whatsappNumber: "+22670000007",
+    userId: "user_007",
+    conditions: ["Occasion"],
+    options: [
+      { label: "Livraison gratuite", active: false },
+      { label: "Assise relevable", active: true },
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc",
       "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?1",
       "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?2",
-      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?3",
     ],
-    location: {
-      city: "Barcelone",
-      district: "Gothic Quarter",
-      distance: "7 km",
-      pays: "Espagne",
-    },
+    createdAt: { seconds: 1717006000, nanoseconds: 0 },
+    updatedAt: { seconds: 1717006000, nanoseconds: 0 },
   },
-
-  // Puériculture
   {
-    id: 8,
-    name: "Poussette double BabyJogger",
+    id: "8",
+    title: "Poussette double BabyJogger",
+    description:
+      "Poussette double BabyJogger City Select, excellent état, idéale pour deux enfants de 0 à 4 ans.",
     price: 299,
     category: "Puériculture",
-    image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f",
-    description:
-      "Poussette double BabyJogger City Select en excellent état général. Modèle convertible pouvant accueillir deux enfants de 0 à 4 ans. Inclut housse de pluie originale, pare-soleil et filet à provisions. Roues tout-terrain avec suspension, système de pliage simple et compact. Parfait pour les jumeaux ou enfants d'âges différents.",
-    condition: "Bon état",
-    freeDelivery: true,
-    subPhotos: [
+    city: "Ouagadougou",
+    phoneNumber: "+22670000008",
+    whatsappNumber: "+22670000008",
+    userId: "user_008",
+    conditions: ["Bon état"],
+    options: [
+      { label: "Livraison gratuite", active: true },
+      { label: "Accessoires inclus", active: true },
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1594824476967-48c8b964273f",
       "https://images.unsplash.com/photo-1594824476967-48c8b964273f?1",
       "https://images.unsplash.com/photo-1594824476967-48c8b964273f?2",
-      "https://images.unsplash.com/photo-1594824476967-48c8b964273f?3",
     ],
-    location: {
-      city: "Rome",
-      district: "Trastevere",
-      distance: "4 km",
-      pays: "Italie",
-    },
+    createdAt: { seconds: 1717007000, nanoseconds: 0 },
+    updatedAt: { seconds: 1717007000, nanoseconds: 0 },
   },
-
-  // Sports
   {
-    id: 9,
-    name: "Vélo de route Cannondale",
+    id: "9",
+    title: "Vélo de route Cannondale",
+    description:
+      "Vélo de route Cannondale Synapse aluminium, taille 54cm, freins à disque, excellent état.",
     price: 850,
     category: "Loisirs & Sports",
-    image: "https://images.unsplash.com/photo-1485965120184-e220f721d03e",
-    description:
-      "Vélo de route Cannondale Synapse en aluminium taille 54cm, idéal pour des cyclistes entre 1m70 et 1m80. Groupe Shimano 105 11 vitesses, freins à disques hydrauliques, pneus Continental Gatorskin 28mm quasi-neufs. Utilisé seulement quelques sorties, révision complète récente. Livré avec pédales automatiques et support de fixation murale.",
-    condition: "Occasion",
-    freeDelivery: false,
-    subPhotos: [
+    city: "Bobo-Dioulasso",
+    phoneNumber: "+22670000009",
+    whatsappNumber: "+22670000009",
+    userId: "user_009",
+    conditions: ["Occasion"],
+    options: [
+      { label: "Révision récente", active: true },
+      { label: "Livraison gratuite", active: false },
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1485965120184-e220f721d03e",
       "https://images.unsplash.com/photo-1485965120184-e220f721d03e?1",
       "https://images.unsplash.com/photo-1485965120184-e220f721d03e?2",
-      "https://images.unsplash.com/photo-1485965120184-e220f721d03e?3",
     ],
-    location: {
-      city: "Amsterdam",
-      district: "Jordaan",
-      distance: "2 km",
-      pays: "Pays-Bas",
-    },
+    createdAt: { seconds: 1717008000, nanoseconds: 0 },
+    updatedAt: { seconds: 1717008000, nanoseconds: 0 },
   },
-
-  // Professionnel
   {
-    id: 10,
-    name: "Groupe électrogène professionnel",
+    id: "10",
+    title: "Groupe électrogène professionnel",
+    description:
+      "Groupe électrogène Honda EU22i 2200W, très silencieux, idéal pour chantiers et événements.",
     price: 1200,
     category: "Professionnel & Matériel",
-    image: "https://images.unsplash.com/photo-1610041321327-b794c052db27",
-    description:
-      "Groupe électrogène professionnel Honda EU22i de 2200W (2.2kVA) avec seulement 200 heures d'utilisation. Moteur 4 temps ultra-silencieux (53dB), démarrage électrique + manuel, consommation optimisée. Parfait pour chantiers, événements ou backup électrique. Livré avec câbles de puissance et notice d'utilisation complète. Garantie 3 mois.",
-    condition: "Occasion",
-    freeDelivery: true,
-    subPhotos: [
+    city: "Ouagadougou",
+    phoneNumber: "+22670000010",
+    whatsappNumber: "+22670000010",
+    userId: "user_010",
+    conditions: ["Occasion"],
+    options: [
+      { label: "Livraison gratuite", active: true },
+      { label: "Garantie 3 mois", active: true },
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1610041321327-b794c052db27",
       "https://images.unsplash.com/photo-1610041321327-b794c052db27?1",
       "https://images.unsplash.com/photo-1610041321327-b794c052db27?2",
-      "https://images.unsplash.com/photo-1610041321327-b794c052db27?3",
     ],
-    location: {
-      city: "Luxembourg",
-      district: "Ville Haute",
-      distance: "8 km",
-      pays: "Luxembourg",
-    },
+    createdAt: { seconds: 1717009000, nanoseconds: 0 },
+    updatedAt: { seconds: 1717009000, nanoseconds: 0 },
   },
 ];

@@ -37,7 +37,7 @@ export default function AnnouncementDetails() {
       <AnnouncementDetailsHeaderSection
         from={from as "OtherPage" | "ProfilePage"}
         status={status as "inSell" | "disabled"}
-        name={currentAnnouncement.name.slice(0, 15) + "..."}
+        name={currentAnnouncement.title.slice(0, 15) + "..."}
       />
 
       {/* main */}

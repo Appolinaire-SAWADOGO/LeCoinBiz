@@ -12,6 +12,7 @@ export default function AppDropDownPicker({
   value,
   setValue,
   style,
+  isSelected,
 }: {
   withSearch?: boolean;
   placeholder: string;
@@ -19,8 +20,11 @@ export default function AppDropDownPicker({
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   value: string | null;
-  setValue: React.Dispatch<React.SetStateAction<string | null>>;
+  setValue:
+    | React.Dispatch<React.SetStateAction<string | null>>
+    | ((value: string | null) => void);
   style?: StyleProp<ViewStyle>;
+  isSelected?: boolean;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -36,14 +40,16 @@ export default function AppDropDownPicker({
         open={open}
         value={value}
         setOpen={setOpen}
-        setValue={setValue}
+        setValue={
+          setValue as React.Dispatch<React.SetStateAction<string | null>>
+        }
         placeholder={placeholder}
         items={items}
         style={[
           {
             backgroundColor: "#fff",
             borderRadius: 8,
-            borderColor: value
+            borderColor: isSelected
               ? designSystem.colors.primary
               : designSystem.colors.inputBorder,
             borderWidth: 1,

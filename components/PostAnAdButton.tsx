@@ -1,6 +1,6 @@
 import AppText from "@/components/custom/AppText";
+import { useCheckUserAcces } from "@/hooks/services/auth/useCheckUserAcces";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { useCheckUserAcces } from "@/hooks/useCheckUserAcces";
 import { router } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity } from "react-native";

@@ -1,18 +1,19 @@
 import HeaderTexture2 from "@/assets/images/textures/HeaderTexture2.png";
 import AppText from "@/components/custom/AppText";
 import HomeCategories from "@/components/home/HomeHeaderCategories";
-import FilterModal from "@/components/modals/filter-modal/FilterModal";
+import { APP_NAME } from "@/constants";
+import { useCheckUserAcces } from "@/hooks/services/auth/useCheckUserAcces";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { useCheckUserAcces } from "@/hooks/useCheckUserAcces";
+import { useFilterStatesStore } from "@/store/useFilterStatesStore";
 import { router } from "expo-router";
 import { BellRing, Search, SlidersHorizontal } from "lucide-react-native";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import SectionHeaderText from "../SectionHeaderText";
-import {APP_NAME} from "@/constants";
+import FilterModal from "../modals/filter-modal/FilterModal";
 
 export default function HomeHeaderSection() {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const { open: openFilterModal } = useFilterStatesStore();
 
   const { designSystem } = useAppTheme();
 
@@ -27,11 +28,7 @@ export default function HomeHeaderSection() {
         ]}
       >
         {/* filter modal */}
-        <FilterModal
-          useCase={"Home"}
-          isOpenProps={isOpen}
-          setIsOpenProps={setIsOpen}
-        />
+        <FilterModal useCase="Home" />
 
         <View>
           {/* texture */}
@@ -48,7 +45,6 @@ export default function HomeHeaderSection() {
               }
               style={styles.notificationIcon}
             >
-
               <BellRing size={18} color={"#fff"} />
             </TouchableOpacity>
           </View>
@@ -72,8 +68,8 @@ export default function HomeHeaderSection() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.filterButton}
-              onPress={() => setIsOpen(true)}
+              style={[styles.filterButton]}
+              onPress={() => openFilterModal()}
             >
               <SlidersHorizontal
                 size={16}
@@ -91,13 +87,13 @@ export default function HomeHeaderSection() {
           </View>
         </View>
 
-        {/* popular categories */}
+        {/*categories */}
         <View style={styles.category}>
           <SectionHeaderText name={"Catégories"} withViewAll />
           <HomeCategories />
           <SectionHeaderText
             withViewAll={false}
-            name="Annonces Recentes"
+            name={"Annonces récentes"}
             style={{ marginBottom: 0 }}
           />
         </View>
@@ -183,8 +179,6 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 7,
     paddingHorizontal: 20,
-    // borderTopRightRadius: 14,
-    // borderTopLeftRadius: 14,
     gap: 12,
   },
 });

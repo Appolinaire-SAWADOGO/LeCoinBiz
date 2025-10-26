@@ -1,45 +1,15 @@
-import { useFilterState } from "@/hooks/useFilterState";
+import { useFilterStatesStore } from "@/store/useFilterStatesStore";
 import { FilterModalUseCaseType } from "@/types";
 import React from "react";
-import { StyleSheet } from "react-native";
 import FilterModalButton from "./FilterModalButton";
 import FilterModalForm from "./FilterModalForm";
 
 export default function FilterModal({
   useCase,
-  isOpenProps,
-  setIsOpenProps,
-  userOrAdValue,
-  setUserOrAdvalue,
 }: {
   useCase: FilterModalUseCaseType;
-  isOpenProps?: boolean;
-  setIsOpenProps?: React.Dispatch<React.SetStateAction<boolean>>;
-  userOrAdValue?: string;
-  setUserOrAdvalue?: React.Dispatch<
-    React.SetStateAction<"annonces" | "utilisateurs">
-  >;
 }) {
-  const {
-    isOpen,
-    setIsOpen,
-    category,
-    setCategory,
-    city,
-    setCity,
-    min,
-    setMin,
-    max,
-    setMax,
-    tempPub,
-    setTempPub,
-    options,
-    setOptions,
-    isFiltered,
-  } = useFilterState();
-
-  const setModalOpen = setIsOpenProps || setIsOpen;
-  const isModalOpen = isOpenProps || isOpen;
+  const { isOpen, close, open, isFiltered } = useFilterStatesStore();
 
   return (
     <>
@@ -47,33 +17,15 @@ export default function FilterModal({
       {useCase !== "Home" && (
         <FilterModalButton
           isFiltered={isFiltered}
-          setIsOpen={setModalOpen}
+          open={open}
           useCase={useCase}
-          userOrAdValue={userOrAdValue}
-          setUserOrAdvalue={setUserOrAdvalue}
+          // userOrAdValue={userOrAdValue}
+          // setUserOrAdvalue={setUserOrAdvalue}
         />
       )}
 
       {/* modal */}
-      <FilterModalForm
-        useCase={useCase}
-        isOpen={isModalOpen}
-        setIsOpen={setModalOpen}
-        category={category}
-        setCategory={setCategory}
-        city={city}
-        setCity={setCity}
-        min={min}
-        setMin={setMin}
-        max={max}
-        setMax={setMax}
-        tempPub={tempPub}
-        setTempPub={setTempPub}
-        options={options}
-        setOptions={setOptions}
-      />
+      <FilterModalForm isOpen={isOpen} close={close} useCase={useCase} />
     </>
   );
 }
-
-const styles = StyleSheet.create({});

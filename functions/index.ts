@@ -1,3 +1,5 @@
+import Toast from "react-native-toast-message";
+
 export function getTimeBasedGreeting(): string {
   const currentHour = new Date().getHours();
   if (currentHour < 12) {
@@ -37,3 +39,12 @@ export const generateDesignSystem = (primary: string) => ({
   buttonBorderRadius: 50,
   fontFamily: "BasisGrotesqueArabicPro-Regular",
 });
+
+export const showToast = (type: "success" | "error", text: string) => {
+  Toast.show({
+    type: type,
+    text1: text,
+    position: "bottom",
+    visibilityTime: 3000,
+  });
+};

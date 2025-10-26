@@ -8,7 +8,7 @@ export default function FilterModalFormLocSection({
   setCity,
 }: {
   city: string;
-  setCity: React.Dispatch<React.SetStateAction<string>>;
+  setCity: (value: string) => void;
 }) {
   const [cityPickerOpen, setCityPickerOpen] = React.useState(false);
 
@@ -16,10 +16,12 @@ export default function FilterModalFormLocSection({
     <>
       <AppText style={styles.label}>Région / Ville</AppText>
       <AppCityPicker
+        withAllCity
         cityPickerOpen={cityPickerOpen}
         setCityPickerOpen={setCityPickerOpen}
         cityValue={city}
         setCityValue={setCity}
+        isSelected={city !== "Toutes les villes"}
       />
     </>
   );

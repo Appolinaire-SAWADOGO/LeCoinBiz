@@ -5,24 +5,31 @@ export type CategoriesType = {
   id: number;
   name: string;
   icon: ImageSourcePropType;
-  subcategories: string[];
 }[];
 
 export type AnnouncementsType = {
-  id: number;
-  name: string;
+  id: string;
+  title: string;
+  description: string;
   price: number;
   category: string;
-  image: string;
-  description: string;
-  condition: string;
-  freeDelivery: boolean;
-  subPhotos: string[];
-  location: {
-    city: string;
-    district: string;
-    distance: string;
-    pays: string;
+  city: string;
+  phoneNumber: string;
+  whatsappNumber: string;
+  userId: string;
+  conditions: string[];
+  options: {
+    label: string;
+    active: boolean;
+  }[];
+  images: string[];
+  createdAt: {
+    seconds: number;
+    nanoseconds: number;
+  };
+  updatedAt: {
+    seconds: number;
+    nanoseconds: number;
   };
 };
 
@@ -48,7 +55,7 @@ export type AdOptionsPickerType = {
   active: boolean;
 }[];
 
-export type FilterModalUseCaseType = "Home" | "Search" | "Category";
+export type FilterModalUseCaseType = "Home" | "Filter";
 
 export type ContinousWithPhomeNumberStepType =
   | "enterPhoneNumber"

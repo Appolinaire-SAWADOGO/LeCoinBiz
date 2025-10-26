@@ -2,7 +2,6 @@ import Container from "@/components/Container";
 import AppText from "@/components/custom/AppText";
 import SettingApplicationSection from "@/components/settings/sections/SettingApplicationSection";
 import SettingAppVersionSection from "@/components/settings/sections/SettingAppVersionSection";
-import SettingChangeThemeSection from "@/components/settings/sections/SettingChangeThemeSection";
 import SettingContactSection from "@/components/settings/sections/SettingContactSection";
 import SettingLegalInformationSection from "@/components/settings/sections/SettingLegalInformationSection";
 import SettingSecuritySection from "@/components/settings/sections/SettingSecuritySection";
@@ -30,25 +29,22 @@ export default function Parametres() {
           </AppText>
         </View>
 
-        {/* 🎨 Changer le thème */}
-        <SettingChangeThemeSection />
-
-        {/* ⚙ Paramètres de l'application */}
+        {/*  Paramètres de l'application */}
         <SettingApplicationSection />
 
-        {/* 📞 Contact */}
+        {/*  Contact */}
         <SettingContactSection />
 
-        {/* 📄 Informations légales */}
+        {/*  Informations légales */}
         <SettingLegalInformationSection />
 
-        {/* 🔐 Sécurité */}
+        {/*  Sécurité */}
         <SettingSecuritySection />
 
         {/* supprimer ou se deconnecter */}
         {ifUserIsConnected() && <SettingsLogoutOrdelAcntSection />}
 
-        {/* 📦 Version de l'app */}
+        {/*  Version de l'app */}
         <SettingAppVersionSection />
       </ScrollView>
     </Container>

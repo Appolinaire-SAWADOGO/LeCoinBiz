@@ -1,5 +1,5 @@
-import { Animated, ViewStyle, StyleProp } from "react-native";
 import React from "react";
+import { Animated, StyleProp, ViewStyle } from "react-native";
 
 export default function HeaderHideAnimation({
   scrollY,

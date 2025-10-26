@@ -11,9 +11,9 @@ export default function FilterModalFormPriceMinMaxSection({
   setMax,
 }: {
   min: string;
-  setMin: React.Dispatch<React.SetStateAction<string>>;
+  setMin: (value: string) => void;
   max: string;
-  setMax: React.Dispatch<React.SetStateAction<string>>;
+  setMax: (value: string) => void;
 }) {
   const { designSystem } = useAppTheme();
 

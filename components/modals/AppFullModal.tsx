@@ -1,6 +1,6 @@
 import { Modal, ModalBackdrop, ModalContent } from "@/components/ui/modal";
 import React from "react";
-import { ColorValue } from "react-native";
+import { ColorValue, StyleSheet } from "react-native";
 
 export default function AppFullModal({
   children,
@@ -18,17 +18,27 @@ export default function AppFullModal({
       <ModalBackdrop />
       <ModalContent
         size="full"
-        style={{
-          position: "absolute",
-          inset: 0,
-          margin: 0,
-          padding: 0,
-          borderWidth: 0,
-          backgroundColor: bgColor || "transparent",
-        }}
+        style={[
+          styles.modal,
+          {
+            backgroundColor: bgColor || "transparent",
+          },
+        ]}
       >
         {children}
       </ModalContent>
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  modal: {
+    position: "absolute",
+    inset: 0,
+    margin: 0,
+    paddingBottom: 5,
+    borderWidth: 0,
+    paddingTop: 0,
+    padding: 0,
+  },
+});

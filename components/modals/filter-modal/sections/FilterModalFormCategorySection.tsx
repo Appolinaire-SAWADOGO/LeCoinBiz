@@ -1,33 +1,29 @@
 import AppText from "@/components/custom/AppText";
 import AppCategoriePicker from "@/components/custom/picker/AppCategoriePicker";
-import { FilterModalUseCaseType } from "@/types";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
 export default function FilterModalFormCategorySection({
-  useCase,
   category,
   setCategory,
 }: {
-  useCase: FilterModalUseCaseType;
   category: string | null;
-  setCategory: React.Dispatch<React.SetStateAction<string | null>>;
+  setCategory: (value: string | null) => void;
 }) {
   const [catPickerOpen, setCatPickerOpen] = React.useState(false);
 
   return (
     <>
-      {useCase === "Home" && (
-        <View>
-          <AppText style={styles.label}>Catégorie</AppText>
-          <AppCategoriePicker
-            catPickerOpen={catPickerOpen}
-            setCatPickerOpen={setCatPickerOpen}
-            catValue={category}
-            setCatValue={setCategory}
-          />
-        </View>
-      )}
+      <View>
+        <AppText style={styles.label}>Catégorie</AppText>
+        <AppCategoriePicker
+          catPickerOpen={catPickerOpen}
+          setCatPickerOpen={setCatPickerOpen}
+          catValue={category}
+          setCatValue={setCategory}
+          isSelected={category !== "Toutes les catégories"}
+        />
+      </View>
     </>
   );
 }

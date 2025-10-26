@@ -1,6 +1,6 @@
 import PageHeader from "@/components/PageHeader";
+import { useCheckUserAcces } from "@/hooks/services/auth/useCheckUserAcces";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { useCheckUserAcces } from "@/hooks/useCheckUserAcces";
 import { Heart, Share2 } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";

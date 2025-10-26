@@ -24,10 +24,12 @@ export default function CategoryCard({
 }) {
   const { designSystem } = useAppTheme();
 
+  const encodedName = encodeURIComponent(name);
+
   return (
     <TouchableOpacity
       style={[styles.card, style]}
-      onPress={() => router.push(`/(root)/(category)/Category?category=${name}`)}
+      onPress={() => router.push(`/(root)/Filters?category=${encodedName}`)}
     >
       <Image source={icon} style={styles.icon} />
       <AppText

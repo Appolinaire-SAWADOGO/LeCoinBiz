@@ -1,6 +1,6 @@
 import AppText from "@/components/custom/AppText";
+import { useCheckUserAcces } from "@/hooks/services/auth/useCheckUserAcces";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { useCheckUserAcces } from "@/hooks/useCheckUserAcces";
 import { router } from "expo-router";
 import { Clock3, Eye, Heart, MapPin } from "lucide-react-native";
 import React, { useState } from "react";
@@ -12,19 +12,17 @@ export default function AnnouncementCard({
   image,
   price,
   city,
-  country,
   views,
   useCase = "OtherPage",
   children,
   status,
   type = "primary",
 }: {
-  id: number;
+  id: string;
   name: string;
   image: string;
   price: number;
   city: string;
-  country: string;
   views?: number;
   useCase?: "OtherPage" | "ProfilePage";
   children?: React.ReactNode;
@@ -86,7 +84,7 @@ export default function AnnouncementCard({
         <View style={styles.locationRow}>
           <MapPin size={14} color="#888" />
           <AppText fontSize={12} color={designSystem.colors.subText}>
-            {city}, {country}
+            {city}
           </AppText>
         </View>
 

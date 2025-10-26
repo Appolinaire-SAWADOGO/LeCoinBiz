@@ -1,12 +1,14 @@
 import AddYourUsernameModal from "@/components/auth/AddYourUsernameModal";
 import AuthModal from "@/components/auth/AuthModal";
+import AppToast from "@/components/custom/AppToast";
 import { SplashScreenController } from "@/components/splash-screen/SplashScreenController";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import { setupSync } from "@/functions/algolia/algoliaSync";
 import "@/global.css";
 import { useNetworkStore } from "@/store/useNetworkStore";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
-// import * as NavigationBar from "expo-navigation-bar";
-import { Slot } from "expo-router";
+import { Stack } from "expo-router";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { View } from "react-native";
@@ -14,23 +16,18 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import { enableFreeze } from "react-native-screens";
+
+enableFreeze(true);
 
 export default function RootLayout() {
+  const queryClient = new QueryClient();
   const insets = useSafeAreaInsets();
-
   const initNetworkListener = useNetworkStore();
 
   useEffect(() => {
     initNetworkListener.initNetwokListener();
   }, [initNetworkListener]);
-
-  // useEffect(() => {
-  //   async function changeNavigationBarColor() {
-  //     await NavigationBar.setBackgroundColorAsync("#ffffff");
-  //   }
-
-  //   changeNavigationBarColor();
-  // }, []);
 
   const [fontsLoaded] = useFonts({
     "BasisGrotesqueArabicPro-Black": require("../assets/fonts/BasisGrotesqueArabicPro-Black.ttf"),
@@ -40,25 +37,50 @@ export default function RootLayout() {
     "BasisGrotesqueArabicPro-Regular": require("../assets/fonts/BasisGrotesqueArabicPro-Regular.ttf"),
   });
 
+  useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+
+    const initSync = async () => {
+      try {
+        // Lance la synchronisation
+        unsubscribe = await setupSync();
+        console.log("🚀 Synchronisation Algolia activée");
+      } catch (error) {
+        console.error("Erreur lors de l'initialisation:", error);
+      }
+    };
+
+    initSync();
+
+    // Nettoyage lors du démontage
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+        console.log("🛑 Synchronisation Algolia arrêtée");
+      }
+    };
+  }, []);
+
   if (!fontsLoaded) return null;
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <SplashScreenController />
 
       <GluestackUIProvider mode="light">
         <SafeAreaProvider>
           <View style={{ flex: 1, backgroundColor: "#fff" }}>
-            {/* <TopBottomBackground withBottom={false} bgColor="rgba(0,0,0,.5)" /> */}
-
             <ExpoStatusBar style="dark" />
 
-            {/* <Stack screenOptions={{ headerShown: false }} /> */}
-            <Slot />
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="(root)" />
+            </Stack>
+
             <AuthModal />
             <AddYourUsernameModal />
+            <AppToast />
 
-            {/* menu bar bg */}
             <View
               style={{
                 position: "absolute",
@@ -72,7 +94,7 @@ export default function RootLayout() {
           </View>
         </SafeAreaProvider>
       </GluestackUIProvider>
-    </>
+    </QueryClientProvider>
   );
 }
 

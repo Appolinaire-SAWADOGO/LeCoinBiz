@@ -21,11 +21,7 @@ export default function AppAdOptionsPicker({
             const finded = options.find((item) => item.label === label);
             return finded!.active;
           }}
-          setOptions={
-            setOptions as React.Dispatch<
-              React.SetStateAction<AdOptionsPickerType>
-            >
-          }
+          setOptions={setOptions}
           image={image}
           label={label}
         />
@@ -36,7 +32,6 @@ export default function AppAdOptionsPicker({
 
 const styles = StyleSheet.create({
   optionscontainer: {
-    flex: 1,
     gap: 10,
   },
 });

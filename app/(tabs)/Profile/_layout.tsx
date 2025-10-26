@@ -18,7 +18,7 @@ export default function Layout() {
         onOpenAuthModal();
         setTimeout(() => {
           router.push("/(tabs)/Home");
-        }, 100); // petit délai pour laisser le modal s’afficher
+        }, 100);
         return;
       }
 

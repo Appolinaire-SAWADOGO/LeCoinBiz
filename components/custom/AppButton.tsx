@@ -62,9 +62,9 @@ export default function AppButton({
   return (
     <TouchableOpacity
       activeOpacity={0.8}
-      onPress={() => {
+      onPress={async () => {
         if (disabled) return;
-        onPress?.();
+        await onPress?.();
       }}
       disabled={disabled}
       style={[

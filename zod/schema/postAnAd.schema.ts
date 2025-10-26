@@ -2,7 +2,7 @@ import { BURKINA_CITIES } from "@/constants/burkinaCities";
 import { CATEGORIES_NAMES } from "@/constants/categories";
 import { z } from "zod";
 
-export const postAnAddSchema = z.object({
+export const PostAnAddSchema = z.object({
   title: z
     .string({ message: "Le titre de l’annonce est requis." })
     .min(10, "Le titre doit comporter au moins 10 caractères.")

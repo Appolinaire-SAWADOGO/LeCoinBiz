@@ -1,6 +1,5 @@
 import AppText from "@/components/custom/AppText";
 import { useSignOut } from "@/hooks/services/auth/signIn/useSignOut";
-// import { useSignOut } from "@/hooks/services/auth/signIn/useSignOut";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import React from "react";
 import { TouchableOpacity, View } from "react-native";

@@ -8,7 +8,7 @@ export default function FilterModalFormTemPubSection({
   setTemPub,
 }: {
   temPub: string;
-  setTemPub: React.Dispatch<React.SetStateAction<string>>;
+  setTemPub: (value: string) => void;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -18,7 +18,7 @@ export default function FilterModalFormTemPubSection({
       <View style={styles.timeFilterContainer}>
         {[
           "Toutes les annonces",
-          "Aujourd’hui",
+          "Aujourd'hui",
           "Moins de 3 jours",
           "Moins de 7 jours",
         ].map((label, id) => {

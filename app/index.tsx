@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Index() {
   const { designSystem } = useAppTheme();
-  const [isLoading, setIsLoading] = useState(true); // on attend toujours au début
+  const [isLoading, setIsLoading] = useState(true);
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function Index() {
       } finally {
         setIsLoading(false);
       }
-    }, 100); // délai court pour laisser le layout se monter
+    }, 100);
 
     return () => clearTimeout(timer);
   }, []);

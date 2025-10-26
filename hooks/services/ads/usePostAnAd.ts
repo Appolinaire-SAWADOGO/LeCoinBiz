@@ -1,5 +1,6 @@
+import { showToast } from "@/functions";
 import { ResetFormType } from "@/types";
-import { postAnAddSchema } from "@/zod/schema/postAnAd.schema";
+import { PostAnAddSchema } from "@/zod/schema/postAnAd.schema";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import axios from "axios";
@@ -7,9 +8,9 @@ import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
-type FormData = z.infer<typeof postAnAddSchema>;
+type FormData = z.infer<typeof PostAnAddSchema>;
 
-export const usePostAnAdd = () => {
+export const usePostAnAd = () => {
   const postAnAdd = async (data: FormData, resetForm: ResetFormType) => {
     if (!data) return;
 
@@ -74,15 +75,23 @@ export const usePostAnAdd = () => {
           ...data,
           userId: currentUser.uid, // ajoute le userId
           images: uploadUrl, // remplace les chemins locaux par les URLs
+          status: "PENDING",
+          stats: {
+            views: 0,
+            clicks: 0,
+            favorites: 0,
+          },
           createdAt: firestore.FieldValue.serverTimestamp(),
           updatedAt: firestore.FieldValue.serverTimestamp(),
         });
-
-      resetForm();
-
+      showToast("success", "Votre annonce a été ajoutée avec succès !");
       console.log("Annonce ajoutée avec succès !");
       return docId;
     } catch (error) {
+      showToast(
+        "error",
+        "Échec de l’ajout de l’annonce. Vérifiez votre connexion ou réessayez."
+      );
       console.error("Erreur lors de l'ajout de l'annonce :", error);
       throw error;
     }
