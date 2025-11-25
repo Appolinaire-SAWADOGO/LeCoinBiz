@@ -1,3 +1,4 @@
+import { showToast } from "@/functions";
 import { useAuthStore } from "@/store/useAuthStore";
 import { getAuth, signOut } from "@react-native-firebase/auth";
 
@@ -13,11 +14,11 @@ export const useSignOut = () => {
       .then(() => {
         setUserIsLogged(false);
         setUserNameIsAdded(false);
-        console.log("Déconnexion réussie");
-        // Tu peux rediriger vers la page de login par exemple :
+        showToast("success", "Déconnexion réussie.");
       })
       .catch((error) => {
         console.error("Erreur lors de la déconnexion :", error);
+        showToast("error", "Une erreur est survenue.");
       });
   };
 

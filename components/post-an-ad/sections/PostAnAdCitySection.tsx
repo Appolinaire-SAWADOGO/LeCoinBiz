@@ -5,14 +5,16 @@ import AppCityPicker from "../../custom/picker/AppCityPicker";
 import PostAnAdSection from "../PostAnAdSection";
 
 export default function PostAnAdCitySection({
+  value,
   onChange,
   style,
 }: {
+  value: string;
   onChange: (text: string) => void;
   style?: StyleProp<ViewStyle>;
 }) {
   const [cityPickerOpen, setCityPickerOpen] = React.useState(false);
-  const [cityValue, setCityValue] = React.useState<string>("");
+  const [cityValue, setCityValue] = React.useState<string>(value || "");
 
   React.useEffect(() => {
     if (cityValue) onChange(cityValue);

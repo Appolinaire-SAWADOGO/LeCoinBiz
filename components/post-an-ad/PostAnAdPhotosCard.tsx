@@ -38,14 +38,14 @@ export default function PostAnAdPhotosCard({
           activeOpacity={0.5}
           style={[styles.icon, { backgroundColor: "#fff" }]}
         >
-          <Edit size={20} color="#000" />
+          <Edit strokeWidth={1.5} size={20} color="#000" />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => removeImg()}
           activeOpacity={0.5}
           style={[styles.icon, { backgroundColor: "red" }]}
         >
-          <Trash size={20} color="white" />
+          <Trash strokeWidth={1.5} size={20} color="white" />
         </TouchableOpacity>
       </View>
     </View>
@@ -54,8 +54,8 @@ export default function PostAnAdPhotosCard({
 
 const styles = StyleSheet.create({
   container: {
-    width: 120,
-    height: 120,
+    width: 100,
+    height: 100,
     borderRadius: 4,
     overflow: "hidden",
   },
@@ -76,8 +76,8 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   icon: {
-    width: 36,
-    height: 36,
+    width: 30,
+    height: 30,
     borderRadius: 50,
     alignItems: "center",
     justifyContent: "center",

@@ -1,6 +1,7 @@
 import AddYourUsernameModal from "@/components/auth/AddYourUsernameModal";
 import AuthModal from "@/components/auth/AuthModal";
 import AppToast from "@/components/custom/AppToast";
+import ImagePickerAlertModal from "@/components/modals/ImagePickerAlertModal";
 import { SplashScreenController } from "@/components/splash-screen/SplashScreenController";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { setupSync } from "@/functions/algolia/algoliaSync";
@@ -9,6 +10,7 @@ import { useNetworkStore } from "@/store/useNetworkStore";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
+
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { View } from "react-native";
@@ -42,7 +44,6 @@ export default function RootLayout() {
 
     const initSync = async () => {
       try {
-        // Lance la synchronisation
         unsubscribe = await setupSync();
         console.log("🚀 Synchronisation Algolia activée");
       } catch (error) {
@@ -52,7 +53,6 @@ export default function RootLayout() {
 
     initSync();
 
-    // Nettoyage lors du démontage
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -79,6 +79,8 @@ export default function RootLayout() {
 
             <AuthModal />
             <AddYourUsernameModal />
+            <ImagePickerAlertModal />
+
             <AppToast />
 
             <View

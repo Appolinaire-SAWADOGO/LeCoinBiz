@@ -18,12 +18,14 @@ export default function PageHeader({
   children,
   iconColor,
   onBack,
+  withBackButton = true,
 }: {
   name?: string;
   style?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
   iconColor?: string;
   onBack?: () => void;
+  withBackButton?: boolean;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -35,18 +37,23 @@ export default function PageHeader({
         style,
       ]}
     >
-      <TouchableOpacity
-        onPress={() => {
-          if (onBack) onBack();
-          else router.back();
-        }}
-        hitSlop={10}
-      >
-        <ArrowLeft size={22} color={iconColor || designSystem.colors.bigText} />
-      </TouchableOpacity>
+      {withBackButton && (
+        <TouchableOpacity
+          onPress={() => {
+            if (onBack) onBack();
+            else router.back();
+          }}
+          hitSlop={10}
+        >
+          <ArrowLeft
+            size={22}
+            color={iconColor || designSystem.colors.bigText}
+          />
+        </TouchableOpacity>
+      )}
 
       {name && (
-        <AppText fontSize={18} font="Bold">
+        <AppText fontSize={18} font="Medium">
           {name}
         </AppText>
       )}

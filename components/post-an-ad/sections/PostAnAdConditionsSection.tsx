@@ -4,26 +4,22 @@ import AppInput from "@/components/custom/input/AppInput";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { Trash } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
-import {
-  StyleProp,
-  TextStyle,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from "react-native";
+import { StyleProp, TextStyle, TouchableOpacity, View } from "react-native";
 import PostAnAdSection from "../PostAnAdSection";
 
 export default function PostAnAdConditionsSection({
+  value,
   onChange,
   style,
 }: {
+  value: string[];
   onChange: (value: string[]) => void;
   style?: StyleProp<TextStyle>;
 }) {
   const { designSystem } = useAppTheme();
 
   const [condition, setCondition] = useState("");
-  const [conditionsList, setConditionsList] = useState<string[]>([]);
+  const [conditionsList, setConditionsList] = useState<string[]>(value || []);
 
   const handleAddCondition = () => {
     if (condition.trim() !== "") {
@@ -90,7 +86,7 @@ export default function PostAnAdConditionsSection({
                     activeOpacity={0.1}
                     onPress={() =>
                       setConditionsList((prev) =>
-                        prev.filter((_, i) => i !== index),
+                        prev.filter((_, i) => i !== index)
                       )
                     }
                   >

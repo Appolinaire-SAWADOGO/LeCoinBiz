@@ -1,7 +1,9 @@
 import FreeDeliveryImage from "@/assets/images/filter-options/FreeDelevery.png";
 import NeufImage from "@/assets/images/filter-options/Neuf.png";
+import { categoryIcon, subCategoryIcon } from "@/constants/categories";
+import { getTimeSinceCreated } from "@/functions";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { AnnouncementsType } from "@/types";
+import { AnnouncementType } from "@/types";
 import { Clock4, MapPin } from "lucide-react-native";
 import React from "react";
 import { Image, StyleSheet, View } from "react-native";
@@ -11,10 +13,19 @@ export default function AnnouncementDetailsInfoSection({
   currentAnnouncement,
   from,
 }: {
-  currentAnnouncement: AnnouncementsType;
+  currentAnnouncement: AnnouncementType;
   from: "OtherPage" | "ProfilePage";
 }) {
   const { designSystem } = useAppTheme();
+
+  const isNew = currentAnnouncement.options.some(
+    (option) => option.label === "Neuf" && option.active,
+  );
+
+  const isFreeDelivery = currentAnnouncement.options.some(
+    (option) => option.label === "Livraison Gratuite" && option.active,
+  );
+
   return (
     <>
       {/* Titre et prix */}
@@ -26,75 +37,73 @@ export default function AnnouncementDetailsInfoSection({
         >
           {Number(currentAnnouncement.price).toLocaleString("fr-FR")} FCFA
         </AppText>
-        <AppText font="Bold" style={styles.title}>
-          {currentAnnouncement.name}
+        <AppText font="Medium" style={styles.title}>
+          {currentAnnouncement.title}
         </AppText>
       </View>
-
-      {/* rating */}
-      {/* <View
-        style={{
-          flexDirection: "row",
-          gap: 5,
-          justifyContent: "space-between",
-        }}
-      >
-        <View style={styles.ratingContainer}>
-          <View style={styles.stars}>
-            {[1, 2, 3, 4, 5].map((i) => (
-              <Star
-                key={i}
-                size={16}
-                color={i <= 4 ? "#000" : "#ddd"}
-                fill={i <= 4 ? "#000" : "transparent"}
-              />
-            ))}
-          </View>
-          <AppText style={styles.ratingText}>4.8 (étoiles)</AppText>
-        </View>
-      </View> */}
 
       {/* produit options */}
       <View style={styles.productOptions}>
-        <View style={styles.tagWrapper}>
-          <View style={styles.tag}>
-            <Image style={styles.tagImage} source={FreeDeliveryImage} />
-            <AppText fontSize={14} color="#333" font="Medium">
-              Livraison gratuite
-            </AppText>
+        {isFreeDelivery && (
+          <View style={styles.tagWrapper}>
+            <View style={styles.tag}>
+              <Image style={styles.tagImage} source={FreeDeliveryImage} />
+              <AppText color={designSystem.colors.subText}>
+                Livraison gratuite
+              </AppText>
+            </View>
           </View>
-        </View>
+        )}
 
-        <View style={styles.tagWrapper}>
-          <View style={styles.tag}>
-            <Image style={styles.tagImage} source={NeufImage} />
-            <AppText fontSize={14} color="#333" font="Medium">
-              Neuf
-            </AppText>
+        {isNew && (
+          <View style={styles.tagWrapper}>
+            <View style={styles.tag}>
+              <Image style={styles.tagImage} source={NeufImage} />
+              <AppText color={designSystem.colors.subText}>Neuf</AppText>
+            </View>
           </View>
-        </View>
+        )}
       </View>
 
-      {/* catégorie */}
-      <View style={styles.categoryRow}>
-        <AppText fontSize={14} font="Bold" style={styles.categoryLabel}>
-          Catégorie :
-        </AppText>
-        <AppText fontSize={14} style={styles.categoryValue}>
-          Téléphone
-        </AppText>
+      {/* catégorie et sous-catégorie */}
+      <View style={styles.categoryAndSubCategoryRow}>
+        <View style={styles.categoryAndSubCategoryStyle}>
+          <Image
+            source={categoryIcon(currentAnnouncement.category)}
+            style={{ width: 17, height: 17 }}
+            resizeMode="contain"
+          />
+          <AppText color={designSystem.colors.subText}>
+            {currentAnnouncement.category},
+          </AppText>
+        </View>
+
+        <View style={styles.categoryAndSubCategoryStyle}>
+          <View style={styles.categoryAndSubCategoryStyle}>
+            <Image
+              source={subCategoryIcon(currentAnnouncement.subCategory)}
+              style={{ width: 17, height: 17 }}
+              resizeMode="contain"
+            />
+            <AppText color={designSystem.colors.subText}>
+              {currentAnnouncement.subCategory}
+            </AppText>
+          </View>
+        </View>
       </View>
 
       {/* location */}
       <View style={styles.location}>
-        <MapPin size={16} />
-        <AppText style={styles.locationText}>
-          {currentAnnouncement.location.city},{" "}
-          {currentAnnouncement.location.pays}
+        <MapPin size={16} color={designSystem.colors.subText} />
+        <AppText
+          style={styles.locationText}
+          color={designSystem.colors.subText}
+        >
+          {currentAnnouncement.city}
         </AppText>
       </View>
 
-      {/* Vues */}
+      {/* Clicks */}
       {from === "ProfilePage" && (
         <View
           style={{
@@ -104,8 +113,10 @@ export default function AnnouncementDetailsInfoSection({
             marginTop: 12,
           }}
         >
-          <Clock4 width={16} height={16} />
-          <AppText style={{ fontSize: 14 }}>120 vues</AppText>
+          <Clock4 width={16} height={16} color={designSystem.colors.subText} />
+          <AppText style={{ fontSize: 14 }} color={designSystem.colors.subText}>
+            {currentAnnouncement.stats.clicks} Clicks
+          </AppText>
         </View>
       )}
 
@@ -118,14 +129,38 @@ export default function AnnouncementDetailsInfoSection({
           marginTop: 12,
         }}
       >
-        <Clock4 width={16} height={16} />
-        <AppText style={{ fontSize: 14 }}>Il y a 2 jours</AppText>
+        <Clock4 width={16} height={16} color={designSystem.colors.subText} />
+        <AppText style={{ fontSize: 14 }} color={designSystem.colors.subText}>
+          {getTimeSinceCreated(currentAnnouncement.createdAt)}
+        </AppText>
       </View>
 
-      {/* Spécifications */}
-      <View style={styles.conditionContainer}>
+      {/* Description */}
+      <View style={styles.descriptionSection}>
         <AppText
-          font="Bold"
+          font="Medium"
+          color={designSystem.colors.bigText}
+          style={styles.sectionTitle}
+        >
+          Description
+        </AppText>
+        <AppText
+          style={styles.descriptionText}
+          color={designSystem.colors.subText}
+        >
+          {currentAnnouncement.description || "Aucune description fournie."}
+        </AppText>
+      </View>
+
+      {/* condition */}
+      <View
+        style={[
+          styles.conditionContainer,
+          { paddingBottom: from === "ProfilePage" ? 20 : 0 },
+        ]}
+      >
+        <AppText
+          font="Medium"
           color={designSystem.colors.bigText}
           style={styles.conditionTitle}
         >
@@ -133,74 +168,23 @@ export default function AnnouncementDetailsInfoSection({
         </AppText>
 
         <View style={styles.conditionList}>
-          <View style={styles.conditionItem}>
-            <View
-              style={[styles.conditionBullet, { backgroundColor: "#000" }]}
-            />
-            <AppText style={styles.conditionText}>
-              Neuf - Jamais utilisé
-            </AppText>
-          </View>
-
-          <View style={styles.conditionItem}>
-            <View
-              style={[styles.conditionBullet, { backgroundColor: "#000" }]}
-            />
-            <AppText style={styles.conditionText}>
-              Comme neuf - Très peu utilisé
-            </AppText>
-          </View>
-
-          <View style={styles.conditionItem}>
-            <View
-              style={[styles.conditionBullet, { backgroundColor: "#000" }]}
-            />
-            <AppText style={styles.conditionText}>
-              Très bon état - Légères traces
-            </AppText>
-          </View>
-
-          <View style={styles.conditionItem}>
-            <View
-              style={[styles.conditionBullet, { backgroundColor: "#000" }]}
-            />
-            <AppText style={styles.conditionText}>
-              Bon état - Usure visible
-            </AppText>
-          </View>
-
-          <View style={styles.conditionItem}>
-            <View
-              style={[styles.conditionBullet, { backgroundColor: "#000" }]}
-            />
-            <AppText style={styles.conditionText}>
-              État correct - Fonctionnel mais usé
-            </AppText>
-          </View>
-
-          <View style={styles.conditionItem}>
-            <View
-              style={[styles.conditionBullet, { backgroundColor: "#000" }]}
-            />
-            <AppText style={styles.conditionText}>
-              Pour pièces - Défectueux/incomplet
-            </AppText>
-          </View>
+          {currentAnnouncement.conditions.map((condition, index) => (
+            <View key={index} style={styles.conditionItem}>
+              <View
+                style={[
+                  styles.conditionBullet,
+                  { backgroundColor: designSystem.colors.subText },
+                ]}
+              />
+              <AppText
+                style={styles.conditionText}
+                color={designSystem.colors.subText}
+              >
+                {condition}
+              </AppText>
+            </View>
+          ))}
         </View>
-      </View>
-
-      {/* Description */}
-      <View style={styles.descriptionSection}>
-        <AppText
-          font="Bold"
-          color={designSystem.colors.bigText}
-          style={styles.sectionTitle}
-        >
-          Description
-        </AppText>
-        <AppText style={styles.descriptionText}>
-          {currentAnnouncement.description || "Aucune description fournie."}
-        </AppText>
       </View>
     </>
   );
@@ -208,7 +192,7 @@ export default function AnnouncementDetailsInfoSection({
 
 const styles = StyleSheet.create({
   price: {
-    fontSize: 26, // grand et visible
+    fontSize: 26,
     marginBottom: 4,
   },
   title: {
@@ -257,9 +241,11 @@ const styles = StyleSheet.create({
     height: 18,
   },
 
-  categoryRow: {
+  categoryAndSubCategoryRow: {
     flexDirection: "row",
+    flexWrap: "wrap",
     alignItems: "center",
+    gap: 10,
     marginTop: 12,
   },
   categoryLabel: {
@@ -267,9 +253,11 @@ const styles = StyleSheet.create({
     marginRight: 6,
     color: "#333",
   },
-  categoryValue: {
+  categoryAndSubCategoryStyle: {
     fontSize: 14,
-    color: "#000",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
   location: {
     flexDirection: "row",
@@ -299,9 +287,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   conditionBullet: {
-    width: 6,
-    height: 6,
-    borderRadius: 6,
+    width: 5,
+    height: 5,
+    borderRadius: 5,
   },
   conditionText: {
     fontSize: 14,

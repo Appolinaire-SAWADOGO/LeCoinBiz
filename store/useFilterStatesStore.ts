@@ -1,6 +1,17 @@
 import { AdOptionsPickerType } from "@/types";
 import { create } from "zustand";
 
+export type SetFilterType = {
+  search: string;
+  category: string;
+  subCategory: string;
+  city: string;
+  min: string;
+  max: string;
+  tempPub: string;
+  options: AdOptionsPickerType;
+};
+
 type FilterStates = {
   isOpen: boolean;
   search: string;
@@ -24,6 +35,8 @@ type FilterStates = {
   setOptions: (value: AdOptionsPickerType) => void;
   updateIsFiltered: () => void;
   resetFilters: () => void;
+  setFilters: (data: SetFilterType) => void;
+  getFilters: () => SetFilterType;
 };
 
 export const useFilterStatesStore = create<FilterStates>((set, get) => ({
@@ -104,4 +117,20 @@ export const useFilterStatesStore = create<FilterStates>((set, get) => ({
       ],
       isFiltered: false,
     }),
+  setFilters: (data) =>
+    set((state) => {
+      const newState = { ...state, ...data };
+      const isFiltered =
+        newState.search !== "" ||
+        newState.category !== "Toutes les catégories" ||
+        newState.subCategory !== "" ||
+        newState.city !== "Toutes les villes" ||
+        newState.min !== "" ||
+        newState.max !== "" ||
+        newState.tempPub !== "Toutes les annonces" ||
+        newState.options.some((option) => option.active);
+
+      return { ...newState, isFiltered };
+    }),
+  getFilters: () => get(),
 }));

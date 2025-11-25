@@ -1,21 +1,29 @@
+import { DEFAULT_PROFILE_IMG } from "@/constants";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { UserType } from "@/types";
 import { router } from "expo-router";
 import { CornerDownRight, MapPin } from "lucide-react-native";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import AppText from "../../custom/AppText";
 
-export default function AnnouncementDetailsProfileSection() {
+export default function AnnouncementDetailsProfileSection({
+  userData,
+}: {
+  userData: UserType & { adsCount: number };
+}) {
   const { designSystem } = useAppTheme();
 
   return (
     <TouchableOpacity
-      onPress={() => router.push("/(root)/MerchantProfile")}
+      onPress={() =>
+        router.push(`/(root)/MerchantProfile?userId=${userData.id}`)
+      }
       style={styles.container}
     >
       <Image
         source={{
-          uri: "https://th.bing.com/th?id=ORMS.c1a749eb05c5e925f3a386c2188c5295&pid=Wdp&w=612&h=304&qlt=90&c=1&rs=1&dpr=1.25&p=0",
+          uri: userData.image || DEFAULT_PROFILE_IMG,
         }}
         style={styles.image}
       />
@@ -23,12 +31,12 @@ export default function AnnouncementDetailsProfileSection() {
       <View style={{ flex: 1 }}>
         {/* Nom */}
         <AppText
-          font="Bold"
+          font="Medium"
           fontSize={17}
           color={designSystem.colors.bigText}
           style={{ marginBottom: 2 }}
         >
-          Sawadogo Appolinaire
+          {userData.userName}
         </AppText>
 
         {/* Lieu et annonces */}
@@ -36,9 +44,13 @@ export default function AnnouncementDetailsProfileSection() {
           <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
             <MapPin size={14} color={designSystem.colors.subText} />
             <AppText
-              style={{ fontSize: 13, color: designSystem.colors.subText }}
+              style={{
+                fontSize: 12.9,
+                color: designSystem.colors.subText,
+                textTransform: "capitalize",
+              }}
             >
-              Ouagadougou
+              {userData.location.city}
             </AppText>
           </View>
 
@@ -47,7 +59,7 @@ export default function AnnouncementDetailsProfileSection() {
             <AppText
               style={{ fontSize: 13, color: designSystem.colors.subText }}
             >
-              140 annonces
+              {userData.adsCount} Annonces
             </AppText>
           </View>
         </View>
@@ -68,6 +80,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     // borderWidth: 1,
     // borderRadius: 8,
+    width: "100%",
   },
   image: {
     width: 50,

@@ -1,15 +1,23 @@
+import { DEFAULT_PROFILE_IMG } from "@/constants";
+import { getUserAccountTimeSinceCreated } from "@/functions";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { CornerDownRight, MapPin } from "lucide-react-native";
+import { UserType } from "@/types";
+import { CalendarClock, CornerDownRight, MapPin } from "lucide-react-native";
 import React from "react";
 import { Image, StyleSheet, View } from "react-native";
 import AppText from "../custom/AppText";
 
-export default function MerchantInfoSection() {
+export default function MerchantInfoSection({
+  data,
+  adsCount,
+}: {
+  data: UserType;
+  adsCount: number;
+}) {
   const { designSystem } = useAppTheme();
 
   return (
     <View style={styles.container}>
-      {/* left */}
       <View>
         <AppText
           color={designSystem.colors.bigText}
@@ -17,15 +25,9 @@ export default function MerchantInfoSection() {
           fontSize={24}
           font={"Bold"}
         >
-          sawadogo appolinaire
+          {data.userName}
         </AppText>
-        {/* <View style={styles.flex}>
-          <Star fill={"#000"} width={13} height={13} />
-          <AppText fontSize={14}>4.8</AppText>
-          <AppText fontSize={14} color={designSystem.colors.subText}>
-            (115 Reviews)
-          </AppText>
-        </View> */}
+
         <View style={styles.flex}>
           <MapPin color={designSystem.colors.bigText} width={15} height={15} />
           <AppText fontSize={14}>Ouagadougou, Burkina</AppText>
@@ -33,13 +35,22 @@ export default function MerchantInfoSection() {
 
         <View style={styles.flex}>
           <CornerDownRight width={15} height={15} />
-          <AppText>146 Annonces</AppText>
+          <AppText>{adsCount} Annonces</AppText>
+        </View>
+
+        <View style={styles.flex}>
+          <CalendarClock
+            color={designSystem.colors.bigText}
+            width={15}
+            height={15}
+          />
+          <AppText>{getUserAccountTimeSinceCreated(data.createdAt)}</AppText>
         </View>
       </View>
 
       <Image
         source={{
-          uri: "https://th.bing.com/th/id/OIP.xgNLD1HTbMi9ws5ge3mAVwHaEb?w=271&h=180&c=7&r=0&o=7&dpr=1.1&pid=1.7&rm=3",
+          uri: data.image || DEFAULT_PROFILE_IMG,
         }}
         style={styles.img}
       />
@@ -52,6 +63,8 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "flex-start",
+    paddingBottom: 2,
   },
   flex: {
     flexDirection: "row",

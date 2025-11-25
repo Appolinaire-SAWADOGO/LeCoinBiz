@@ -58,7 +58,6 @@ import Volaille from "@/assets/images/sub-categories/Volaille.png";
 
 import { CategoriesType } from "@/types";
 
-/* --- CATEGORIES PRINCIPALES (adaptées au Burkina Faso) --- */
 export const CATEGORIES: CategoriesType = [
   {
     id: 1,
@@ -117,10 +116,11 @@ export const CATEGORIES: CategoriesType = [
   },
 ];
 
-/* --- Noms des catégories --- */
 export const CATEGORIES_NAMES = CATEGORIES.map((category) => category.name);
 
-/* --- SOUS-CATEGORIES DÉTAILLÉES (tableau séparé) --- */
+export const categoryIcon = (categoryName: string) =>
+  CATEGORIES.find((category) => category.name === categoryName)?.icon;
+
 export const SUB_CATEGORIES = [
   { id: 1, categoryId: 2, name: "Maisons à vendre", icon: MaisonAVendre },
   { id: 2, categoryId: 2, name: "Locations", icon: Location },
@@ -292,3 +292,7 @@ export const subCategories = (categoryName: string) => {
     (subCategory) => subCategory.categoryId === categoryId
   );
 };
+
+export const subCategoryIcon = (subCategoryName: string) =>
+  SUB_CATEGORIES.find((subCategory) => subCategory.name === subCategoryName)
+    ?.icon;

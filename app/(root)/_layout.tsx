@@ -24,7 +24,6 @@ export default function RootLayout() {
       <Stack.Screen name="Filters" />
       <Stack.Screen name="MerchantProfile" />
       <Stack.Screen name="Notifications" />
-      <Stack.Screen name="Search" />
     </Stack>
   );
 }

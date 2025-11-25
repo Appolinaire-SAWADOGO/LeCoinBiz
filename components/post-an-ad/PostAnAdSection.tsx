@@ -38,9 +38,9 @@ export default function PostAnAdSection({
   };
 
   return (
-    <View style={{ gap: 12 }}>
+    <View style={{ gap: 8 }}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-        <AppText font="Bold" fontSize={15}>
+        <AppText font="Medium" fontSize={15}>
           {label}
         </AppText>
         {optional && (

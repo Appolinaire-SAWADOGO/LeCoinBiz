@@ -1,21 +1,22 @@
 import Announcements from "@/components/annoucement/Announcements";
+import NoAds from "@/components/annoucement/NoAds";
 import Container from "@/components/Container";
-import AppText from "@/components/custom/AppText";
-import FiltersPageHeader from "@/components/fiters/FiltersPageHeader";
-import AnnouncementCardSkeleton from "@/components/skeleton/AnnouncementCardSkeleton";
-import { HStack } from "@/components/ui/hstack";
+import AppSearchInput from "@/components/custom/input/AppSearchInput";
+import HeaderHideAnimation from "@/components/HeaderHideAnimation";
+import FilterModalButton from "@/components/modals/filter-modal/FilterModalButton";
+import FilterModalForm from "@/components/modals/filter-modal/FilterModalForm";
+import FiltersSearchModal from "@/components/modals/filter-modal/FiltersSearchModal";
+import PageHeader from "@/components/PageHeader";
 import { useGetFilterAds } from "@/hooks/services/ads/useGetFilterAds";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { useBackPress } from "@/hooks/useBackPress";
+import { useFiltersSearchModalStore } from "@/store/useFiltersSearchModalStore";
+import { useFilterStatesStore } from "@/store/useFilterStatesStore";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
-import { Animated, RefreshControl, StyleSheet, View } from "react-native";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Animated, RefreshControl, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Filters() {
-  const { category } = useLocalSearchParams();
-  const decodedCategory = decodeURIComponent(category as string);
-
   const scrollY = new Animated.Value(0);
 
   const { designSystem } = useAppTheme();
@@ -25,12 +26,52 @@ export default function Filters() {
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
 
+  const search = useFilterStatesStore((state) => state.search);
+  const categoryFilter = useFilterStatesStore((state) => state.category);
+  const subCategory = useFilterStatesStore((state) => state.subCategory);
+  const city = useFilterStatesStore((state) => state.city);
+  const min = useFilterStatesStore((state) => state.min);
+  const max = useFilterStatesStore((state) => state.max);
+  const tempPub = useFilterStatesStore((state) => state.tempPub);
+  const options = useFilterStatesStore((state) => state.options);
+
+  const open = useFilterStatesStore((state) => state.open);
+  const isOpen = useFilterStatesStore((state) => state.isOpen);
+  const close = useFilterStatesStore((state) => state.close);
+  const reseFilters = useFilterStatesStore((state) => state.resetFilters);
+  const setSearch = useFilterStatesStore((state) => state.setSeach);
+
+  const filtersSearchModalIsOpen = useFiltersSearchModalStore(
+    (state) => state.isOpen
+  );
+  const filtersSearchModalClose = useFiltersSearchModalStore(
+    (state) => state.close
+  );
+  const filtersSearchModalOpen = useFiltersSearchModalStore(
+    (state) => state.open
+  );
+
+  const filters = useMemo(
+    () => ({
+      search,
+      category: categoryFilter,
+      subCategory,
+      city,
+      min,
+      max,
+      tempPub,
+      options,
+    }),
+    [search, categoryFilter, subCategory, city, min, max, tempPub, options]
+  );
+
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ["filter-ads"],
+      queryKey: ["filter-ads", filters],
       queryFn: (context) =>
         getFilterAds({
           pageParam: context.pageParam,
+          filtersStatesStore: filters,
         }),
       initialPageParam: 0,
 
@@ -49,10 +90,10 @@ export default function Filters() {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await queryClient.invalidateQueries({
-      queryKey: ["filter-ads"],
+      queryKey: ["filter-ads", filters],
     });
     setRefreshing(false);
-  }, [queryClient]);
+  }, [filters, queryClient]);
 
   const handleLoadMore = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
@@ -60,81 +101,80 @@ export default function Filters() {
     }
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  useEffect(() => {
+    return () => reseFilters();
+  }, [reseFilters]);
+
   const hasAds = allAds && allAds.length > 0;
   const initialLoading = isLoading && !hasAds;
 
-  useBackPress(() => router.back());
+  const insets = useSafeAreaInsets();
 
   return (
-    <Container style={styles.container} withBottom>
+    <Container style={styles.container} withBottom withGoBack>
       {/* header */}
-      <FiltersPageHeader
-        category={decodedCategory as string}
+      <HeaderHideAnimation
         scrollY={scrollY}
-      />
+        headerHeight={190}
+        style={{
+          top: insets.top,
+          left: 0,
+          right: 0,
+          backgroundColor: "#fff",
+          paddingHorizontal: 20,
+          paddingBottom: 5,
+        }}
+      >
+        <PageHeader>
+          <AppSearchInput
+            filtersSearchModalOpen={filtersSearchModalOpen}
+            search={search}
+            editable={false}
+            activeOpacity={0.5}
+            setSearch={setSearch}
+            onRefresh={onRefresh}
+          />
+        </PageHeader>
 
-      {/* Loader initial */}
-      {initialLoading && (
-        <HStack
-          style={{
-            paddingTop: 150,
-            flexDirection: "row",
-            flexWrap: "wrap",
-            paddingHorizontal: 20,
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-            rowGap: 16,
-          }}
-        >
-          {[...Array(4)].map((_, i) => (
-            <AnnouncementCardSkeleton key={i} />
-          ))}
-        </HStack>
-      )}
+        <FilterModalButton open={open} />
+      </HeaderHideAnimation>
 
       {/* Liste d'annonces */}
-      {hasAds && (
-        <Announcements
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={[designSystem.colors.primary]}
-              tintColor={designSystem.colors.primary}
-              progressViewOffset={130}
-            />
-          }
-          values={allAds}
-          scrollY={scrollY}
-          style={{ paddingBottom: 60, paddingTop: 150 }}
-          onEndReached={handleLoadMore}
-          isLoadingMore={isFetchingNextPage}
-        />
-      )}
+      <Announcements
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing || initialLoading}
+            onRefresh={onRefresh}
+            colors={[designSystem.colors.primary]}
+            tintColor={designSystem.colors.primary}
+            progressViewOffset={145}
+          />
+        }
+        values={allAds}
+        scrollY={scrollY}
+        style={{ paddingBottom: 60, paddingTop: 145 }}
+        onEndReached={handleLoadMore}
+        isLoadingMore={isFetchingNextPage}
+      />
 
       {/* Message "aucune annonce" */}
       {!initialLoading && !hasAds && (
-        <View
-          style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
-            paddingTop: "50%",
-            paddingHorizontal: 20,
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <AppText style={{ textAlign: "center", color: "#555", fontSize: 16 }}>
-            Aucune annonce disponible pour le moment. Veuillez réessayer plus
-            tard ou ajuster vos filtres.
-          </AppText>
-        </View>
+        <NoAds
+          text="Aucune annonce disponible pour le moment. Veuillez réessayer plus tard
+              ou ajuster vos filtres."
+        />
       )}
+
+      {/* Modals */}
+      <FilterModalForm isOpen={isOpen} close={close} useCase="Filter" />
+      <FiltersSearchModal
+        search={search}
+        isOpen={filtersSearchModalIsOpen}
+        onClose={filtersSearchModalClose}
+        onRefresh={onRefresh}
+        setSearch={setSearch}
+        filters={filters}
+      />
     </Container>
   );
 }

@@ -1,4 +1,4 @@
-import { announcements } from "@/constants/announcements";
+import { AnnouncementType } from "@/types";
 import React from "react";
 import {
   Animated,
@@ -8,19 +8,21 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import SimilarAnnoucementCard from "./SimilarAnnoucementCard";
+import AnnouncementCard from "../annoucement/AnnouncementCard";
 
 export default function SimilarAnnoucements({
   scrollY,
   style,
+  data,
 }: {
   scrollY?: Animated.Value;
   style?: StyleProp<ViewStyle>;
+  data: AnnouncementType[];
 }) {
   return (
     <View style={styles.container}>
       <FlatList
-        data={announcements}
+        data={data}
         contentContainerStyle={[style]}
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -28,16 +30,9 @@ export default function SimilarAnnoucements({
         onScroll={(e) => {
           scrollY?.setValue(e.nativeEvent.contentOffset.y);
         }}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <View style={styles.itemWrapper}>
-            <SimilarAnnoucementCard
-              id={item.id}
-              name={item.name}
-              image={item.image}
-              price={item.price}
-              city={item.location.city}
-              country={item.location.pays}
-            />
+            <AnnouncementCard ad={item} type="similar" />
           </View>
         )}
       />
@@ -51,10 +46,11 @@ const styles = StyleSheet.create({
     width: "100%",
     overflow: "hidden",
     backgroundColor: "#fff",
+    marginBottom: 10,
   },
   itemWrapper: {
     flex: 1,
     maxWidth: "48%",
-    marginBottom: 20,
+    marginBottom: 6,
   },
 });

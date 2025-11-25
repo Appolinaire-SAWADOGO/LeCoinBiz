@@ -1,3 +1,4 @@
+import { AnnouncementType } from "@/types";
 import firestore from "@react-native-firebase/firestore";
 import { algoliasearch } from "algoliasearch";
 
@@ -162,23 +163,35 @@ export const setupSync = async () => {
       "category",
       "subCategory",
       "city",
-      "conditions",
-      "options",
+      "conditionsText",
+      "optionsText",
+      "imageNames",
+      "status",
     ],
-    transform: (data, id) => ({
+
+    transform: (data: AnnouncementType, id) => ({
       objectID: id,
       title: data.title,
       description: data.description,
       price: data.price,
       category: data.category,
+      subCategory: data.subCategory,
       city: data.city,
-      images: data.images || [],
       userId: data.userId,
+      images: data.images || [],
+      imageNames: (data.images || [])
+        .map((url: string) => url.split("/").pop()?.split(".")[0])
+        .join(" "),
       conditions: data.conditions || [],
-      subCategory: data.subCategory || [],
+      conditionsText: (data.conditions || []).map(String).join(" "),
       options: data.options,
-      createdAt: data.createdAt?.toMillis?.() || Date.now(),
-      updatedAt: data.updatedAt?.toMillis?.() || Date.now(),
+      optionsText: (data.options || [])
+        .filter((opt: any) => opt.active)
+        .map((opt: any) => opt.label)
+        .join(" "),
+      clicks: data.stats.clicks,
+      status: data.status,
+      createdAt: data.createdAt ? data.createdAt.seconds * 1000 : Date.now(),
     }),
   };
 

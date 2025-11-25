@@ -20,7 +20,7 @@ export default function AppPasswordInput({
   editable = true,
 }: {
   value?: string;
-  placeholder: string;
+  placeholder?: string;
   style?: StyleProp<TextStyle>;
   onChangeText?: (text: string) => void;
   editable?: boolean;

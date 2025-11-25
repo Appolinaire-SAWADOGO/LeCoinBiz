@@ -9,7 +9,7 @@ export default function AllCategories() {
   return (
     <Container style={styles.container}>
       {/* header */}
-      <PageHeader name="All categories" />
+      <PageHeader name="Toutes les catégories" />
       <View
         style={{
           flexDirection: "row",

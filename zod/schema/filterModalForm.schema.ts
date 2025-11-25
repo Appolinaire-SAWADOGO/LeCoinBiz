@@ -24,7 +24,6 @@ export const FilterModalFormSchema = z
         (val) => val === undefined || (val.length >= 2 && val.length <= 50),
         "Recherche trop courte ou trop longue"
       ),
-
     category: z.enum(CATEGORIES_NAMES_WITH_ALL as [string, ...string[]]),
     subCategory: z.string().optional(),
     city: z.enum(BURKINA_CITIES_WITH_ALL as [string, ...string[]]),

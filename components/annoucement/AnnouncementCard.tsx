@@ -1,111 +1,102 @@
 import AppText from "@/components/custom/AppText";
-import { useCheckUserAcces } from "@/hooks/services/auth/useCheckUserAcces";
+import { getTimeSinceCreated, getTimeSinceMs, Timestamp } from "@/functions";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { AdStatusType, AnnouncementType } from "@/types";
 import { router } from "expo-router";
-import { Clock3, Eye, Heart, MapPin } from "lucide-react-native";
+import { Clock3, EllipsisVertical, Eye, MapPin } from "lucide-react-native";
 import React, { useState } from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import AddAdFavoriteButton from "../favorites/AddAdFavoriteButton";
+import ProfileDelOrEdAnnouncement from "../profile/ProfileDelOrEdAnnouncement";
 
 export default function AnnouncementCard({
-  id,
-  name,
-  image,
-  price,
-  city,
-  views,
   useCase = "OtherPage",
-  children,
-  status,
   type = "primary",
+  createdAt,
+  ad,
+  openAdId,
+  setOpenAdId,
 }: {
-  id: string;
-  name: string;
-  image: string;
-  price: number;
-  city: string;
-  views?: number;
   useCase?: "OtherPage" | "ProfilePage";
-  children?: React.ReactNode;
-  status?: "inSell" | "disabled";
   type?: "similar" | "primary";
+  createdAt?: string;
+  ad: AnnouncementType;
+  openAdId: string | null;
+  setOpenAdId: (id: string | null) => void;
 }) {
-  const [selected, setSelected] = useState(false);
-
   const { designSystem } = useAppTheme();
 
   const isSimilarType = type === "similar";
-
-  const { checkUserAccess } = useCheckUserAcces();
-
   return (
     <TouchableOpacity
       activeOpacity={0.7}
       onPress={() =>
         router.push(
-          `/(root)/(announcement)/AnnouncementDetails?id=${id}&from=${useCase}${status ? `&status=${status}` : ""}`
+          `/(root)/(announcement)/AnnouncementDetails?id=${ad?.id}&from=${useCase}${`&status=${ad?.status}`}`,
         )
       }
-      style={[styles.card, { width: isSimilarType ? 208 : 152 }]}
+      style={[styles.card, { width: isSimilarType ? 170 : 152 }]}
     >
+      {/*menu*/}
+      {useCase === "ProfilePage" && (
+        <ProfileDelOrEdAnnouncement
+          status={ad.status}
+          adId={ad.id}
+          ad={ad}
+          openAdId={openAdId}
+          setOpenAdId={setOpenAdId}
+        />
+      )}
+
       {/* Favoris button  */}
       {useCase === "OtherPage" && (
-        <TouchableOpacity
-          style={styles.favButton}
-          onPress={() => checkUserAccess(() => setSelected(!selected))}
-        >
-          <Heart
-            size={16}
-            color={
-              selected
-                ? designSystem.colors.primary
-                : designSystem.colors.bigText
-            }
-            fill={selected ? designSystem.colors.primary : "none"}
-          />
-        </TouchableOpacity>
+        <AddAdFavoriteButton adId={ad?.id as string} />
       )}
 
       {/* announcement image */}
-      <Image source={{ uri: image }} style={styles.image} />
+      <Image source={{ uri: ad?.images[0] }} style={styles.image} />
 
       {/* announcement content */}
       <View style={styles.info}>
         {/* Prix */}
         <AppText fontSize={18} font="Bold" color={designSystem.colors.primary}>
-          {price.toLocaleString()} FCFA
+          {ad?.price.toLocaleString()} FCFA
         </AppText>
 
         {/* Titre de l'annonce */}
         <AppText fontSize={13} color={designSystem.colors.bigText}>
-          {name}
+          {ad?.title}
         </AppText>
 
-        {/* Localisation */}
-        <View style={styles.locationRow}>
+        {/* city */}
+        <View style={styles.cityRow}>
           <MapPin size={14} color="#888" />
           <AppText fontSize={12} color={designSystem.colors.subText}>
-            {city}
+            {ad?.city}
           </AppText>
         </View>
 
-        {/* Vues */}
-        {useCase === "ProfilePage" && views && (
+        {/* Clicks */}
+        {useCase === "ProfilePage" && (
           <View style={styles.viewsRow}>
             <Eye size={14} color="#888" />
             <AppText fontSize={12} color={designSystem.colors.subText}>
-              {views} vues
+              {ad?.stats.clicks} Clicks
             </AppText>
           </View>
         )}
 
         <View style={styles.dateRow}>
           <Clock3 size={14} color="#888" />
-          <AppText fontSize={12} color={designSystem.colors.subText}>
-            2 days ago
+          <AppText
+            style={{ flexShrink: 1 }}
+            fontSize={12}
+            color={designSystem.colors.subText}
+          >
+            {getTimeSinceCreated(ad?.createdAt as Timestamp) ||
+              getTimeSinceMs(ad?.createdAt as unknown as number)}
           </AppText>
         </View>
-
-        {children && useCase === "ProfilePage" && children}
       </View>
     </TouchableOpacity>
   );
@@ -115,7 +106,6 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 12,
     backgroundColor: "#fff",
-    overflow: "hidden",
     elevation: 2,
     shadowColor: "#000",
     shadowOpacity: 0.1,
@@ -153,7 +143,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 
-  locationRow: {
+  cityRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,

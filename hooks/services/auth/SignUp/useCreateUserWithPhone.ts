@@ -27,13 +27,15 @@ export const useCreateUserWithPhone = (phoneNumber: string) => {
         .collection("Users")
         .doc(userId)
         .set({
+          image: "",
           lacation: {
             country: "burkina faso",
             city: "ouagadougou",
           },
+          authMethod: "PHONE_NUMBER",
           phoneNumber: phoneNumber,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          createdAt: firestore.FieldValue.serverTimestamp(),
+          updatedAt: firestore.FieldValue.serverTimestamp(),
         });
 
       console.log("User created!");

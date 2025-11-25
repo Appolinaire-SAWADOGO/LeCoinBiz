@@ -1,7 +1,8 @@
+import AddAdFavoriteButton from "@/components/favorites/AddAdFavoriteButton";
 import PageHeader from "@/components/PageHeader";
-import { useCheckUserAcces } from "@/hooks/services/auth/useCheckUserAcces";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { Heart, Share2 } from "lucide-react-native";
+import { AdStatusType } from "@/types";
+import { Share2 } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -9,36 +10,25 @@ export default function AnnouncementDetailsHeaderSection({
   from,
   status,
   name,
+  adId,
 }: {
   from: "OtherPage" | "ProfilePage";
-  status?: "inSell" | "disabled";
+  status?: AdStatusType;
   name?: string;
+  adId: string;
 }) {
   const { designSystem } = useAppTheme();
 
-  const [selected, setSelected] = React.useState(false);
-
-  const { checkUserAccess } = useCheckUserAcces();
-
   return (
-    <PageHeader style={{ paddingHorizontal: 20 }} name={name}>
+    <PageHeader style={{ paddingHorizontal: 20 , paddingTop: 15}} name={name}>
       <View style={styles.rightIcons}>
         {from === "OtherPage" && (
-          <TouchableOpacity
-            onPress={() => checkUserAccess(() => setSelected(!selected))}
-            hitSlop={10}
-          >
-            <Heart
-              fill={selected ? designSystem.colors.primary : "transparent"}
-              size={22}
-              color={designSystem.colors.primary}
-            />
-          </TouchableOpacity>
+          <AddAdFavoriteButton adId={adId} fromAnnouncementCard={false} />
         )}
 
-        {status !== "disabled" && (
+        {status === "ACTIVATED" && (
           <TouchableOpacity hitSlop={10}>
-            <Share2 size={22} color={designSystem.colors.primary} />
+            <Share2 size={20} />
           </TouchableOpacity>
         )}
       </View>

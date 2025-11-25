@@ -1,6 +1,8 @@
 import Container from "@/components/Container";
 import ProfileAnnouncementCard from "@/components/profile/ProfileAnnouncementCard";
 import ProfileContentHead from "@/components/profile/ProfileContentHead";
+import { getTimeSinceCreated } from "@/functions";
+import { AnnouncementType } from "@/types";
 import React, { useRef, useState } from "react";
 import { Animated, FlatList, StyleSheet, View } from "react-native";
 import AnnouncementCard from "../annoucement/AnnouncementCard";
@@ -13,9 +15,9 @@ export default function ProfileContainer({
   contentHeadTop = 99,
   mandatoryLogin = false,
 }: {
-  titleSection: React.ReactNode;
+  titleSection?: React.ReactNode;
   infoSection: React.ReactNode;
-  data: any[];
+  data: AnnouncementType[];
   useCase: "profile" | "merchant";
   contentHeadTop?: number;
   mandatoryLogin?: boolean;
@@ -25,12 +27,12 @@ export default function ProfileContainer({
   const [contentHeadY, setContentHeadY] = useState(0);
 
   type announcementsCardsPropsType = {
-    id: number;
-    name: string;
+    id: string;
+    title: string;
     image: string;
     price: number;
     city: string;
-    country: string;
+    createdAt: string;
     views: number;
     status: "inSell" | "disabled";
   };
@@ -38,11 +40,11 @@ export default function ProfileContainer({
   // announcement card
   const AnnouncementCards = ({
     id,
-    name,
+    title,
     image,
     price,
     city,
-    country,
+    createdAt,
     views,
     status,
   }: announcementsCardsPropsType) => {
@@ -51,11 +53,11 @@ export default function ProfileContainer({
         <ProfileAnnouncementCard
           key={id}
           id={id}
-          name={name}
+          title={title}
           image={image}
           price={price}
           city={city}
-          country={country}
+          createdAt={createdAt}
           views={views}
           status={status}
         />
@@ -63,12 +65,12 @@ export default function ProfileContainer({
     }
     return (
       <AnnouncementCard
-        id={id}
-        name={name}
+        id={id.toString()}
+        title={title}
         image={image}
         price={price}
         city={city}
-        country={country}
+        createdAt={createdAt}
       />
     );
   };
@@ -82,11 +84,7 @@ export default function ProfileContainer({
   );
 
   return (
-    <Container
-      // mandatoryLogin={mandatoryLogin}
-      withBottom={useCase === "merchant"}
-      style={styles.container}
-    >
+    <Container withBottom={useCase === "merchant"} style={styles.container}>
       {/* title */}
       {titleSection}
 
@@ -99,15 +97,14 @@ export default function ProfileContainer({
         showsVerticalScrollIndicator
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          // annonce
           <View style={styles.itemWrapper}>
             <AnnouncementCards
               id={item.id}
-              name={item.name}
-              image={item.image}
+              title={item.title}
+              image={item.images[0]}
               price={item.price}
-              city={item.location.city}
-              country={item.location.pays}
+              city={item.city}
+              createdAt={getTimeSinceCreated(item.createdAt)}
               views={120}
               status={contentHeadSelected === 0 ? "inSell" : "disabled"}
             />

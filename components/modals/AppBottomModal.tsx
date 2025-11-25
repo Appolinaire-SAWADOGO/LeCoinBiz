@@ -63,15 +63,6 @@ export default function AppBottomModal({
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.4)",
-    justifyContent: "flex-end",
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
   modal: {
     padding: 20,
   },

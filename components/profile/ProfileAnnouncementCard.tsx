@@ -4,31 +4,31 @@ import ProfileDelOrEdAnnouncement from "./ProfileDelOrEdAnnouncement";
 
 export default function ProfileAnnouncementCard({
   id,
-  name,
+  title,
   image,
   price,
   city,
-  country,
+  createdAt,
   views,
   status,
 }: {
-  id: number;
-  name: string;
+  id: string;
+  title: string;
   image: string;
   price: number;
   city: string;
-  country: string;
+  createdAt: string;
   views: number;
   status: "inSell" | "disabled";
 }) {
   return (
     <AnnouncementCard
       id={id}
-      name={name}
+      title={title}
       image={image}
       price={price}
       city={city}
-      country={country}
+      createdAt={createdAt}
       views={views}
       useCase="ProfilePage"
       status={status}

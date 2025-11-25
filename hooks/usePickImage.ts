@@ -9,6 +9,13 @@ export const usePickImage = () => {
     callBack: (img: string) => void,
     maxSizeInMB = 2
   ) => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permission.granted) {
+      open("Permission requise pour accéder à vos photos.");
+      return;
+    }
+
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsEditing: true,
@@ -19,7 +26,6 @@ export const usePickImage = () => {
     if (!result.canceled) {
       const uri = result.assets[0].uri;
 
-      // Vérifie le poids du fichier
       const fileInfo = await FileSystem.getInfoAsync(uri);
       if (!fileInfo.exists || !fileInfo.size) {
         open(

@@ -1,22 +1,18 @@
 import Announcements from "@/components/annoucement/Announcements";
+import NoAds from "@/components/annoucement/NoAds";
 import Container from "@/components/Container";
-import AppText from "@/components/custom/AppText";
 import HeaderHideAnimation from "@/components/HeaderHideAnimation";
 import HomeGoBackMoadal from "@/components/home/HomeGoBackMoadal";
 import HomeHeaderSection from "@/components/home/HomeHeaderSection";
 import PostAnAdButton from "@/components/PostAnAdButton";
-import AnnouncementCardSkeleton from "@/components/skeleton/AnnouncementCardSkeleton";
-import { HStack } from "@/components/ui/hstack";
 import { useGetHomeAds } from "@/hooks/services/ads/useGetHomeAds";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useBackPress } from "@/hooks/useBackPress";
-import { useScrollStore } from "@/store/useScrollStore";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useMemo } from "react";
 import {
   Animated,
   BackHandler,
-  FlatList,
   Image,
   RefreshControl,
   StyleSheet,
@@ -71,37 +67,6 @@ export default function Home() {
   const hasAds = allAds && allAds.length > 0;
   const initialLoading = isLoading && !hasAds;
 
-  const flatListRef = useRef<FlatList>(null);
-  const { homeScrollOffset, setHomeScrollOffset } = useScrollStore();
-  const hasRestoredScroll = useRef(false);
-  const currentScrollOffset = useRef(0);
-
-  useEffect(() => {
-    if (
-      flatListRef.current &&
-      homeScrollOffset > 0 &&
-      !hasRestoredScroll.current
-    ) {
-      flatListRef.current.scrollToOffset({
-        offset: homeScrollOffset,
-        animated: false,
-      });
-      hasRestoredScroll.current = true;
-    }
-  }, [homeScrollOffset]);
-
-  useEffect(() => {
-    return () => {
-      if (currentScrollOffset.current > 0) {
-        setHomeScrollOffset(currentScrollOffset.current);
-      }
-    };
-  }, [setHomeScrollOffset]);
-
-  const handleScroll = useCallback((e: any) => {
-    currentScrollOffset.current = e.nativeEvent.contentOffset.y;
-  }, []);
-
   return (
     <>
       {/* go back modal */}
@@ -127,71 +92,30 @@ export default function Home() {
 
         {/* main */}
         <View style={styles.main}>
-          {/* Loader initial */}
-          {initialLoading && (
-            <HStack
-              style={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-                paddingHorizontal: 20,
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
-                marginTop: 295,
-                rowGap: 16,
-              }}
-            >
-              {[...Array(4)].map((_, i) => (
-                <AnnouncementCardSkeleton key={i} />
-              ))}
-            </HStack>
-          )}
-
           {/* Liste d'annonces */}
-          {hasAds && (
-            <Announcements
-              ref={flatListRef}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                  colors={[designSystem.colors.primary]}
-                  tintColor={designSystem.colors.primary}
-                  progressViewOffset={290}
-                />
-              }
-              values={allAds}
-              scrollY={scrollY}
-              style={{ paddingBottom: 60, paddingTop: 293 }}
-              onEndReached={handleLoadMore}
-              isLoadingMore={isFetchingNextPage}
-              onScroll={handleScroll}
-            />
-          )}
+          <Announcements
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing || initialLoading}
+                onRefresh={onRefresh}
+                colors={[designSystem.colors.primary]}
+                tintColor={designSystem.colors.primary}
+                progressViewOffset={290}
+              />
+            }
+            values={allAds}
+            scrollY={scrollY}
+            style={{ paddingBottom: 60, paddingTop: 293 }}
+            onEndReached={handleLoadMore}
+            isLoadingMore={isFetchingNextPage}
+          />
 
           {/* Message "aucune annonce" */}
           {!initialLoading && !hasAds && (
-            <View
-              style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-                paddingTop: "60%",
-                paddingHorizontal: 20,
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-              }}
-            >
-              <AppText
-                style={{ textAlign: "center", color: "#555", fontSize: 16 }}
-              >
-                Aucune annonce disponible pour le moment. Veuillez réessayer
-                plus tard ou ajuster vos filtres.
-              </AppText>
-            </View>
+            <NoAds
+              text="Aucune annonce disponible pour le moment. Veuillez réessayer plus tard
+                        ou ajuster vos filtres."
+            />
           )}
         </View>
       </Container>

@@ -1,4 +1,3 @@
-import { checkIfUserNameIsAdded } from "../../../../functions/auth";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ContinousWithPhomeNumberStepType } from "@/types";
@@ -9,6 +8,7 @@ import {
   signInWithPhoneNumber,
 } from "@react-native-firebase/auth";
 import { useEffect, useState } from "react";
+import { checkIfUserNameIsAdded } from "../../../../functions/auth";
 import { useCreateUserWithPhone } from "../SignUp/useCreateUserWithPhone";
 
 export function useSignInWithPhoneNumber(
@@ -17,14 +17,11 @@ export function useSignInWithPhoneNumber(
   >,
   phoneNumber: string
 ) {
-  // If null, no SMS has been sent
   const [confirm, setConfirm] =
     useState<FirebaseAuthTypes.ConfirmationResult | null>(null);
 
-  // verification code (OTP - One-Time-Passcode)
   const [code, setCode] = useState("123456");
 
-  // is loading
   const [isLoading, setIsLoading] = useState(false);
 
   const { setUserIsLogged, setUserNameIsAdded } = useAuthStore();
@@ -124,22 +121,5 @@ export function useSignInWithPhoneNumber(
       setIsLoading(false);
     }
   }
-
-  //   if (!confirm) {
-  //     return (
-  //       <Button
-  //         title="Phone Number Sign In"
-  //         onPress={() => handleSignInWithPhoneNumber('+1 650-555-3434')}
-  //       />
-  //     );
-  //   }
-
-  //   return (
-  //     <>
-  //       <TextInput value={code} onChangeText={text => setCode(text)} />
-  //       <Button title="Confirm Code" onPress={() => confirmCode()} />
-  //     </>
-  //   );
-
   return { handleSignInWithPhoneNumber, confirmCode, code, setCode, isLoading };
 }

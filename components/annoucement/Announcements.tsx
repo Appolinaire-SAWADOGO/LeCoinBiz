@@ -1,7 +1,7 @@
 import AnnouncementCard from "@/components/annoucement/AnnouncementCard";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { AnnouncementsType } from "@/types";
-import React, { forwardRef } from "react";
+import { AnnouncementType } from "@/types";
+import React, { useState } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -13,89 +13,80 @@ import {
   ViewStyle,
 } from "react-native";
 
-const Announcements = forwardRef<
-  FlatList,
-  {
-    scrollY?: Animated.Value;
-    style?: StyleProp<ViewStyle>;
-    values?: AnnouncementsType[];
-    refreshControl?: React.ReactElement<RefreshControlProps>;
-    onEndReached?: () => void;
-    isLoadingMore?: boolean;
-    onScroll?: (e: any) => void;
-  }
->(
-  (
-    {
-      scrollY,
-      style,
-      values,
-      refreshControl,
-      onEndReached,
-      isLoadingMore,
-      onScroll,
-    },
-    ref
-  ) => {
-    const { designSystem } = useAppTheme();
+const Announcements = ({
+  scrollY,
+  style,
+  values,
+  refreshControl,
+  onEndReached,
+  isLoadingMore,
+  ListHeaderComponent,
+  announcementCardUseCase,
+}: {
+  scrollY?: Animated.Value;
+  style?: StyleProp<ViewStyle>;
+  values?: AnnouncementType[];
 
-    return (
-      <View style={styles.container}>
-        <FlatList
-          ref={ref}
-          data={values || []}
-          numColumns={2}
-          contentContainerStyle={[style, { paddingHorizontal: 20 }]}
-          columnWrapperStyle={styles.columnWrapper}
-          showsVerticalScrollIndicator
-          keyExtractor={(item, index) =>
-            item?.id?.toString() || `item-${index}`
-          }
-          onScroll={(e) => {
-            const scrollYValue = e.nativeEvent.contentOffset.y;
+  refreshControl?: React.ReactElement<RefreshControlProps>;
+  onEndReached?: () => void;
+  isLoadingMore?: boolean;
+  ListHeaderComponent?:
+    | React.ComponentType<any>
+    | React.ReactElement<unknown, string | React.JSXElementConstructor<any>>
+    | null
+    | undefined;
+  announcementCardUseCase?: "OtherPage" | "ProfilePage";
+}) => {
+  const { designSystem } = useAppTheme();
 
-            // Met à jour l'animation du header en temps réel
-            scrollY?.setValue(scrollYValue);
+  const [openAdId, setOpenAdId] = useState<string | null>(null);
 
-            // Si un onScroll custom est fourni, l'appeler aussi
-            onScroll?.(e);
-          }}
-          scrollEventThrottle={16} // 60fps pour une animation fluide
-          refreshControl={refreshControl}
-          onEndReached={onEndReached}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={
-            isLoadingMore ? (
-              <View style={styles.footerLoader}>
-                <ActivityIndicator
-                  size="large"
-                  color={designSystem.colors.primary}
-                />
-              </View>
-            ) : null
-          }
-          renderItem={({ item }) => {
-            if (!item || !item.id) return null;
-            return (
-              <View style={styles.itemWrapper}>
-                <AnnouncementCard
-                  id={item.id}
-                  name={item.title}
-                  image={item.images[0]}
-                  price={item.price}
-                  city={item.city}
-                />
-              </View>
-            );
-          }}
-        />
-      </View>
-    );
-  }
-);
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={values || []}
+        numColumns={2}
+        contentContainerStyle={[style, { paddingHorizontal: 20 }]}
+        columnWrapperStyle={styles.columnWrapper}
+        showsVerticalScrollIndicator
+        keyExtractor={(item, index) => item?.id?.toString() || `item-${index}`}
+        onScroll={(e) => {
+          const scrollYValue = e.nativeEvent.contentOffset.y;
+          scrollY?.setValue(scrollYValue);
+        }}
+        scrollEventThrottle={16}
+        refreshControl={refreshControl}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.5}
+        ListHeaderComponent={ListHeaderComponent}
+        ListFooterComponent={
+          isLoadingMore ? (
+            <View style={styles.footerLoader}>
+              <ActivityIndicator
+                size="large"
+                color={designSystem.colors.primary}
+              />
+            </View>
+          ) : null
+        }
+        renderItem={({ item }) => {
+          if (!item || !item.id) return null;
 
-// Ajouter displayName pour ESLint et React DevTools
-Announcements.displayName = "Announcements";
+          return (
+            <View style={styles.itemWrapper}>
+              <AnnouncementCard
+                useCase={announcementCardUseCase}
+                ad={item}
+                openAdId={openAdId}
+                setOpenAdId={setOpenAdId}
+              />
+            </View>
+          );
+        }}
+      />
+    </View>
+  );
+};
 
 export default Announcements;
 

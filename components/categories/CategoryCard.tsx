@@ -1,5 +1,7 @@
 import AppText from "@/components/custom/AppText";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { useFilterStatesStore } from "@/store/useFilterStatesStore";
+import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -26,10 +28,34 @@ export default function CategoryCard({
 
   const encodedName = encodeURIComponent(name);
 
+  const { setCategory, search, subCategory, city, min, max, tempPub, options } =
+    useFilterStatesStore();
+
+  const filters = {
+    search,
+    category: name,
+    subCategory,
+    city,
+    min,
+    max,
+    tempPub,
+    options,
+  };
+
+  const queryClient = useQueryClient();
+
   return (
     <TouchableOpacity
       style={[styles.card, style]}
-      onPress={() => router.push(`/(root)/Filters?category=${encodedName}`)}
+      onPress={async () => {
+        setCategory(name);
+
+        router.push(`/(root)/Filters?category=${encodedName}`);
+
+        await queryClient.invalidateQueries({
+          queryKey: ["filter-ads", filters],
+        });
+      }}
     >
       <Image source={icon} style={styles.icon} />
       <AppText

@@ -29,9 +29,9 @@ export default function PostAnAdAddPhotoCard({
 
   return (
     <TouchableOpacity
-      onPress={() => {
+      onPress={async () => {
         if (!isPickerDisabled)
-          pickImage((img: string) => setImages([...images, img]));
+          await pickImage((img: string) => setImages([...images, img]));
       }}
       disabled={pickerDisabled}
       activeOpacity={0.5}
@@ -41,7 +41,7 @@ export default function PostAnAdAddPhotoCard({
         style,
       ]}
     >
-      <Camera size={36} color={designSystem.colors.bigText} />
+      <Camera strokeWidth={1.3} size={36} color={designSystem.colors.bigText} />
       <View
         style={[
           styles.addImage,
@@ -52,7 +52,7 @@ export default function PostAnAdAddPhotoCard({
           },
         ]}
       >
-        <Plus color={"#fff"} />
+        <Plus strokeWidth={1.3} color={"#fff"} />
       </View>
     </TouchableOpacity>
   );
@@ -60,16 +60,16 @@ export default function PostAnAdAddPhotoCard({
 
 const styles = StyleSheet.create({
   container: {
-    width: 120,
-    height: 120,
+    width: 100,
+    height: 100,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
     borderRadius: 4,
   },
   addImage: {
-    width: 36,
-    height: 36,
+    width: 32,
+    height: 32,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 50,

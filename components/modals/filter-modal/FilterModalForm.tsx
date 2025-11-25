@@ -1,5 +1,6 @@
 import Container from "@/components/Container";
 import AppText from "@/components/custom/AppText";
+import { addRecentSearch } from "@/functions";
 import { useFilterStatesStore } from "@/store/useFilterStatesStore";
 import { FilterModalUseCaseType } from "@/types";
 import { FilterModalFormSchema } from "@/zod/schema/filterModalForm.schema";
@@ -7,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { X } from "lucide-react-native";
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   KeyboardAvoidingView,
@@ -54,14 +55,14 @@ export default function FilterModalForm({ isOpen, close, useCase }: props) {
   } = useForm<FormData>({
     resolver: zodResolver(FilterModalFormSchema),
     defaultValues: {
-      search: "",
-      category: "Toutes les catégories",
-      subCategory: "",
-      city: "Toutes les villes",
-      min: "",
-      max: "",
-      tempPub: "Toutes les annonces",
-      options: [
+      search: filterStatesStore.search || "",
+      category: filterStatesStore.category || "Toutes les catégories",
+      subCategory: filterStatesStore.subCategory || "",
+      city: filterStatesStore.city || "Toutes les villes",
+      min: filterStatesStore.min || "",
+      max: filterStatesStore.max || "",
+      tempPub: filterStatesStore.tempPub || "Toutes les annonces",
+      options: filterStatesStore.options || [
         { label: "Annonces Populaire", active: false },
         { label: "Livraison Gratuite", active: false },
         { label: "Neuf", active: false },
@@ -69,36 +70,79 @@ export default function FilterModalForm({ isOpen, close, useCase }: props) {
     },
   });
 
-  const onRefresh = useCallback(async () => {
-    await queryClient.invalidateQueries({ queryKey: ["filter-ads"] });
-  }, [queryClient]);
-
   const handleApply = async (data: FormData) => {
     setIsLoading(true);
-    filterStatesStore.setSeach(data.search);
-    filterStatesStore.setCategory(data.category);
-    filterStatesStore.setCity(data.city);
-    filterStatesStore.setMin(data.min as string);
-    filterStatesStore.setMax(data.max as string);
-    filterStatesStore.setTempPub(data.tempPub);
-    filterStatesStore.setOptions(data.options);
-    await onRefresh();
+
+    const newFilters = {
+      search: data.search as string,
+      category: data.category,
+      subCategory: data.subCategory as string,
+      city: data.city,
+      min: data.min as string,
+      max: data.max as string,
+      tempPub: data.tempPub,
+      options: data.options,
+    };
+
+    filterStatesStore.setFilters(newFilters);
+
+    await addRecentSearch(data.search as string);
+
+    await queryClient.invalidateQueries({
+      queryKey: ["filter-ads", newFilters],
+    });
+
     setIsLoading(false);
     close();
-    if (useCase === "Home") router.push("/(root)/Filters");
+
+    if (useCase === "Home") {
+      resetForm();
+      router.push("/(root)/Filters");
+    }
   };
 
   const currentCategory = watch("category");
 
   const insets = useSafeAreaInsets();
 
+  const resetFormValues = () => {
+    if (watch("search") !== filterStatesStore.search)
+      setValue("search", filterStatesStore.search);
+    if (watch("category") !== filterStatesStore.category)
+      setValue("category", filterStatesStore.category);
+    if (watch("subCategory") !== filterStatesStore.subCategory)
+      setValue("subCategory", filterStatesStore.subCategory);
+    if (watch("city") !== filterStatesStore.city)
+      setValue("city", filterStatesStore.city);
+    if (watch("min") !== filterStatesStore.min)
+      setValue("min", filterStatesStore.min);
+    if (watch("max") !== filterStatesStore.max)
+      setValue("max", filterStatesStore.max);
+    if (watch("tempPub") !== filterStatesStore.tempPub)
+      setValue("tempPub", filterStatesStore.tempPub);
+    if (watch("options") !== filterStatesStore.options)
+      setValue("options", filterStatesStore.options);
+  };
+
+  useEffect(() => {
+    setValue("search", filterStatesStore.search);
+  }, [filterStatesStore.search, setValue]);
+
   return (
-    <AppFullModal isOpen={isOpen} onClose={close} bgColor={"#fff"}>
+    <AppFullModal
+      isOpen={isOpen}
+      onClose={() => {
+        resetFormValues();
+        close();
+      }}
+      bgColor={"#fff"}
+    >
       <Container>
         <View style={styles.header}>
           <AppText style={styles.title}>Filtrer les annonces</AppText>
           <TouchableOpacity
             onPress={() => {
+              resetFormValues();
               close();
             }}
           >

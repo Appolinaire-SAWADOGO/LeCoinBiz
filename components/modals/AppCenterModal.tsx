@@ -23,24 +23,29 @@ export default function AppCenterModal({
   footerStyle,
   onSubmit,
   withCancelButton = true,
+  onClose,
+  titleSize = "md",
+  xSize = "md",
 }: {
   title: string;
   submitText: string;
   isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   children: React.ReactNode;
   footerStyle?: StyleProp<ViewStyle>;
   onSubmit?: () => void;
   withCancelButton?: boolean;
+  onClose?: () => void;
+  titleSize?: "xs" | "sm" | "md" | "lg" | "5xl" | "4xl" | "3xl" | "2xl" | "xl";
+  xSize?: "lg" | "xs" | "sm" | "md" | "xl" | "2xs";
 }) {
   const { designSystem } = useAppTheme();
   return (
     <Modal
       isOpen={isOpen}
-      onClose={() => {
-        setIsOpen(false);
-      }}
+      onClose={() => (onClose ? onClose() : setIsOpen?.(false))}
       size="md"
+      useRNModal
     >
       <ModalBackdrop />
       <ModalContent style={{ backgroundColor: "#fff" }}>
@@ -50,7 +55,7 @@ export default function AppCenterModal({
               fontFamily: "BasisGrotesqueArabicPro-Regular",
               color: designSystem.colors.bigText,
             }}
-            size="md"
+            size={titleSize}
             className="text-typography-950"
           >
             {title}
@@ -58,7 +63,7 @@ export default function AppCenterModal({
           <ModalCloseButton>
             <Icon
               as={CloseIcon}
-              size="md"
+              size={xSize}
               className="stroke-background-400 group-[:hover]/modal-close-button:stroke-background-700 group-[:active]/modal-close-button:stroke-background-900 group-[:focus-visible]/modal-close-button:stroke-background-900"
               style={{ color: designSystem.colors.bigText }}
             />
@@ -71,7 +76,7 @@ export default function AppCenterModal({
               variant="outline"
               action="secondary"
               onPress={() => {
-                setIsOpen(false);
+                setIsOpen?.(false);
               }}
               style={{
                 width: 100,

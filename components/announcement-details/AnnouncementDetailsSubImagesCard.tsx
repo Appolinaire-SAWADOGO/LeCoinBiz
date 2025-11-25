@@ -36,11 +36,10 @@ export default function AnnouncementDetailsSubImagesCard({
 
 const styles = StyleSheet.create({
   wrapper: {
-    height: 80,
-    width: 80,
+    height: 60,
+    width: 60,
     borderRadius: 10,
     overflow: "hidden",
-    marginRight: 12,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#f9f9f9",

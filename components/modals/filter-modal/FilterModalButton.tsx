@@ -13,9 +13,9 @@ export default function FilterModalButton({
   userOrAdValue,
   setUserOrAdvalue,
 }: {
-  isFiltered: boolean;
+  isFiltered?: boolean;
   open: () => void;
-  useCase: FilterModalUseCaseType;
+  useCase?: FilterModalUseCaseType;
   userOrAdValue?: string;
   setUserOrAdvalue?: React.Dispatch<
     React.SetStateAction<"annonces" | "utilisateurs">
@@ -107,6 +107,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 50,
     paddingHorizontal: 12,
-    width: 110,
+    alignSelf: "flex-start",
   },
 });

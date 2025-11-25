@@ -5,91 +5,137 @@ import AnnouncementDetailsInfoSection from "@/components/announcement-details/se
 import AnnouncementDetailsProfileSection from "@/components/announcement-details/sections/AnnouncementDetailsProfileSection";
 import AnnouncementDetailsPublicationReportingSection from "@/components/announcement-details/sections/AnnouncementDetailsPublicationReportingSection";
 import AnnouncementDetailsShareSection from "@/components/announcement-details/sections/AnnouncementDetailsShareSection";
-import AnnouncementDetailsSimilarAdSection from "@/components/announcement-details/sections/AnnouncementDetailsSimilarAdSection";
+import AnnouncementDetailsSimilarsAdSection from "@/components/announcement-details/sections/AnnouncementDetailsSimilarsAdSection";
 import Container from "@/components/Container";
-import { announcements } from "@/constants/announcements";
+import AppFullScreenLoader from "@/components/custom/AppFullScreenLoader";
+import { formatCreatedAt } from "@/functions";
+import { useGetAdById } from "@/hooks/services/ads/useGetAdById";
+import { useGetSimilarAds } from "@/hooks/services/ads/useGetSimilarsAds";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { AdStatusType, AnnouncementType, UserType } from "@/types";
+import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useRef } from "react";
-import { Animated, ScrollView, StyleSheet, View } from "react-native";
+import React from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 export default function AnnouncementDetails() {
   const { designSystem } = useAppTheme();
 
+  const { getAdById } = useGetAdById();
+  const { getSimilarAds } = useGetSimilarAds();
+
   const { id, from, status } = useLocalSearchParams();
-  const currentAnnouncement = announcements[Number(id) - 1];
-  const scrollY = useRef(new Animated.Value(0)).current;
 
-  const onScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-    {
-      useNativeDriver: false,
-    }
-  );
+  const { data: adDetailsData, isLoading: adDetailsIsLoading } = useQuery({
+    queryKey: ["ad-details", id],
+    queryFn: () => getAdById(id as string),
+  });
 
-  useEffect(() => {
-    console.log("Page montée");
-  }, []);
+  const { data: similarsAdsData, isLoading: similarsAdsIsLoading } = useQuery({
+    queryKey: ["similars-ads", id],
+    queryFn: () =>
+      getSimilarAds({
+        currentAdId: id as string,
+        title: adDetailsData?.ad?.title as string,
+        category: adDetailsData?.ad?.category as string,
+        subCategory: adDetailsData?.ad?.subCategory as string,
+        conditions: adDetailsData?.ad?.conditions as string[],
+        description: adDetailsData?.ad?.description as string,
+        userId: adDetailsData?.user?.id as string,
+        maxResults: 5,
+      }),
+    enabled: !!adDetailsData?.ad,
+  });
+
+  const isLoading = adDetailsIsLoading || similarsAdsIsLoading;
 
   return (
-    <Container withBottom>
-      {/* header */}
-      <AnnouncementDetailsHeaderSection
-        from={from as "OtherPage" | "ProfilePage"}
-        status={status as "inSell" | "disabled"}
-        name={currentAnnouncement.title.slice(0, 15) + "..."}
-      />
-
-      {/* main */}
-      <View style={[styles.main]}>
-        {/* scroll view*/}
-        <ScrollView
-          scrollEventThrottle={16}
-          onScroll={onScroll}
-          contentContainerStyle={styles.contentContainer}
-        >
-          {/* Galerie d'images */}
-          <AnnouncementDetailsImagesSection
-            currentAnnouncement={currentAnnouncement}
-          />
-
-          {/* Section principale */}
-          <View style={styles.mainContent}>
-            {/* Announcement Details Info Section */}
-            <AnnouncementDetailsInfoSection
-              currentAnnouncement={currentAnnouncement}
+    <Container withBottom withGoBack>
+      {(isLoading ||
+        !adDetailsData?.ad ||
+        !adDetailsData.user ||
+        !similarsAdsData) && <AppFullScreenLoader />}
+      {!isLoading &&
+        adDetailsData?.ad &&
+        adDetailsData.user &&
+        similarsAdsData && (
+          <>
+            {/* header */}
+            <AnnouncementDetailsHeaderSection
               from={from as "OtherPage" | "ProfilePage"}
+              status={status as AdStatusType}
+              name={
+                adDetailsData.ad?.title.length! > 15
+                  ? adDetailsData?.ad?.title.slice(0, 15) + "..."
+                  : adDetailsData.ad?.title
+              }
+              adId={id as string}
             />
 
-            {/*profile */}
-            {from === "OtherPage" && <AnnouncementDetailsProfileSection />}
+            {/* main */}
+            <View style={[styles.main]}>
+              {/* scroll view*/}
+              <ScrollView
+                scrollEventThrottle={16}
+                contentContainerStyle={styles.contentContainer}
+              >
+                {/* Galerie d'images */}
+                <AnnouncementDetailsImagesSection
+                  images={adDetailsData?.ad?.images as string[]}
+                />
 
-            {status !== "disabled" && <AnnouncementDetailsShareSection />}
+                {/* Section principale */}
+                <View style={styles.mainContent}>
+                  {/* Announcement Details Info Section */}
+                  <AnnouncementDetailsInfoSection
+                    currentAnnouncement={adDetailsData?.ad as AnnouncementType}
+                    from={from as "OtherPage" | "ProfilePage"}
+                  />
 
-            {/* Avis */}
-            {/* <AnnouncementDetailsReviewSection /> */}
+                  {/*profile */}
+                  {from === "OtherPage" && (
+                    <AnnouncementDetailsProfileSection
+                      userData={
+                        adDetailsData?.user as UserType & { adsCount: number }
+                      }
+                    />
+                  )}
 
-            {/* add review */}
-            {/* <AnnouncementDetailsAddReviewSection /> */}
+                  {/* share */}
+                  {status === "ACTIVATED" && (
+                    <AnnouncementDetailsShareSection from={from as string} />
+                  )}
 
-            {/* similar ad  */}
+                  {/* report publication and similar ad */}
+                  {from === "OtherPage" && (
+                    <>
+                      <AnnouncementDetailsSimilarsAdSection
+                        data={similarsAdsData!}
+                      />
+                      <AnnouncementDetailsPublicationReportingSection />
+                    </>
+                  )}
+                </View>
+              </ScrollView>
 
-            {/* report la publication and similar ad */}
-            {from === "OtherPage" && (
-              <>
-                <AnnouncementDetailsSimilarAdSection />
-                <AnnouncementDetailsPublicationReportingSection />
-              </>
-            )}
-          </View>
-        </ScrollView>
-
-        {/* Boutons d'action flottants */}
-        <AnnouncementDetailsFloatingButtons
-          from={from as "OtherPage" | "ProfilePage"}
-          status={status as "inSell" | "disabled"}
-        />
-      </View>
+              {/* Boutons d'action flottants */}
+              <AnnouncementDetailsFloatingButtons
+                from={from as "OtherPage" | "ProfilePage"}
+                status={status as AdStatusType}
+                whattsAppNumber={adDetailsData.ad.whatsappNumber}
+                phoneNumber={adDetailsData.ad.phoneNumber}
+                adImage={adDetailsData.ad.images[0]}
+                adTitle={adDetailsData.ad.title}
+                adPrice={adDetailsData.ad.price.toString()}
+                adCategory={adDetailsData.ad.category}
+                adSubCategory={adDetailsData.ad.subCategory}
+                adTempUb={formatCreatedAt(adDetailsData.ad.createdAt)}
+                adId={adDetailsData.ad.id}
+                ad={adDetailsData.ad}
+              />
+            </View>
+          </>
+        )}
     </Container>
   );
 }
@@ -103,7 +149,7 @@ const styles = StyleSheet.create({
   },
 
   mainContent: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
     paddingTop: 10,
   },
 });

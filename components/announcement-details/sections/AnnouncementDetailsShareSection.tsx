@@ -5,7 +5,11 @@ import React from "react";
 import { Alert, Share, StyleSheet, View } from "react-native";
 import AnnouncementDetailsShareElmtCard from "../AnnouncementDetailsShareElmtCard";
 
-export default function AnnouncementDetailsShareSection() {
+export default function AnnouncementDetailsShareSection({
+  from,
+}: {
+  from: string;
+}) {
   const { designSystem } = useAppTheme();
   const shareLink = async () => {
     try {
@@ -27,28 +31,26 @@ export default function AnnouncementDetailsShareSection() {
     }
   };
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { borderBottomWidth: from !== "OtherPage" ? 0 : 1 },
+      ]}
+    >
       <AppText
         color={designSystem.colors.bigText}
         fontSize={16}
-        font="Bold"
+        font="Medium"
         style={styles.title}
       >
         Partager cette annonce
       </AppText>
 
       <View style={styles.buttonRow}>
-        {/* <TouchableOpacity style={styles.button} onPress={shareLink}>
-          <Share2 strokeWidth={2} size={22} />
-          <AppText style={styles.buttonText}>Partager</AppText>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={copyLink}>
-          <Copy strokeWidth={2} size={22} />
-          <AppText style={styles.buttonText}>Copier lien</AppText>
-        </TouchableOpacity> */}
-
-        <AnnouncementDetailsShareElmtCard label="facebook" />
+        <AnnouncementDetailsShareElmtCard
+          label="facebook"
+          onPress={shareLink}
+        />
         <AnnouncementDetailsShareElmtCard label="twitter" />
         <AnnouncementDetailsShareElmtCard label="whatsapp" />
         <AnnouncementDetailsShareElmtCard label="copyLink" />
@@ -59,13 +61,9 @@ export default function AnnouncementDetailsShareSection() {
 
 const styles = StyleSheet.create({
   container: {
-    // marginTop: 20,
-    // backgroundColor: "rgba(0, 0, 0, 0.02)",
-    // borderRadius: 8,
-    // borderWidth: 1,
     paddingVertical: 16,
     borderTopWidth: 1,
-    borderBottomWidth: 1,
+
     borderColor: "#eee",
   },
   title: {

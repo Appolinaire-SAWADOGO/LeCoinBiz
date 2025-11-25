@@ -26,13 +26,15 @@ export const useCreateUserWithEmail = () => {
         .doc(uuid)
         .set({
           userName: userName,
-          lacation: {
+          image: "",
+          location: {
             country: "burkina faso",
             city: "ouagadougou",
           },
           email: email,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          authMethod: "EMAIL_PASSWORD",
+          createdAt: firestore.FieldValue.serverTimestamp(),
+          updatedAt: firestore.FieldValue.serverTimestamp(),
         });
 
       console.log("User added!");

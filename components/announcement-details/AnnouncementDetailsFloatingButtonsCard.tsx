@@ -2,7 +2,7 @@ import WattsAppIcon from "@/assets/images/WattsAppIcon.png";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { Image } from "expo-image";
 import {
-  Edit,
+  Edit3,
   Eye,
   EyeClosed,
   MessageSquare,
@@ -12,9 +12,11 @@ import {
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import AppText from "../custom/AppText";
+import { hexToRgba } from "@/functions";
 
 export default function AnnouncementDetailsFloatingButtonsCard({
   useCase,
+  onPress,
 }: {
   useCase:
     | "watsApp"
@@ -24,6 +26,7 @@ export default function AnnouncementDetailsFloatingButtonsCard({
     | "disable"
     | "enable"
     | "delete";
+  onPress?: () => void;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -31,7 +34,7 @@ export default function AnnouncementDetailsFloatingButtonsCard({
     watsApp: undefined,
     sms: MessageSquare,
     call: Phone,
-    edit: Edit,
+    edit: Edit3,
     disable: EyeClosed,
     enable: Eye,
     delete: Trash,
@@ -47,24 +50,37 @@ export default function AnnouncementDetailsFloatingButtonsCard({
     delete: "Supprimer",
   }[useCase];
 
-  // const ButtonBgColor = {
-  //   watsApp: "#2DD54B",
-  //   sms: "#00AAFF",
-  //   call: "#1976D2", // Bleu communication → OK (conserve)
-  //   edit: "#009688", // Vert sarcelle : calme, intuitif pour l'édition
-  //   disable: "#B0BEC5", // Gris bleuté clair : désactivé, neutre
-  //   enable: "#4CAF50", // Vert classique : activation, validation
-  //   delete: "#F44336", // Rouge vif standard : suppression
-  // }[useCase];
+  const getBackgroundColor = () => {
+    switch (useCase) {
+      case "watsApp":
+        return designSystem.colors.primary;
+      case "sms":
+        return designSystem.colors.primary;
+      case "call":
+        return designSystem.colors.primary;
+      case "edit":
+        return designSystem.colors.primary;
+      case "disable":
+        return designSystem.colors.primary;
+      case "enable":
+        return designSystem.colors.primary;
+      case "delete":
+        return designSystem.colors.primary;
+      default:
+        return designSystem.colors.primary;
+    }
+  };
+
   return (
     <TouchableOpacity
-      style={[styles.button, { backgroundColor: designSystem.colors.primary }]}
+      style={[styles.button, { backgroundColor: getBackgroundColor() }]}
+      onPress={onPress}
     >
       {/* button icon */}
       {useCase === "watsApp" ? (
-        <Image source={WattsAppIcon} style={{ height: 20, width: 20 }} />
+        <Image source={WattsAppIcon} style={{ height: 17, width: 17 }} />
       ) : (
-        <>{ButtonIcon && <ButtonIcon size={20} color="#fff" />}</>
+        <>{ButtonIcon && <ButtonIcon size={17} color="#fff" />}</>
       )}
 
       <AppText font="Medium" style={styles.buttonText}>
@@ -87,6 +103,5 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#fff",
-    fontSize: 14,
   },
 });

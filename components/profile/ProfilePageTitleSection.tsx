@@ -1,18 +1,18 @@
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { UserType } from "@/types";
 import { router } from "expo-router";
-import { Edit } from "lucide-react-native";
+import { Edit3 } from "lucide-react-native";
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import AppText from "../custom/AppText";
 
-export default function ProfilePageTitleSection() {
+export default function ProfilePageTitleSection({ user }: { user: UserType }) {
   const { designSystem } = useAppTheme();
 
   return (
     <View
       style={{
         marginTop: 24,
-        paddingHorizontal: 20,
         alignItems: "center",
         flexDirection: "row",
         justifyContent: "space-between",
@@ -22,16 +22,20 @@ export default function ProfilePageTitleSection() {
         Profile
       </AppText>
       <TouchableOpacity
-        onPress={() => router.push("/(root)/EditProfile")}
+        onPress={() =>
+          router.push({
+            pathname: "/(root)/EditProfile",
+            params: { user: JSON.stringify(user) },
+          })
+        }
         style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
       >
-        <Edit size={16} color={designSystem.colors.primary} />
         <AppText
-          fontSize={14}
+          fontSize={15}
           font="Medium"
-          color={designSystem.colors.primary}
+          color={designSystem.colors.subText}
         >
-          Modifier le profile
+          Modifier
         </AppText>
       </TouchableOpacity>
     </View>

@@ -1,24 +1,26 @@
-import React, {useEffect} from "react";
-import {StyleProp, View, ViewStyle} from "react-native";
+import React, { useEffect } from "react";
+import { StyleProp, View, ViewStyle } from "react-native";
 import PostAnAdAddPhotoCard from "../PostAnAdAddPhotoCard";
 import PostAnAdPhotosCard from "../PostAnAdPhotosCard";
 import PostAnAdSection from "../PostAnAdSection";
 
 export default function PostAnAdPhotosSection({
-    onChange,
-    style
-}:{
-    onChange: (imgs : string[]) => void;
-    style?: StyleProp<ViewStyle>;
+  value,
+  onChange,
+  style,
+}: {
+  value: string[];
+  onChange: (imgs: string[]) => void;
+  style?: StyleProp<ViewStyle>;
 }) {
-  const [images, setImages] = React.useState<string[]>([]);
+  const [images, setImages] = React.useState<string[]>(value || []);
 
-    useEffect(() => {
-        if(images) onChange(images);
-    }, [images, onChange]);
+  useEffect(() => {
+    if (images) onChange(images);
+  }, [images, onChange]);
 
   return (
-    <PostAnAdSection label="Photos" placeholder="Ajoutez des photos" >
+    <PostAnAdSection label="Photos" placeholder="Ajoutez des photos">
       <View
         style={{
           gap: 20,

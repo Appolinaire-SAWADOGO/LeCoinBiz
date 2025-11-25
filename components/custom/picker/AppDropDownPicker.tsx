@@ -1,7 +1,10 @@
 import { useAppTheme } from "@/hooks/useAppTheme";
 import React from "react";
-import { StyleProp, ViewStyle } from "react-native";
-import DropDownPicker from "react-native-dropdown-picker";
+import { StyleProp, TextStyle, ViewStyle } from "react-native";
+import DropDownPicker, {
+  ItemType,
+  ListModeType,
+} from "react-native-dropdown-picker";
 
 export default function AppDropDownPicker({
   withSearch,
@@ -12,10 +15,15 @@ export default function AppDropDownPicker({
   value,
   setValue,
   style,
+  dropDownContainerStyle,
+  selectedItemLabelStyle,
   isSelected,
+  listMode = "MODAL",
+  onSelectItem,
+  showTickIcon,
 }: {
   withSearch?: boolean;
-  placeholder: string;
+  placeholder?: string;
   items: { label: string; value: string; icon?: () => React.JSX.Element }[];
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,16 +32,23 @@ export default function AppDropDownPicker({
     | React.Dispatch<React.SetStateAction<string | null>>
     | ((value: string | null) => void);
   style?: StyleProp<ViewStyle>;
+  dropDownContainerStyle?: StyleProp<ViewStyle>;
+  selectedItemLabelStyle?: StyleProp<TextStyle>;
   isSelected?: boolean;
+  listMode?: ListModeType | undefined;
+  onSelectItem?: (item: ItemType<string>) => void;
+  showTickIcon?: boolean | undefined;
 }) {
   const { designSystem } = useAppTheme();
 
   return (
     <>
       <DropDownPicker
-        listMode="MODAL"
+        listMode={listMode}
         searchable={withSearch}
         searchPlaceholder={withSearch ? "Rechercher..." : undefined}
+        placeholder={placeholder}
+        dropDownDirection={"BOTTOM"}
         searchTextInputStyle={{
           borderRadius: 8,
         }}
@@ -43,7 +58,6 @@ export default function AppDropDownPicker({
         setValue={
           setValue as React.Dispatch<React.SetStateAction<string | null>>
         }
-        placeholder={placeholder}
         items={items}
         style={[
           {
@@ -58,11 +72,14 @@ export default function AppDropDownPicker({
           },
           style,
         ]}
-        dropDownContainerStyle={{
-          borderColor: "#ccc",
-          backgroundColor: "#fff",
-          borderRadius: 10,
-        }}
+        dropDownContainerStyle={[
+          {
+            borderColor: "#ccc",
+            backgroundColor: "#fff",
+            borderRadius: 10,
+          },
+          dropDownContainerStyle,
+        ]}
         textStyle={{
           fontSize: 14,
           color: "#333",
@@ -79,10 +96,13 @@ export default function AppDropDownPicker({
           borderBottomWidth: 1,
           height: 50,
         }}
-        selectedItemLabelStyle={{
-          fontWeight: "bold",
-          color: designSystem.colors.primary,
-        }}
+        selectedItemLabelStyle={[
+          {
+            fontWeight: "bold",
+            color: designSystem.colors.primary,
+          },
+          selectedItemLabelStyle,
+        ]}
         modalProps={{
           animationType: "slide",
         }}
@@ -93,6 +113,8 @@ export default function AppDropDownPicker({
           flexGrow: 1,
         }}
         zIndex={1000}
+        onSelectItem={onSelectItem}
+        showTickIcon={showTickIcon}
       />
     </>
   );

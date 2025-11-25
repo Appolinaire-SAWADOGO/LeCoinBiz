@@ -1,4 +1,4 @@
-import { AnnouncementsType } from "@/types";
+import { AnnouncementType } from "@/types";
 import firestore, {
   FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
@@ -15,10 +15,10 @@ export const useGetHomeAds = () => {
     try {
       let query = firestore()
         .collection("Ads")
+        .where("status", "==", "ACTIVATED")
         .orderBy("createdAt", "desc")
         .limit(PAGE_SIZE);
 
-      // Pagination
       if (pageParam) {
         query = query.startAfter(pageParam);
       }
@@ -27,7 +27,7 @@ export const useGetHomeAds = () => {
       const ads = result.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      })) as AnnouncementsType[];
+      })) as AnnouncementType[];
 
       const lastDoc = result.docs[result.docs.length - 1];
       const hasMore = result.docs.length === PAGE_SIZE;

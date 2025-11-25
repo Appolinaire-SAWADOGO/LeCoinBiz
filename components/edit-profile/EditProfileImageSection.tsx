@@ -1,50 +1,46 @@
-import * as ImagePicker from "expo-image-picker";
-import React, { useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { DEFAULT_PROFILE_IMG } from "@/constants";
+import { usePickImage } from "@/hooks/usePickImage";
+import { Edit3, Trash2 } from "lucide-react-native";
+import React from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import AppText from "../custom/AppText";
 
-export default function EditImageSection() {
-  const [imageUri, setImageUri] = useState<string | null>(null);
-
-  const pickImage = async () => {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permission.granted) {
-      alert("Permission requise pour accéder à vos photos.");
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.7,
-    });
-
-    if (!result.canceled && result.assets.length > 0) {
-      setImageUri(result.assets[0].uri);
-    }
-  };
+export default function EditProfileImageSection({
+  value,
+  onChange,
+  userImg,
+}: {
+  value: string;
+  onChange: (url: string) => void;
+  userImg: string;
+}) {
+  const { pickImage } = usePickImage();
 
   return (
     <View style={styles.container}>
       <AppText font="Medium" fontSize={15} style={styles.title}>
-        Modifier la photo de profil
+        Photo de profil
       </AppText>
-      <Pressable onPress={pickImage} style={styles.imageWrapper}>
+      <TouchableOpacity
+        onPress={async () => await pickImage((img: string) => onChange(img))}
+        style={styles.imageWrapper}
+      >
         <Image
-          source={
-            imageUri
-              ? { uri: imageUri }
-              : {
-                  uri: "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg",
-                }
-          }
+          source={{
+            uri: value || DEFAULT_PROFILE_IMG,
+          }}
           style={styles.profileImage}
         />
-        <View style={styles.editBadge}>
-          <Text style={styles.editText}>📷</Text>
-        </View>
-      </Pressable>
+        <TouchableOpacity
+          activeOpacity={value ? 0.5 : 1}
+          onPress={() => value && onChange("")}
+          style={styles.editBadge}
+        >
+          <Text style={styles.editText}>
+            {value ? <Trash2 strokeWidth={1.3} /> : <Edit3 strokeWidth={1.3} />}
+          </Text>
+        </TouchableOpacity>
+      </TouchableOpacity>
     </View>
   );
 }

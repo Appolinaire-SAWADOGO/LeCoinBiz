@@ -1,46 +1,253 @@
+import { useAppTheme } from "@/hooks/useAppTheme";
+import { AdStatusType, AnnouncementType } from "@/types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SMS from "expo-sms";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Linking, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import AppText from "../custom/AppText";
+import AppCenterModal from "../modals/AppCenterModal";
+import { HStack } from "../ui/hstack";
+import { Switch } from "../ui/switch";
 import AnnouncementDetailsFloatingButtonsCard from "./AnnouncementDetailsFloatingButtonsCard";
+import { router } from "expo-router";
+import { useDisableAd } from "@/hooks/services/ads/useDisableAd";
+import { useActivateAd } from "@/hooks/services/ads/useActivateAd";
+import { useDeleteAd } from "@/hooks/services/ads/useDeleteAd";
 
 export default function AnnouncementDetailsFloatingButtons({
   from,
   status,
+  whattsAppNumber,
+  phoneNumber,
+  ad,
+  adId,
+  adImage,
+  adTitle,
+  adPrice,
+  adCategory,
+  adSubCategory,
+  adTempUb,
 }: {
   from: "OtherPage" | "ProfilePage";
-  status?: "inSell" | "disabled";
+  status?: AdStatusType;
+  whattsAppNumber?: string;
+  phoneNumber?: string;
+  ad: AnnouncementType;
+  adId: string;
+  adImage: string;
+  adTitle: string;
+  adPrice: string;
+  adCategory: string;
+  adSubCategory: string;
+  adTempUb: string;
 }) {
   const insets = useSafeAreaInsets();
+
+  const message = `
+Bonjour,
+
+Je suis intéressé(e) par votre annonce : 
+
+- Titre : ${adTitle}
+- Catégorie : ${adCategory}
+- Sous-catégorie : ${adSubCategory}
+- Prix : ${adPrice} FCFA
+- Publiée le : ${adTempUb}
+- Image : ${adImage}
+
+Pourriez-vous me donner plus d’informations ou convenir d’un rendez-vous pour en discuter ?
+
+Merci beaucoup et bonne journée !
+`;
+
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [modalMessage, setModalMessage] = React.useState("");
+
+  const [switchValue, setSwitchValue] = React.useState(false);
+
+  const { designSystem } = useAppTheme();
+
+  const pendingAction = React.useRef<(() => void) | null>(null);
+
+  const handleActionWithWarning = async (action: () => void) => {
+    try {
+      const value = await AsyncStorage.getItem(
+        "no_longer_called_ad_detail_warning",
+      );
+
+      if (value === "true") {
+        action();
+      } else {
+        setModalMessage(
+          "Ne donnez jamais d’argent au vendeur sans voir physiquement le produit. " +
+            "Privilégiez les rencontres en personne. Nous ne sommes pas responsables des problèmes " +
+            "entre acheteurs et vendeurs. Nous servons uniquement d’intermédiaire.",
+        );
+        setIsModalOpen(true);
+
+        pendingAction.current = action;
+      }
+    } catch (error) {
+      console.error("Erreur lors de la lecture du stockage :", error);
+    }
+  };
+
+  const openWhatsApp = async () => {
+    if (from !== "OtherPage" || !whattsAppNumber) return;
+
+    const cleanNumber = whattsAppNumber.replace(/[^0-9]/g, "");
+
+    const url = `https://wa.me/226${cleanNumber}?text=${encodeURIComponent(message)}`;
+
+    Linking.openURL(url).catch((err) => {
+      console.error(err);
+      setModalMessage("WhatsApp n'est pas installé sur ce téléphone");
+      setIsModalOpen(true);
+    });
+  };
+
+  const sendSMS = async () => {
+    if (from !== "OtherPage" || !phoneNumber) return;
+
+    const cleanNumber = phoneNumber.replace(/[^0-9]/g, "");
+
+    try {
+      await SMS.sendSMSAsync([cleanNumber], message);
+    } catch {
+      setModalMessage(
+        "Impossible d’ouvrir l’application SMS. Veuillez vérifier qu’elle est bien installée sur votre appareil.",
+      );
+      setIsModalOpen(true);
+    }
+  };
+
+  const makeCall = () => {
+    if (from !== "OtherPage" || !phoneNumber) return;
+
+    const url = `tel:+226${phoneNumber}`;
+
+    Linking.openURL(url).catch(() => {
+      setModalMessage(
+        "Impossible d’ouvrir l’application Téléphone. Vérifiez qu’elle est disponible sur votre appareil.",
+      );
+      setIsModalOpen(true);
+    });
+  };
+
+  const { disableAd } = useDisableAd();
+  const { activateAd } = useActivateAd();
+  const { deleteAd } = useDeleteAd();
+
   return (
-    <View style={[styles.footer, { paddingBottom: insets.bottom + 20 }]}>
-      {from === "OtherPage" && (
-        <>
-          <AnnouncementDetailsFloatingButtonsCard useCase="watsApp" />
+    <>
+      {/* Alert modal  */}
+      <AppCenterModal
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setModalMessage("");
+        }}
+        title="Alerte"
+        titleSize="lg"
+        xSize="xl"
+        submitText="Ok"
+        footerStyle={{ justifyContent: "center" }}
+        onSubmit={async () => {
+          setIsModalOpen(false);
+          setModalMessage("");
+          await AsyncStorage.setItem(
+            "no_longer_called_ad_detail_warning",
+            switchValue.toString(),
+          );
 
-          <AnnouncementDetailsFloatingButtonsCard useCase="sms" />
+          if (pendingAction.current) {
+            pendingAction.current();
+            pendingAction.current = null;
+          }
+        }}
+      >
+        {/* message */}
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            paddingTop: 10,
+          }}
+        >
+          <AppText style={styles.text}>{modalMessage}</AppText>
+        </View>
 
-          <AnnouncementDetailsFloatingButtonsCard useCase="call" />
-        </>
-      )}
+        {/* Switch */}
+        <HStack space="md" style={{ marginTop: 20, alignItems: "center" }}>
+          <AppText style={styles.text} font="Medium">
+            Ne plus rappeler
+          </AppText>
 
-      {from === "ProfilePage" && status === "inSell" && (
-        <>
-          <AnnouncementDetailsFloatingButtonsCard useCase="edit" />
+          <Switch
+            value={switchValue}
+            onValueChange={setSwitchValue}
+            trackColor={{ false: "#d4d4d4", true: designSystem.colors.primary }}
+            thumbColor="#fafafa"
+            ios_backgroundColor="#d4d4d4"
+          />
+        </HStack>
+      </AppCenterModal>
 
-          <AnnouncementDetailsFloatingButtonsCard useCase="disable" />
-        </>
-      )}
+      <View style={[styles.footer, { paddingBottom: insets.bottom + 12 }]}>
+        {from === "OtherPage" && (
+          <>
+            <AnnouncementDetailsFloatingButtonsCard
+              useCase="watsApp"
+              onPress={() => handleActionWithWarning(openWhatsApp)}
+            />
 
-      {from === "ProfilePage" && status === "disabled" && (
-        <>
-          <AnnouncementDetailsFloatingButtonsCard useCase="edit" />
+            <AnnouncementDetailsFloatingButtonsCard
+              useCase="sms"
+              onPress={() => handleActionWithWarning(sendSMS)}
+            />
 
-          <AnnouncementDetailsFloatingButtonsCard useCase="enable" />
+            <AnnouncementDetailsFloatingButtonsCard
+              useCase="call"
+              onPress={() => handleActionWithWarning(makeCall)}
+            />
+          </>
+        )}
 
-          <AnnouncementDetailsFloatingButtonsCard useCase="delete" />
-        </>
-      )}
-    </View>
+        {from === "ProfilePage" && (
+          <>
+            <AnnouncementDetailsFloatingButtonsCard
+              useCase="edit"
+              onPress={() =>
+                router.push({
+                  pathname: "/(root)/(announcement)/PostAnAd",
+                  params: { ad: JSON.stringify(ad) },
+                })
+              }
+            />
+            {status === "ACTIVATED" && (
+              <AnnouncementDetailsFloatingButtonsCard
+                useCase="disable"
+                onPress={async () => await disableAd(adId)}
+              />
+            )}
+            {status === "DISABLED" && (
+              <AnnouncementDetailsFloatingButtonsCard
+                useCase="enable"
+                onPress={async () => await activateAd(adId)}
+              />
+            )}
+            {status !== "ACTIVATED" && (
+              <AnnouncementDetailsFloatingButtonsCard
+                useCase="delete"
+                onPress={async () => await deleteAd(adId, ad.status)}
+              />
+            )}
+          </>
+        )}
+      </View>
+    </>
   );
 }
 
@@ -53,11 +260,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingTop: 12,
+    paddingTop: 10,
     paddingBottom: 10,
     paddingHorizontal: 10,
     backgroundColor: "#fff",
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: "#ddd",
+  },
+
+  text: {
+    fontSize: 16,
+    lineHeight: 22,
+    color: "#333",
   },
 });

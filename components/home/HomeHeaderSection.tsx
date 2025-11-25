@@ -5,19 +5,45 @@ import { APP_NAME } from "@/constants";
 import { useCheckUserAcces } from "@/hooks/services/auth/useCheckUserAcces";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useFilterStatesStore } from "@/store/useFilterStatesStore";
+import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { BellRing, Search, SlidersHorizontal } from "lucide-react-native";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import SectionHeaderText from "../SectionHeaderText";
-import FilterModal from "../modals/filter-modal/FilterModal";
+import FilterModalForm from "../modals/filter-modal/FilterModalForm";
 
 export default function HomeHeaderSection() {
-  const { open: openFilterModal } = useFilterStatesStore();
+  const {
+    open: openFilterModal,
+    isOpen,
+    close,
+    search,
+    category,
+    subCategory,
+    city,
+    min,
+    max,
+    tempPub,
+    options,
+  } = useFilterStatesStore();
 
   const { designSystem } = useAppTheme();
 
+  const queryClient = useQueryClient();
+
   const { checkUserAccess } = useCheckUserAcces();
+
+  const filters = {
+    search,
+    category,
+    subCategory,
+    city,
+    min,
+    max,
+    tempPub,
+    options,
+  };
 
   return (
     <>
@@ -28,7 +54,7 @@ export default function HomeHeaderSection() {
         ]}
       >
         {/* filter modal */}
-        <FilterModal useCase="Home" />
+        <FilterModalForm isOpen={isOpen} close={close} useCase={"Home"} />
 
         <View>
           {/* texture */}
@@ -53,7 +79,13 @@ export default function HomeHeaderSection() {
           <View style={styles.searchRow}>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => router.push("/(root)/Search")}
+              onPress={async () => {
+                router.push("/(root)/Filters");
+
+                await queryClient.invalidateQueries({
+                  queryKey: ["filter-ads", filters],
+                });
+              }}
               style={styles.searchChip}
             >
               <Search size={18} color={designSystem.colors.bigText} />

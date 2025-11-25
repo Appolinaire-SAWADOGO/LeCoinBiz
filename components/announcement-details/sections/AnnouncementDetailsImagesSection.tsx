@@ -1,4 +1,3 @@
-import { AnnouncementsType } from "@/types";
 import React from "react";
 import { Dimensions, FlatList, Image, StyleSheet, View } from "react-native";
 import AppText from "../../custom/AppText";
@@ -7,30 +6,32 @@ import AnnouncementDetailsSubImagesCard from "../AnnouncementDetailsSubImagesCar
 const { width } = Dimensions.get("window");
 
 export default function AnnouncementDetailsImagesSection({
-  currentAnnouncement,
+  images,
 }: {
-  currentAnnouncement: AnnouncementsType;
+  images: string[];
 }) {
   const [subImageSelected, setSubImageSelected] = React.useState<number>(0);
 
   return (
     <>
       {/* main image */}
-      <View style={styles.imageGallery}>
-        <Image
-          source={{ uri: currentAnnouncement.image }}
-          style={styles.mainImage}
-        />
-        <View style={styles.imageBadge}>
-          <AppText style={styles.badgeText}>
-            1/{currentAnnouncement.subPhotos.length + 1}
-          </AppText>
+      {images && (
+        <View style={styles.imageGallery}>
+          <Image
+            source={{ uri: images[subImageSelected] }}
+            style={styles.mainImage}
+          />
+          <View style={styles.imageBadge}>
+            <AppText style={styles.badgeText}>
+              {subImageSelected + 1}/{images.length}
+            </AppText>
+          </View>
         </View>
-      </View>
+      )}
 
       {/* sub images  */}
       <FlatList
-        data={currentAnnouncement.subPhotos}
+        data={images}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.subImages}
@@ -71,16 +72,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   subImages: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
     paddingVertical: 20,
-    gap: 8,
+    gap: 10,
     flex: 1,
     justifyContent: "center",
-  },
-  subImage: {
-    width: 70,
-    height: 70,
-    borderRadius: 8,
-    borderWidth: 3,
   },
 });
