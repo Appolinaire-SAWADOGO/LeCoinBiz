@@ -76,6 +76,8 @@ export type AlgoliaAnnouncementType = {
   };
 };
 
+export type AuthMethodType = "EMAIL_PASSWORD" | "PHONE_NUMBER" | "GOOGLE";
+
 export type UserType = {
   id: string;
   userName: string;
@@ -115,8 +117,6 @@ export type FavoriteType = {
   };
 };
 
-export type AuthMethodType = "EMAIL_PASSWORD" | "PHONE_NUMBER";
-
 export type SortByType = {
   name: string;
   icon: ImageSourcePropType;
@@ -150,8 +150,7 @@ export type AuthModalType =
   | "Index"
   | "continousWithPhoneNumber"
   | "signInWithEmail"
-  | "signUpWithEmail"
-  | "continousWithGoogle";
+  | "signUpWithEmail";
 
 export type ResetFormType = UseFormReset<{
   title: string;

@@ -36,8 +36,6 @@ export const useCreateUserWithEmail = () => {
           createdAt: firestore.FieldValue.serverTimestamp(),
           updatedAt: firestore.FieldValue.serverTimestamp(),
         });
-
-      console.log("User added!");
     } catch (error) {
       console.log("Error creating user with phone number:", error);
     }

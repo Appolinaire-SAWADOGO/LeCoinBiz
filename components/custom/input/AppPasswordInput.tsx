@@ -1,7 +1,7 @@
 import PasswordInputCheckCard from "@/components/auth/form/PassordInpuCheckCard"; // Vérifie le nom réel du fichier
 import AppText from "@/components/custom/AppText";
-import { isValidPassword } from "@/functions/auth-form";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { isValidPassword } from "@/utils/auth";
 import React from "react";
 import {
   StyleProp,

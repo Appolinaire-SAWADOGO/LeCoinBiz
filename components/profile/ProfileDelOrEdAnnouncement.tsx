@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
 import AppDropDownPicker from "@/components/custom/picker/AppDropDownPicker";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { router } from "expo-router";
 import {
   Edit3,
+  EllipsisVertical,
   Eye,
   EyeOff,
   Trash,
-  EllipsisVertical,
 } from "lucide-react-native";
+import React from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
-import { useDisableAd } from "@/hooks/services/ads/useDisableAd";
 import { useActivateAd } from "@/hooks/services/ads/useActivateAd";
 import { useDeleteAd } from "@/hooks/services/ads/useDeleteAd";
+import { useDisableAd } from "@/hooks/services/ads/useDisableAd";
 import { AdStatusType, AnnouncementType } from "@/types";
 
 export default function ProfileDelOrEdAnnouncement({
@@ -26,8 +26,8 @@ export default function ProfileDelOrEdAnnouncement({
   status: AdStatusType;
   adId: string;
   ad: AnnouncementType;
-  openAdId: string | null;
-  setOpenAdId: (id: string | null) => void;
+  openAdId?: string | null;
+  setOpenAdId?: (id: string | null) => void;
 }) {
   const isOpen = openAdId === adId;
 
@@ -45,7 +45,7 @@ export default function ProfileDelOrEdAnnouncement({
       onPress: () =>
         router.push({
           pathname: "/(root)/(announcement)/PostAnAd",
-          params: { ad: JSON.stringify(ad) },
+          params: { ad: JSON.stringify(ad), from: "NORMAL" },
         }),
     },
 
@@ -55,7 +55,7 @@ export default function ProfileDelOrEdAnnouncement({
             label: "Désactiver",
             value: "disable",
             icon: <EyeOff size={14} color="#dc3545" />,
-            onPress: async () => await disableAd(adId),
+            onPress: async () => await disableAd(adId, "NORMAL"),
           },
         ]
       : []),
@@ -66,7 +66,7 @@ export default function ProfileDelOrEdAnnouncement({
             label: "Réactiver",
             value: "reactivate",
             icon: <Eye size={14} color={designSystem.colors.primary} />,
-            onPress: async () => await activateAd(adId),
+            onPress: async () => await activateAd(adId, "NORMAL"),
           },
         ]
       : []),
@@ -77,7 +77,7 @@ export default function ProfileDelOrEdAnnouncement({
             label: "Supprimer",
             value: "delete",
             icon: <Trash size={14} color="#dc3545" />,
-            onPress: async () => await deleteAd(adId, status),
+            onPress: async () => await deleteAd(adId, status, "NORMAL"),
           },
         ]
       : []),
@@ -89,7 +89,7 @@ export default function ProfileDelOrEdAnnouncement({
   }));
 
   const handleToggle = () => {
-    setOpenAdId(isOpen ? null : adId);
+    setOpenAdId?.(isOpen ? null : adId);
   };
 
   return (
@@ -104,7 +104,7 @@ export default function ProfileDelOrEdAnnouncement({
         open={isOpen}
         value={null}
         items={mappedItems}
-        setOpen={(open) => setOpenAdId(open ? adId : null)}
+        setOpen={(open) => setOpenAdId?.(open ? adId : null)}
         setValue={() => {}}
         withSearch={false}
         showTickIcon={false}
@@ -121,7 +121,7 @@ export default function ProfileDelOrEdAnnouncement({
         onSelectItem={(item) => {
           const found = actions.find((a) => a.value === item.value);
           if (found) found.onPress();
-          setOpenAdId(null);
+          setOpenAdId?.(null);
         }}
       />
     </View>

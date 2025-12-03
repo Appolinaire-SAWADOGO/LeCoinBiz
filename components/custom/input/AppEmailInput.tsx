@@ -1,4 +1,4 @@
-import { isValidEmail } from "@/functions/auth-form";
+import { isValidEmail } from "@/utils/auth";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import AppText from "../AppText";
@@ -19,7 +19,7 @@ export default function AppEmailInput({
   placeholder?: string;
   value?: string;
   onChangeText?: ((text: string) => void) | undefined;
-  actionError?: string;
+  actionError?: string | null;
 }) {
   const [error, setError] = useState("");
 
@@ -62,7 +62,7 @@ export default function AppEmailInput({
 const styles = StyleSheet.create({
   error: {
     color: "red",
-    marginTop: 4,
+    marginTop: 8,
     fontSize: 13,
   },
 });

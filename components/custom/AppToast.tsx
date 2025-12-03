@@ -65,7 +65,11 @@ export default function AppToast() {
     ),
   };
 
-  return <Toast config={toastConfig} />;
+  return (
+    <View style={{ zIndex: 99999 }}>
+      <Toast config={toastConfig} />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

@@ -1,7 +1,7 @@
 // hooks/useGetFilterAds.ts
-import { searchClient } from "@/functions/algolia/algoliaSearch";
 import { SetFilterType } from "@/store/useFilterStatesStore";
 import { AnnouncementType } from "@/types";
+import { searchClient } from "@/utils/algolia/algoliaSearch";
 
 const PAGE_SIZE = 10;
 

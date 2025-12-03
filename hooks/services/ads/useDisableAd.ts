@@ -1,4 +1,4 @@
-import { showToast } from "@/functions";
+import { showToast } from "@/utils";
 import firestore from "@react-native-firebase/firestore";
 import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
@@ -6,7 +6,7 @@ import Toast from "react-native-toast-message";
 export const useDisableAd = () => {
   const queryClient = useQueryClient();
 
-  const disableAd = async (adId: string) => {
+  const disableAd = async (adId: string, from: "NORMAL" | "AD_DETAILS") => {
     if (!adId) {
       showToast("error", "Annonce introuvable.");
       return;
@@ -32,6 +32,12 @@ export const useDisableAd = () => {
       await queryClient.invalidateQueries({
         queryKey: ["user-disabled-ads"],
       });
+
+      if (from === "AD_DETAILS") {
+        await queryClient.invalidateQueries({
+          queryKey: ["ad", adId],
+        });
+      }
 
       Toast.hide();
       showToast("success", "Annonce desactivée.");

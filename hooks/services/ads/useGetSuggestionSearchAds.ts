@@ -1,4 +1,4 @@
-import { searchClient } from "@/functions/algolia/algoliaSearch";
+import { searchClient } from "@/utils/algolia/algoliaSearch";
 
 export const useGetSuggestionSearchAds = () => {
   const getSuggestionSearchAds = async (search: string) => {

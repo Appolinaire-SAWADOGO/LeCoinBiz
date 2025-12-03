@@ -5,11 +5,11 @@ import AppText from "@/components/custom/AppText";
 import AppEmailInput from "@/components/custom/input/AppEmailInput";
 import AppPasswordInput from "@/components/custom/input/AppPasswordInput";
 import { APP_NAME } from "@/constants";
-import { isValidEmail, isValidPassword } from "@/functions/auth-form";
 import { useSignInWithEmail } from "@/hooks/services/auth/signIn/useSignInWithEmail";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useBackPress } from "@/hooks/useBackPress";
 import { AuthModalType } from "@/types";
+import { isValidEmail, isValidPassword } from "@/utils/auth";
 import { Link } from "expo-router";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
@@ -55,7 +55,7 @@ export default function SignInWithEmail({
             editable
             email={email}
             setEmail={(text) => {
-              if (error) setError("");
+              if (error) setError(null);
               setEmail(text);
             }}
             placeholder="example@gmail.com"
@@ -70,7 +70,7 @@ export default function SignInWithEmail({
               value={password}
               placeholder="*********"
               onChangeText={(text) => {
-                if (error) setError("");
+                if (error) setError(null);
                 setPassword(text);
               }}
             />
@@ -94,11 +94,13 @@ export default function SignInWithEmail({
         title="Continuer"
         textStyle={{ fontSize: 14, fontWeight: "bold" }}
         onPress={async () => {
+          if (isLoading) return;
+
           if (email && isValidEmail(email) && ifPasswordValided)
             await handleSignInWithEmail(email, password, setEmail, setPassword);
         }}
         disabled={
-          email && isValidEmail(email) && ifPasswordValided ? false : true
+          !email || !isValidEmail(email) || !ifPasswordValided || isLoading
         }
       />
 
@@ -112,8 +114,21 @@ export default function SignInWithEmail({
         }}
       >
         <AppText>Vous n&rsquo;avez pas de compte ? </AppText>
-        <TouchableOpacity onPress={() => setBigStep("signUpWithEmail")}>
-          <AppText color={designSystem.colors.primary} style={[styles.link]}>
+
+        <TouchableOpacity
+          disabled={isLoading}
+          onPress={() => {
+            if (!isLoading) setBigStep("signUpWithEmail");
+          }}
+        >
+          <AppText
+            color={
+              isLoading
+                ? designSystem.colors.secondary
+                : designSystem.colors.primary
+            }
+            style={[styles.link]}
+          >
             Inscrivez-vous
           </AppText>
         </TouchableOpacity>
@@ -129,7 +144,6 @@ const styles = StyleSheet.create({
   },
   error: {
     color: "red",
-    fontSize: 13,
   },
 
   link: {

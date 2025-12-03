@@ -1,4 +1,4 @@
-import { showToast } from "@/functions";
+import { showToast } from "@/utils";
 import { EditProfileSchema } from "@/zod/schema/editProfile.schema";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";

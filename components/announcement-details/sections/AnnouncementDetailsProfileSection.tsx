@@ -1,6 +1,11 @@
+import { HStack } from "@/components/ui/hstack";
+import { Skeleton, SkeletonText } from "@/components/ui/skeleton";
+import { VStack } from "@/components/ui/vstack";
 import { DEFAULT_PROFILE_IMG } from "@/constants";
+import { useGetUserAdsCount } from "@/hooks/services/ads/useGetUserAdsCount";
+import { useGetUserById } from "@/hooks/services/user/useGetUserById";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { UserType } from "@/types";
+import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { CornerDownRight, MapPin } from "lucide-react-native";
 import React from "react";
@@ -8,22 +13,69 @@ import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import AppText from "../../custom/AppText";
 
 export default function AnnouncementDetailsProfileSection({
-  userData,
+  userId,
 }: {
-  userData: UserType & { adsCount: number };
+  userId: string;
 }) {
   const { designSystem } = useAppTheme();
+
+  const { getUserById } = useGetUserById();
+  const { getUserAdsCount } = useGetUserAdsCount();
+
+  const { data: user, isLoading: userIsLoading } = useQuery({
+    queryKey: ["user", userId],
+    queryFn: () => getUserById(userId as string),
+    enabled: !!userId,
+  });
+
+  const { data: userAdsCount, isLoading: userAdsCountIsLoading } = useQuery({
+    queryKey: ["userAdsCount", userId],
+    queryFn: () => getUserAdsCount(userId as string),
+    enabled: !!userId,
+  });
+
+  const isLoading = userIsLoading || userAdsCountIsLoading;
+
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Skeleton
+          variant="circular"
+          style={{
+            width: 40,
+            height: 40,
+            marginRight: 12,
+          }}
+        />
+
+        <VStack space="sm" className="flex-1">
+          <SkeletonText _lines={1} style={{ width: 200, height: 10 }} />
+
+          <HStack space="md" style={{ marginTop: 1 }}>
+            <SkeletonText _lines={1} style={{ width: 90, height: 10 }} />
+            <SkeletonText _lines={1} style={{ width: 90, height: 10 }} />
+          </HStack>
+        </VStack>
+      </View>
+    );
+  }
 
   return (
     <TouchableOpacity
       onPress={() =>
-        router.push(`/(root)/MerchantProfile?userId=${userData.id}`)
+        router.push({
+          pathname: "/(root)/MerchantProfile",
+          params: {
+            userRslt: JSON.stringify(user),
+            userAdsCountRslt: userAdsCount,
+          },
+        })
       }
       style={styles.container}
     >
       <Image
         source={{
-          uri: userData.image || DEFAULT_PROFILE_IMG,
+          uri: user?.image || DEFAULT_PROFILE_IMG,
         }}
         style={styles.image}
       />
@@ -36,7 +88,7 @@ export default function AnnouncementDetailsProfileSection({
           color={designSystem.colors.bigText}
           style={{ marginBottom: 2 }}
         >
-          {userData.userName}
+          {user?.userName}
         </AppText>
 
         {/* Lieu et annonces */}
@@ -50,7 +102,7 @@ export default function AnnouncementDetailsProfileSection({
                 textTransform: "capitalize",
               }}
             >
-              {userData.location.city}
+              {user?.location.city}
             </AppText>
           </View>
 
@@ -59,7 +111,7 @@ export default function AnnouncementDetailsProfileSection({
             <AppText
               style={{ fontSize: 13, color: designSystem.colors.subText }}
             >
-              {userData.adsCount} Annonces
+              {userAdsCount} Annonces
             </AppText>
           </View>
         </View>
@@ -70,16 +122,14 @@ export default function AnnouncementDetailsProfileSection({
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: "rgba(0,0,0,0.02)",
     marginTop: 20,
     paddingVertical: 16,
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    borderColor: "#eee",
+    borderColor: "#E5E5E5",
     borderTopWidth: 1,
-    // borderWidth: 1,
-    // borderRadius: 8,
+    borderBottomWidth: 1,
     width: "100%",
   },
   image: {

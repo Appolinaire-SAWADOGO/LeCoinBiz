@@ -24,7 +24,7 @@ export default function AppButton({
   isLoading = false,
   iconColor = "#fff",
 }: {
-  onPress?: () => void;
+  onPress?: () => void | Promise<void>;
   title: string;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;

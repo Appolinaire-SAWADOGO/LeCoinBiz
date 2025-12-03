@@ -1,8 +1,8 @@
 import Container from "@/components/Container";
 import AppText from "@/components/custom/AppText";
-import { addRecentSearch } from "@/functions";
 import { useFilterStatesStore } from "@/store/useFilterStatesStore";
 import { FilterModalUseCaseType } from "@/types";
+import { addRecentSearch } from "@/utils";
 import { FilterModalFormSchema } from "@/zod/schema/filterModalForm.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";

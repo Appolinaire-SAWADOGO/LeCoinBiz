@@ -10,6 +10,7 @@ import PostAnAdConditionsSection from "@/components/post-an-ad/sections/PostAnAd
 import PostAnAdOptionsSection from "@/components/post-an-ad/sections/PostAnAdOptionsSection";
 import PostAnAdPhotosSection from "@/components/post-an-ad/sections/PostAnAdPhotosSection";
 import PostAnAdSubCategorySection from "@/components/post-an-ad/sections/PostAnAdSubCategorySection";
+import { useEditAd } from "@/hooks/services/ads/useEditAds";
 import { usePostAnAd } from "@/hooks/services/ads/usePostAnAd";
 import { AnnouncementType } from "@/types";
 import { PostAnAddSchema } from "@/zod/schema/postAnAd.schema";
@@ -30,9 +31,11 @@ import { z } from "zod";
 type FormData = z.infer<typeof PostAnAddSchema>;
 
 export default function PostAnAd() {
-  const { ad } = useLocalSearchParams<{ ad?: string }>();
+  const { ad, from } = useLocalSearchParams();
 
-  const parseAd: AnnouncementType | null = ad ? JSON.parse(ad) : null;
+  const parseAd: AnnouncementType | null = ad ? JSON.parse(ad as string) : null;
+
+  console.log(JSON.stringify(parseAd, null, 2));
 
   const {
     control,
@@ -63,6 +66,7 @@ export default function PostAnAd() {
   });
 
   const { postAnAdd } = usePostAnAd();
+  const { editAd } = useEditAd();
 
   const insets = useSafeAreaInsets();
 
@@ -397,7 +401,17 @@ export default function PostAnAd() {
             title={parseAd ? "Modifier" : "Publier"}
             style={{ borderRadius: 8, elevation: 0 }}
             onPress={handleSubmit(async (data) => {
-              await postAnAdd(data, resetForm);
+              if (parseAd) {
+                await editAd(
+                  data,
+                  parseAd,
+                  parseAd.status,
+                  parseAd.id,
+                  from as "NORMAL" | "AD_DETAILS"
+                );
+              } else {
+                await postAnAdd(data, resetForm);
+              }
             })}
             isLoading={isSubmitting}
             disabled={!isButtonActive() || isSubmitting}

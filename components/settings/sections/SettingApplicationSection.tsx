@@ -1,13 +1,15 @@
-import AppSwitch from "@/components/custom/AppSwitch";
 import { router } from "expo-router";
 import { BellRing, CircleAlert, Share2, Star } from "lucide-react-native";
 import React from "react";
+import { Share } from "react-native";
 import SettingElement from "../SettingElement";
 import SettingsSectionContainer from "../SettingSectionContainer";
-import SettingsEvaluateApp from "../SettingsEvaluateApp";
+import SettingsEvaluateAppModal from "../SettingsEvaluateAppModal";
+import SettingsNotifications from "../SettingsNotifications";
 
 export default function SettingApplicationSection() {
   const [isEvaluatedModalOpen, setIsEvaluatedModalOpen] = React.useState(false);
+
   return (
     <>
       <SettingsSectionContainer title="Application">
@@ -17,7 +19,7 @@ export default function SettingApplicationSection() {
           color="#F84F31"
           label="Notifications"
         >
-          <AppSwitch />
+          <SettingsNotifications />
         </SettingElement>
         <SettingElement
           Icon={Star}
@@ -25,10 +27,7 @@ export default function SettingApplicationSection() {
           label="Évaluez notre application"
           onClick={() => setIsEvaluatedModalOpen(true)}
         >
-          <SettingsEvaluateApp
-            isOpen={isEvaluatedModalOpen}
-            setIsOpen={setIsEvaluatedModalOpen}
-          />
+          <SettingsEvaluateAppModal />
         </SettingElement>
         <SettingElement
           Icon={CircleAlert}
@@ -41,6 +40,15 @@ export default function SettingApplicationSection() {
           Icon={Share2}
           color="#25B7D3"
           label="Partager l'application à un ami"
+          onClick={async () => {
+            try {
+              await Share.share({
+                message: "https://google.com/LeCoinBiz",
+              });
+            } catch (error) {
+              console.log("Error sharing:", error);
+            }
+          }}
         />
       </SettingsSectionContainer>
     </>

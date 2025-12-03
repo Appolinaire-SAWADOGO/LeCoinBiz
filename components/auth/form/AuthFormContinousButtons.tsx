@@ -16,7 +16,6 @@ export default function AuthFormContinousButtons({
 
   return (
     <View style={styles.continousbutton}>
-      {/* continue button */}
       <AppButton
         isLoading={isLoading}
         title="Continuer"

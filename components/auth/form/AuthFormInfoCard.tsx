@@ -16,10 +16,14 @@ export default function AuthFormInfoCard({
   return (
     <View style={styles.infoCard}>
       <InfoDynSvg />
-      <AppText fontSize={12} color={designSystem.colors.smallText}>
-        {label}
-      </AppText>
-      {children}
+      <View style={{ flex: 1 }}>
+        {label && (
+          <AppText fontSize={12} color={designSystem.colors.smallText}>
+            {label}
+          </AppText>
+        )}
+        {children}
+      </View>
     </View>
   );
 }
@@ -28,11 +32,13 @@ const styles = StyleSheet.create({
   infoCard: {
     borderRadius: 8,
     backgroundColor: "#DEE0E4",
-    height: 62,
+    height: "auto",
+    width: "100%",
     marginBottom: 24,
     flexDirection: "row",
     gap: 12,
     alignItems: "center",
     paddingHorizontal: 20,
+    paddingVertical: 14,
   },
 });

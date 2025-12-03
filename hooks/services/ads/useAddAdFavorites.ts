@@ -1,4 +1,4 @@
-import { showToast } from "@/functions";
+import { showToast } from "@/utils";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { useQueryClient } from "@tanstack/react-query";
@@ -64,7 +64,7 @@ export const useAddAdFavorites = () => {
       }
 
       queryClient.setQueryData(
-        ["if_ad_is_added_to_favorites", adId],
+        ["if-ad-is-added-to-favorites", adId],
         !isAlreadyAdded
       );
 

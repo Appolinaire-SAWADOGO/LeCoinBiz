@@ -1,5 +1,5 @@
-import Announcements from "@/components/annoucement/Announcements";
-import NoAds from "@/components/annoucement/NoAds";
+import Announcements from "@/components/announcement/Announcements";
+import NoAds from "@/components/announcement/NoAds";
 import Container from "@/components/Container";
 import HeaderHideAnimation from "@/components/HeaderHideAnimation";
 import HomeGoBackMoadal from "@/components/home/HomeGoBackMoadal";

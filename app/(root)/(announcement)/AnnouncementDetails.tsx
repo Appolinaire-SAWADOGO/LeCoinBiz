@@ -4,16 +4,15 @@ import AnnouncementDetailsImagesSection from "@/components/announcement-details/
 import AnnouncementDetailsInfoSection from "@/components/announcement-details/sections/AnnouncementDetailsInfoSection";
 import AnnouncementDetailsProfileSection from "@/components/announcement-details/sections/AnnouncementDetailsProfileSection";
 import AnnouncementDetailsPublicationReportingSection from "@/components/announcement-details/sections/AnnouncementDetailsPublicationReportingSection";
-import AnnouncementDetailsShareSection from "@/components/announcement-details/sections/AnnouncementDetailsShareSection";
 import AnnouncementDetailsSimilarsAdSection from "@/components/announcement-details/sections/AnnouncementDetailsSimilarsAdSection";
 import Container from "@/components/Container";
 import AppFullScreenLoader from "@/components/custom/AppFullScreenLoader";
-import { formatCreatedAt } from "@/functions";
 import { useGetAdById } from "@/hooks/services/ads/useGetAdById";
-import { useGetSimilarAds } from "@/hooks/services/ads/useGetSimilarsAds";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { AdStatusType, AnnouncementType, UserType } from "@/types";
-import { useQuery } from "@tanstack/react-query";
+import { AdStatusType, AnnouncementType } from "@/types";
+import { formatCreatedAt } from "@/utils";
+import auth from "@react-native-firebase/auth";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
@@ -22,120 +21,106 @@ export default function AnnouncementDetails() {
   const { designSystem } = useAppTheme();
 
   const { getAdById } = useGetAdById();
-  const { getSimilarAds } = useGetSimilarAds();
 
-  const { id, from, status } = useLocalSearchParams();
+  const { initialRslt, from } = useLocalSearchParams();
 
-  const { data: adDetailsData, isLoading: adDetailsIsLoading } = useQuery({
-    queryKey: ["ad-details", id],
-    queryFn: () => getAdById(id as string),
+  const initialAd: AnnouncementType = JSON.parse(initialRslt as string);
+
+  const currentUser = auth().currentUser;
+
+  const queryClient = useQueryClient();
+
+  const { data: ad, isLoading: adIsLoading } = useQuery({
+    queryKey: ["ad", initialAd.id],
+    queryFn: () => getAdById(initialAd.id as string),
+    initialData: () => {
+      return queryClient.getQueryData(["ad", initialAd.id]) ?? initialAd;
+    },
+    refetchOnWindowFocus: false,
   });
 
-  const { data: similarsAdsData, isLoading: similarsAdsIsLoading } = useQuery({
-    queryKey: ["similars-ads", id],
-    queryFn: () =>
-      getSimilarAds({
-        currentAdId: id as string,
-        title: adDetailsData?.ad?.title as string,
-        category: adDetailsData?.ad?.category as string,
-        subCategory: adDetailsData?.ad?.subCategory as string,
-        conditions: adDetailsData?.ad?.conditions as string[],
-        description: adDetailsData?.ad?.description as string,
-        userId: adDetailsData?.user?.id as string,
-        maxResults: 5,
-      }),
-    enabled: !!adDetailsData?.ad,
-  });
-
-  const isLoading = adDetailsIsLoading || similarsAdsIsLoading;
+  const isLoading = adIsLoading;
 
   return (
     <Container withBottom withGoBack>
-      {(isLoading ||
-        !adDetailsData?.ad ||
-        !adDetailsData.user ||
-        !similarsAdsData) && <AppFullScreenLoader />}
-      {!isLoading &&
-        adDetailsData?.ad &&
-        adDetailsData.user &&
-        similarsAdsData && (
-          <>
-            {/* header */}
-            <AnnouncementDetailsHeaderSection
-              from={from as "OtherPage" | "ProfilePage"}
-              status={status as AdStatusType}
-              name={
-                adDetailsData.ad?.title.length! > 15
-                  ? adDetailsData?.ad?.title.slice(0, 15) + "..."
-                  : adDetailsData.ad?.title
-              }
-              adId={id as string}
-            />
+      {(isLoading || !ad) && <AppFullScreenLoader />}
+      {!isLoading && ad && (
+        <>
+          {/* header */}
+          <AnnouncementDetailsHeaderSection
+            from={from as "OtherPage" | "ProfilePage"}
+            status={ad.status as AdStatusType}
+            name={
+              ad?.title.length! > 15
+                ? ad?.title.slice(0, 15) + "..."
+                : ad?.title
+            }
+            adId={ad.id as string}
+          />
 
-            {/* main */}
-            <View style={[styles.main]}>
-              {/* scroll view*/}
-              <ScrollView
-                scrollEventThrottle={16}
-                contentContainerStyle={styles.contentContainer}
-              >
-                {/* Galerie d'images */}
-                <AnnouncementDetailsImagesSection
-                  images={adDetailsData?.ad?.images as string[]}
+          {/* main */}
+          <View style={[styles.main]}>
+            {/* scroll view*/}
+            <ScrollView
+              scrollEventThrottle={16}
+              contentContainerStyle={styles.contentContainer}
+            >
+              {/* Galerie d'images */}
+              <AnnouncementDetailsImagesSection
+                images={ad?.images as string[]}
+              />
+
+              {/* Section principale */}
+              <View style={styles.mainContent}>
+                {/* Announcement Details Info Section */}
+                <AnnouncementDetailsInfoSection
+                  currentAnnouncement={ad as AnnouncementType}
+                  from={from as "OtherPage" | "ProfilePage"}
                 />
 
-                {/* Section principale */}
-                <View style={styles.mainContent}>
-                  {/* Announcement Details Info Section */}
-                  <AnnouncementDetailsInfoSection
-                    currentAnnouncement={adDetailsData?.ad as AnnouncementType}
-                    from={from as "OtherPage" | "ProfilePage"}
-                  />
+                {/*profile */}
+                {from === "OtherPage" && (
+                  <AnnouncementDetailsProfileSection userId={ad.userId} />
+                )}
 
-                  {/*profile */}
-                  {from === "OtherPage" && (
-                    <AnnouncementDetailsProfileSection
-                      userData={
-                        adDetailsData?.user as UserType & { adsCount: number }
-                      }
-                    />
-                  )}
+                {/* share */}
+                {/* {ad.status === "ACTIVATED" && (
+                  <AnnouncementDetailsShareSection from={from as string} />
+                )} */}
 
-                  {/* share */}
-                  {status === "ACTIVATED" && (
-                    <AnnouncementDetailsShareSection from={from as string} />
-                  )}
-
-                  {/* report publication and similar ad */}
-                  {from === "OtherPage" && (
-                    <>
-                      <AnnouncementDetailsSimilarsAdSection
-                        data={similarsAdsData!}
+                {/* report publication and similar ad */}
+                {from === "OtherPage" && (
+                  <>
+                    <AnnouncementDetailsSimilarsAdSection ad={ad} />
+                    {ad.userId !== currentUser?.uid && (
+                      <AnnouncementDetailsPublicationReportingSection
+                        adId={ad.id}
+                        adUserId={ad.userId}
                       />
-                      <AnnouncementDetailsPublicationReportingSection />
-                    </>
-                  )}
-                </View>
-              </ScrollView>
+                    )}
+                  </>
+                )}
+              </View>
+            </ScrollView>
 
-              {/* Boutons d'action flottants */}
-              <AnnouncementDetailsFloatingButtons
-                from={from as "OtherPage" | "ProfilePage"}
-                status={status as AdStatusType}
-                whattsAppNumber={adDetailsData.ad.whatsappNumber}
-                phoneNumber={adDetailsData.ad.phoneNumber}
-                adImage={adDetailsData.ad.images[0]}
-                adTitle={adDetailsData.ad.title}
-                adPrice={adDetailsData.ad.price.toString()}
-                adCategory={adDetailsData.ad.category}
-                adSubCategory={adDetailsData.ad.subCategory}
-                adTempUb={formatCreatedAt(adDetailsData.ad.createdAt)}
-                adId={adDetailsData.ad.id}
-                ad={adDetailsData.ad}
-              />
-            </View>
-          </>
-        )}
+            {/* Boutons d'action flottants */}
+            <AnnouncementDetailsFloatingButtons
+              from={from as "OtherPage" | "ProfilePage"}
+              status={ad.status as AdStatusType}
+              whattsAppNumber={ad.whatsappNumber}
+              phoneNumber={ad.phoneNumber}
+              adImage={ad.images[0]}
+              adTitle={ad.title}
+              adPrice={ad.price.toString()}
+              adCategory={ad.category}
+              adSubCategory={ad.subCategory}
+              adTempUb={formatCreatedAt(ad.createdAt)}
+              adId={ad.id}
+              ad={ad}
+            />
+          </View>
+        </>
+      )}
     </Container>
   );
 }

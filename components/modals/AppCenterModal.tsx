@@ -23,18 +23,22 @@ export default function AppCenterModal({
   footerStyle,
   onSubmit,
   withCancelButton = true,
+  withSubmitButton = true,
   onClose,
   titleSize = "md",
   xSize = "md",
 }: {
   title: string;
-  submitText: string;
+  submitText?: string;
   isOpen: boolean;
-  setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpen?:
+    | React.Dispatch<React.SetStateAction<boolean>>
+    | ((isOpen: boolean) => void);
   children: React.ReactNode;
   footerStyle?: StyleProp<ViewStyle>;
   onSubmit?: () => void;
   withCancelButton?: boolean;
+  withSubmitButton?: boolean;
   onClose?: () => void;
   titleSize?: "xs" | "sm" | "md" | "lg" | "5xl" | "4xl" | "3xl" | "2xl" | "xl";
   xSize?: "lg" | "xs" | "sm" | "md" | "xl" | "2xs";
@@ -85,17 +89,19 @@ export default function AppCenterModal({
               <ButtonText>Annuler</ButtonText>
             </Button>
           )}
-          <Button
-            style={{
-              backgroundColor: designSystem.colors.primary,
-              width: 100,
-            }}
-            onPress={() => {
-              onSubmit?.();
-            }}
-          >
-            <ButtonText style={{ color: "#fff" }}>{submitText}</ButtonText>
-          </Button>
+          {withSubmitButton && (
+            <Button
+              style={{
+                backgroundColor: designSystem.colors.primary,
+                width: 100,
+              }}
+              onPress={() => {
+                onSubmit?.();
+              }}
+            >
+              <ButtonText style={{ color: "#fff" }}>{submitText}</ButtonText>
+            </Button>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>

@@ -14,7 +14,7 @@ export default function SecurityTips() {
   };
 
   return (
-    <Container>
+    <Container withGoBack>
       <PageHeader
         name="Conseils de sécurité"
         style={{ paddingHorizontal: 20 }}

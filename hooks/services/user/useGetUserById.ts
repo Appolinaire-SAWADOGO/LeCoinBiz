@@ -13,9 +13,9 @@ export const useGetUserById = () => {
         return;
       }
 
-      const userData = userSnap.data() as UserType;
+      const userData = userSnap.data() as Omit<UserType, "id">;
 
-      return userData;
+      return { id, ...userData };
     } catch (error) {
       console.error(
         "Erreur lors de la récupération de l'utilisateur et de ses annonces :",

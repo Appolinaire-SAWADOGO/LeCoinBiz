@@ -1,5 +1,6 @@
 import { useAuthModalStore } from "@/store/useAuthModalStore";
 import { useAuthStore } from "@/store/useAuthStore";
+import { initialInvalidQuery, isValidEmail } from "@/utils/auth";
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -8,11 +9,10 @@ import React from "react";
 
 export const useSignInWithEmail = () => {
   const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState("");
+  const [error, setError] = React.useState<string | null>(null);
 
   const { setUserIsLogged, setUserNameIsAdded } = useAuthStore();
-    const {onClose } = useAuthModalStore();
-  
+  const { onClose } = useAuthModalStore();
 
   const handleSignInWithEmail = async (
     email: string,
@@ -20,35 +20,38 @@ export const useSignInWithEmail = () => {
     setEmail: React.Dispatch<React.SetStateAction<string>>,
     setPassword: React.Dispatch<React.SetStateAction<string>>
   ) => {
-    if (!email || !password) return;
-
-    setIsLoading(true);
+    if (!email || !isValidEmail(email) || !password) return;
 
     const resetForm = () => {
       setEmail("");
       setPassword("");
     };
 
-    await signInWithEmailAndPassword(getAuth(), email, password)
-      .then(() => {
-        console.log("User account signed in!");
-        setUserIsLogged(true);
-        setUserNameIsAdded(true);
-        onClose();
-      })
-      .catch((error) => {
-        if (error.code === "auth/invalid-credential") {
-          console.log(
-            "he supplied auth credential is incorrect, malformed or has expired."
-          );
-          setError("Adresse e-mail ou mot de passe incorrect");
-          resetForm();
-        }
+    try {
+      setIsLoading(true);
 
-        console.error(error);
-      });
+      await signInWithEmailAndPassword(getAuth(), email, password);
 
-    setIsLoading(false);
+      setUserIsLogged(true);
+      setUserNameIsAdded(true);
+
+      setError(null);
+
+      await initialInvalidQuery();
+
+      onClose();
+    } catch (error: any) {
+      if (error.code === "auth/invalid-credential") {
+        setError("Adresse e-mail ou mot de passe incorrect.");
+      } else {
+        setError("Une erreur est survenue, veuillez réessayer.");
+      }
+
+      resetForm();
+      console.log("Error l'ors de la connexion avec email:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return { handleSignInWithEmail, isLoading, error, setError };

@@ -1,5 +1,5 @@
-import { searchClient } from "@/functions/algolia/algoliaSearch";
 import { AnnouncementType } from "@/types";
+import { searchClient } from "@/utils/algolia/algoliaSearch";
 
 interface SimilarAdsParams {
   currentAdId: string;

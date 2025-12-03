@@ -1,13 +1,18 @@
-import { showToast } from "@/functions";
 import { AdStatusType } from "@/types";
+import { showToast } from "@/utils";
 import firestore from "@react-native-firebase/firestore";
 import { useQueryClient } from "@tanstack/react-query";
+import { router } from "expo-router";
 import Toast from "react-native-toast-message";
 
 export const useDeleteAd = () => {
   const queryClient = useQueryClient();
 
-  const deleteAd = async (adId: string, adStatus: AdStatusType) => {
+  const deleteAd = async (
+    adId: string,
+    adStatus: AdStatusType,
+    from: "NORMAL" | "AD_DETAILS"
+  ) => {
     if (!adId) {
       showToast("error", "Annonce introuvable.");
       return;
@@ -41,6 +46,8 @@ export const useDeleteAd = () => {
 
       Toast.hide();
       showToast("success", "Annonce supprimée.");
+
+      if (from === "AD_DETAILS") router.back();
     } catch (error) {
       console.error("Erreur lors de la suppression de l'annonce :", error);
       Toast.hide();

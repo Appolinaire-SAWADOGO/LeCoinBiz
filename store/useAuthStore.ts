@@ -1,8 +1,8 @@
-// store/useAuthStore.ts
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAuth } from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 type AuthState = {
   userIsLogged: boolean;
@@ -53,7 +53,8 @@ export const useAuthStore = create(
       },
     }),
     {
-      name: "auth-storage", // Clé AsyncStorage
+      name: "auth_storage",
+      storage: createJSONStorage(() => AsyncStorage),
     }
   )
 );

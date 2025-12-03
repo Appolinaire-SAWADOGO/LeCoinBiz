@@ -4,13 +4,15 @@ import AppToast from "@/components/custom/AppToast";
 import ImagePickerAlertModal from "@/components/modals/ImagePickerAlertModal";
 import { SplashScreenController } from "@/components/splash-screen/SplashScreenController";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
-import { setupSync } from "@/functions/algolia/algoliaSync";
+import { NotificationProvider } from "@/context/NotificationContext";
 import "@/global.css";
 import { useNetworkStore } from "@/store/useNetworkStore";
+import { setupSync } from "@/utils/algolia/algoliaSync";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
+import * as Notifications from "expo-notifications";
 import { Stack } from "expo-router";
-
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { View } from "react-native";
@@ -22,14 +24,20 @@ import { enableFreeze } from "react-native-screens";
 
 enableFreeze(true);
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
+
 export default function RootLayout() {
   const queryClient = new QueryClient();
   const insets = useSafeAreaInsets();
   const initNetworkListener = useNetworkStore();
-
-  useEffect(() => {
-    initNetworkListener.initNetwokListener();
-  }, [initNetworkListener]);
 
   const [fontsLoaded] = useFonts({
     "BasisGrotesqueArabicPro-Black": require("../assets/fonts/BasisGrotesqueArabicPro-Black.ttf"),
@@ -38,6 +46,16 @@ export default function RootLayout() {
     "BasisGrotesqueArabicPro-Medium": require("../assets/fonts/BasisGrotesqueArabicPro-Medium.ttf"),
     "BasisGrotesqueArabicPro-Regular": require("../assets/fonts/BasisGrotesqueArabicPro-Regular.ttf"),
   });
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: process.env.EXPO_PUBLIC_WEB_CLIENT_ID,
+    });
+  }, []);
+
+  useEffect(() => {
+    initNetworkListener.initNetwokListener();
+  }, [initNetworkListener]);
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
@@ -64,39 +82,41 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <SplashScreenController />
+    <NotificationProvider>
+      <QueryClientProvider client={queryClient}>
+        <SplashScreenController />
 
-      <GluestackUIProvider mode="light">
-        <SafeAreaProvider>
-          <View style={{ flex: 1, backgroundColor: "#fff" }}>
-            <ExpoStatusBar style="dark" />
+        <GluestackUIProvider mode="light">
+          <SafeAreaProvider>
+            <View style={{ flex: 1, backgroundColor: "#fff" }}>
+              <ExpoStatusBar style="dark" />
 
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="(tabs)" />
-              <Stack.Screen name="(root)" />
-            </Stack>
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="(root)" />
+              </Stack>
 
-            <AuthModal />
-            <AddYourUsernameModal />
-            <ImagePickerAlertModal />
+              <AuthModal />
+              <AddYourUsernameModal />
+              <ImagePickerAlertModal />
 
-            <AppToast />
+              <AppToast />
 
-            <View
-              style={{
-                position: "absolute",
-                backgroundColor: "#fff",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: insets.bottom,
-              }}
-            />
-          </View>
-        </SafeAreaProvider>
-      </GluestackUIProvider>
-    </QueryClientProvider>
+              <View
+                style={{
+                  position: "absolute",
+                  backgroundColor: "#fff",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: insets.bottom,
+                }}
+              />
+            </View>
+          </SafeAreaProvider>
+        </GluestackUIProvider>
+      </QueryClientProvider>
+    </NotificationProvider>
   );
 }
 

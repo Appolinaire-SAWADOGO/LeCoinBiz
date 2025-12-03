@@ -1,5 +1,11 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import {
+  initialInvalidQuery,
+  isValidEmail,
+  isValidPassword,
+  validateUsername,
+} from "@/utils/auth";
+import {
   createUserWithEmailAndPassword,
   getAuth,
 } from "@react-native-firebase/auth";
@@ -9,7 +15,20 @@ import { useCreateUserWithEmail } from "./useCreateUserWithEmail";
 
 export const useSignUpWithEmail = () => {
   const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState("");
+  const [error, setError] = React.useState<{
+    email: string | null;
+    all: string | null;
+  }>({
+    email: null,
+    all: null,
+  });
+
+  const handleSetError = (type: "email" | "all", msg: string | null) => {
+    setError((prev) => ({
+      ...prev,
+      [type]: msg,
+    }));
+  };
 
   const { setUserNameIsAdded, setUserIsLogged } = useAuthStore();
 
@@ -20,7 +39,16 @@ export const useSignUpWithEmail = () => {
     password: string,
     userName: string
   ) => {
-    if (!email || !password || !userName) return;
+    if (
+      !email ||
+      !isValidEmail(email) ||
+      !password ||
+      !isValidPassword(password) ||
+      !userName ||
+      !validateUsername(userName).isValid ||
+      !isValidPassword(userName)
+    )
+      return;
 
     try {
       setIsLoading(true);
@@ -35,22 +63,30 @@ export const useSignUpWithEmail = () => {
 
       setUserIsLogged(true);
       setUserNameIsAdded(true);
+
+      handleSetError("email", null);
+      handleSetError("all", null);
+
+      await initialInvalidQuery();
+
       router.dismiss();
     } catch (error: any) {
       switch (error.code) {
         case "auth/email-already-in-use":
-          setError("Cette adresse e-mail est déjà utilisée !");
+          handleSetError(
+            "email",
+            "Adresse e-mail déjà utilisée par autres utilisateurs."
+          );
           break;
         case "auth/invalid-email":
-          setError("Cette adresse e-mail est invalide !");
+          handleSetError("email", "Adresse e-mail est invalide.");
           break;
 
         default:
-          setError("Une erreur est survenue. Veuillez réessayer.");
+          handleSetError("all", "Une erreur est survenue. Veuillez réessayer.");
+          console.error("Erreur lors de la connexion avec email:", error);
           break;
       }
-
-      console.error(error);
     } finally {
       setIsLoading(false);
     }

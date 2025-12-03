@@ -1,16 +1,95 @@
 import AppText from "@/components/custom/AppText";
 import SimilarAnnoucements from "@/components/similar-annoucements.tsx/SimilarAnnoucements";
+import { Skeleton, SkeletonText } from "@/components/ui/skeleton";
+import { VStack } from "@/components/ui/vstack";
+import { useGetSimilarAds } from "@/hooks/services/ads/useGetSimilarsAds";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AnnouncementType } from "@/types";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
+
+// Composant Skeleton pour une carte d'annonce
+function AnnouncementCardSkeleton() {
+  return (
+    <View style={skeletonStyles.card}>
+      {/* Image skeleton */}
+      <Skeleton
+        variant="rounded"
+        style={{
+          width: "100%",
+          height: 160,
+        }}
+      />
+
+      {/* Content skeleton */}
+      <VStack space="sm" style={{ padding: 10 }}>
+        {/* Prix */}
+        <SkeletonText
+          _lines={1}
+          style={{
+            width: "70%",
+            height: 10,
+          }}
+        />
+
+        {/* Titre */}
+        <SkeletonText
+          _lines={1}
+          style={{
+            width: "90%",
+            height: 10,
+          }}
+        />
+
+        {/* Ville */}
+        <SkeletonText
+          _lines={1}
+          style={{
+            width: "50%",
+            height: 10,
+            marginTop: 4,
+          }}
+        />
+
+        {/* Date */}
+        <SkeletonText
+          _lines={1}
+          style={{
+            width: "60%",
+            height: 10,
+            marginTop: 4,
+          }}
+        />
+      </VStack>
+    </View>
+  );
+}
 
 export default function AnnouncementDetailsSimilarsAdSection({
-  data,
+  ad,
 }: {
-  data: AnnouncementType[];
+  ad: AnnouncementType;
 }) {
   const { designSystem } = useAppTheme();
+
+  const { getSimilarAds } = useGetSimilarAds();
+
+  const { data: similarsAds, isLoading } = useQuery({
+    queryKey: ["similars-ads", ad.id],
+    queryFn: () =>
+      getSimilarAds({
+        currentAdId: ad.id as string,
+        title: ad.title as string,
+        category: ad.category as string,
+        subCategory: ad.subCategory as string,
+        conditions: ad.conditions as string[],
+        description: ad.description as string,
+        userId: ad.userId as string,
+        maxResults: 5,
+      }),
+    enabled: !!ad,
+  });
 
   return (
     <View style={styles.container}>
@@ -23,7 +102,22 @@ export default function AnnouncementDetailsSimilarsAdSection({
         Annonces similaires
       </AppText>
 
-      <SimilarAnnoucements data={data} style={{ paddingHorizontal: 20 }} />
+      {isLoading ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 20, gap: 16 }}
+        >
+          {[1, 2, 3].map((item) => (
+            <AnnouncementCardSkeleton key={item} />
+          ))}
+        </ScrollView>
+      ) : (
+        <SimilarAnnoucements
+          data={similarsAds!}
+          style={{ paddingHorizontal: 20 }}
+        />
+      )}
     </View>
   );
 }
@@ -36,5 +130,20 @@ const styles = StyleSheet.create({
   title: {
     marginBottom: 10,
     paddingHorizontal: 20,
+  },
+});
+
+const skeletonStyles = StyleSheet.create({
+  card: {
+    width: 170,
+    borderRadius: 12,
+    backgroundColor: "#fff",
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    overflow: "hidden",
+    marginBottom: 6,
   },
 });

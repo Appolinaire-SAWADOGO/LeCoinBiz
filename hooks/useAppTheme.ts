@@ -1,5 +1,5 @@
-import { generateDesignSystem } from "@/functions";
 import { useThemeStore } from "@/store/useThemeStore";
+import { generateDesignSystem } from "@/utils";
 
 export const useAppTheme = () => {
   const { primary, setPrimary } = useThemeStore();

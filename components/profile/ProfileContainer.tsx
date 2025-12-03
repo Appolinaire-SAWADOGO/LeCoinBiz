@@ -1,11 +1,11 @@
 import Container from "@/components/Container";
 import ProfileAnnouncementCard from "@/components/profile/ProfileAnnouncementCard";
 import ProfileContentHead from "@/components/profile/ProfileContentHead";
-import { getTimeSinceCreated } from "@/functions";
 import { AnnouncementType } from "@/types";
+import { getTimeSinceCreated } from "@/utils";
 import React, { useRef, useState } from "react";
 import { Animated, FlatList, StyleSheet, View } from "react-native";
-import AnnouncementCard from "../annoucement/AnnouncementCard";
+import AnnouncementCard from "../announcement/AnnouncementCard";
 
 export default function ProfileContainer({
   titleSection,

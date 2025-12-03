@@ -13,7 +13,7 @@ export default function About() {
   const { designSystem } = useAppTheme();
 
   return (
-    <Container>
+    <Container withGoBack>
       <PageHeader name="À propos de nous" style={{ paddingHorizontal: 20 }} />
 
       <ScrollView contentContainerStyle={styles.container}>

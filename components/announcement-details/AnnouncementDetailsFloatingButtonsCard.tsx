@@ -12,7 +12,6 @@ import {
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import AppText from "../custom/AppText";
-import { hexToRgba } from "@/functions";
 
 export default function AnnouncementDetailsFloatingButtonsCard({
   useCase,

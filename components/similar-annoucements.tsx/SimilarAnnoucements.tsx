@@ -8,7 +8,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import AnnouncementCard from "../annoucement/AnnouncementCard";
+import AnnouncementCard from "../announcement/AnnouncementCard";
 
 export default function SimilarAnnoucements({
   scrollY,

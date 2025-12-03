@@ -1,6 +1,10 @@
+import { useActivateAd } from "@/hooks/services/ads/useActivateAd";
+import { useDeleteAd } from "@/hooks/services/ads/useDeleteAd";
+import { useDisableAd } from "@/hooks/services/ads/useDisableAd";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AdStatusType, AnnouncementType } from "@/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 import * as SMS from "expo-sms";
 import React from "react";
 import { Linking, StyleSheet, View } from "react-native";
@@ -10,10 +14,6 @@ import AppCenterModal from "../modals/AppCenterModal";
 import { HStack } from "../ui/hstack";
 import { Switch } from "../ui/switch";
 import AnnouncementDetailsFloatingButtonsCard from "./AnnouncementDetailsFloatingButtonsCard";
-import { router } from "expo-router";
-import { useDisableAd } from "@/hooks/services/ads/useDisableAd";
-import { useActivateAd } from "@/hooks/services/ads/useActivateAd";
-import { useDeleteAd } from "@/hooks/services/ads/useDeleteAd";
 
 export default function AnnouncementDetailsFloatingButtons({
   from,
@@ -61,6 +61,8 @@ Pourriez-vous me donner plus d’informations ou convenir d’un rendez-vous pou
 Merci beaucoup et bonne journée !
 `;
 
+  const [footerHeight, setFooterHeight] = React.useState(0);
+
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [modalMessage, setModalMessage] = React.useState("");
 
@@ -73,7 +75,7 @@ Merci beaucoup et bonne journée !
   const handleActionWithWarning = async (action: () => void) => {
     try {
       const value = await AsyncStorage.getItem(
-        "no_longer_called_ad_detail_warning",
+        "no_longer_called_ad_detail_warning"
       );
 
       if (value === "true") {
@@ -82,7 +84,7 @@ Merci beaucoup et bonne journée !
         setModalMessage(
           "Ne donnez jamais d’argent au vendeur sans voir physiquement le produit. " +
             "Privilégiez les rencontres en personne. Nous ne sommes pas responsables des problèmes " +
-            "entre acheteurs et vendeurs. Nous servons uniquement d’intermédiaire.",
+            "entre acheteurs et vendeurs. Nous servons uniquement d’intermédiaire."
         );
         setIsModalOpen(true);
 
@@ -116,7 +118,7 @@ Merci beaucoup et bonne journée !
       await SMS.sendSMSAsync([cleanNumber], message);
     } catch {
       setModalMessage(
-        "Impossible d’ouvrir l’application SMS. Veuillez vérifier qu’elle est bien installée sur votre appareil.",
+        "Impossible d’ouvrir l’application SMS. Veuillez vérifier qu’elle est bien installée sur votre appareil."
       );
       setIsModalOpen(true);
     }
@@ -129,7 +131,7 @@ Merci beaucoup et bonne journée !
 
     Linking.openURL(url).catch(() => {
       setModalMessage(
-        "Impossible d’ouvrir l’application Téléphone. Vérifiez qu’elle est disponible sur votre appareil.",
+        "Impossible d’ouvrir l’application Téléphone. Vérifiez qu’elle est disponible sur votre appareil."
       );
       setIsModalOpen(true);
     });
@@ -159,7 +161,7 @@ Merci beaucoup et bonne journée !
           setModalMessage("");
           await AsyncStorage.setItem(
             "no_longer_called_ad_detail_warning",
-            switchValue.toString(),
+            switchValue.toString()
           );
 
           if (pendingAction.current) {
@@ -195,7 +197,12 @@ Merci beaucoup et bonne journée !
         </HStack>
       </AppCenterModal>
 
-      <View style={[styles.footer, { paddingBottom: insets.bottom + 12 }]}>
+      <View
+        style={[styles.footer, { bottom: footerHeight - 25 }]}
+        onLayout={(e) => {
+          setFooterHeight(e.nativeEvent.layout.height);
+        }}
+      >
         {from === "OtherPage" && (
           <>
             <AnnouncementDetailsFloatingButtonsCard
@@ -222,26 +229,28 @@ Merci beaucoup et bonne journée !
               onPress={() =>
                 router.push({
                   pathname: "/(root)/(announcement)/PostAnAd",
-                  params: { ad: JSON.stringify(ad) },
+                  params: { ad: JSON.stringify(ad), from: "AD_DETAILS" },
                 })
               }
             />
             {status === "ACTIVATED" && (
               <AnnouncementDetailsFloatingButtonsCard
                 useCase="disable"
-                onPress={async () => await disableAd(adId)}
+                onPress={async () => await disableAd(adId, "AD_DETAILS")}
               />
             )}
             {status === "DISABLED" && (
               <AnnouncementDetailsFloatingButtonsCard
                 useCase="enable"
-                onPress={async () => await activateAd(adId)}
+                onPress={async () => await activateAd(adId, "AD_DETAILS")}
               />
             )}
             {status !== "ACTIVATED" && (
               <AnnouncementDetailsFloatingButtonsCard
                 useCase="delete"
-                onPress={async () => await deleteAd(adId, ad.status)}
+                onPress={async () =>
+                  await deleteAd(adId, ad.status, "AD_DETAILS")
+                }
               />
             )}
           </>

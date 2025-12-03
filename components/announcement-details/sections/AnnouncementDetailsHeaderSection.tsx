@@ -2,9 +2,8 @@ import AddAdFavoriteButton from "@/components/favorites/AddAdFavoriteButton";
 import PageHeader from "@/components/PageHeader";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AdStatusType } from "@/types";
-import { Share2 } from "lucide-react-native";
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export default function AnnouncementDetailsHeaderSection({
   from,
@@ -20,17 +19,17 @@ export default function AnnouncementDetailsHeaderSection({
   const { designSystem } = useAppTheme();
 
   return (
-    <PageHeader style={{ paddingHorizontal: 20 , paddingTop: 15}} name={name}>
+    <PageHeader style={{ paddingHorizontal: 20, paddingTop: 15 }} name={name}>
       <View style={styles.rightIcons}>
         {from === "OtherPage" && (
           <AddAdFavoriteButton adId={adId} fromAnnouncementCard={false} />
         )}
 
-        {status === "ACTIVATED" && (
+        {/* {status === "ACTIVATED" && (
           <TouchableOpacity hitSlop={10}>
             <Share2 size={20} />
           </TouchableOpacity>
-        )}
+        )} */}
       </View>
     </PageHeader>
   );

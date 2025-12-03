@@ -6,10 +6,10 @@ import React from "react";
 
 export const useAddUserName = () => {
   const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState("");
+  const [error, setError] = React.useState<string | null>(null);
 
   const { setUserNameIsAdded } = useAuthStore();
-  const {onClose } = useAddYourUsernameModalStore();
+  const { onClose } = useAddYourUsernameModalStore();
 
   const addUserName = async (userName: string) => {
     if (!userName) return;
@@ -29,11 +29,12 @@ export const useAddUserName = () => {
 
       setUserNameIsAdded(true);
       setIsLoading(false);
-      onClose();
+      setError(null);
 
-      console.log("User name is added!");
+      onClose();
     } catch (error: any) {
-      setError(error.message);
+      setError("Une erreur est survenue. Veuillez réessayer.");
+      console.error("Erreur lors de l'ajout du nom d'utilisateur:", error);
       setIsLoading(false);
     }
   };

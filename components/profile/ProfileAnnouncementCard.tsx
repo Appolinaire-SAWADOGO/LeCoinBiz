@@ -1,5 +1,5 @@
 import React from "react";
-import AnnouncementCard from "../annoucement/AnnouncementCard";
+import AnnouncementCard from "../announcement/AnnouncementCard";
 import ProfileDelOrEdAnnouncement from "./ProfileDelOrEdAnnouncement";
 
 export default function ProfileAnnouncementCard({

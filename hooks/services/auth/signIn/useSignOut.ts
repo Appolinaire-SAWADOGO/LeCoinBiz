@@ -1,5 +1,5 @@
-import { showToast } from "@/functions";
 import { useAuthStore } from "@/store/useAuthStore";
+import { showToast } from "@/utils";
 import { getAuth, signOut } from "@react-native-firebase/auth";
 
 export const useSignOut = () => {

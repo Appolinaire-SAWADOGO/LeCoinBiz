@@ -1,7 +1,7 @@
 import { DEFAULT_PROFILE_IMG } from "@/constants";
-import { getUserAccountTimeSinceCreated } from "@/functions";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { UserType } from "@/types";
+import { getUserAccountTimeSinceCreated } from "@/utils";
 import { CalendarClock, CornerDownRight, MapPin } from "lucide-react-native";
 import React from "react";
 import { Image, StyleSheet, View } from "react-native";
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    paddingBottom: 2,
+    paddingBottom: 8,
   },
   flex: {
     flexDirection: "row",

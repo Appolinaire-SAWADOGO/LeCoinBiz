@@ -1,26 +1,24 @@
 import { useAddUserName } from "@/hooks/services/auth/SignUp/useAddUserName";
 import { useBackPress } from "@/hooks/useBackPress";
-import { router } from "expo-router";
+import { useAddYourUsernameModalStore } from "@/store/useAddYourUsernameModalStore";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import AppButton from "../custom/AppButton";
+import AppText from "../custom/AppText";
 import AppInput from "../custom/input/AppInput";
 import AuthFormInputSection from "./form/AuthFormInputSection";
 import AuthFormLegalCard from "./form/AuthFormLegalCard";
-import {useAddYourUsernameModalStore} from "@/store/useAddYourUsernameModalStore";
 
 export default function AuthAddUserNameContent() {
   const [userName, setUserName] = React.useState("");
-  const { addUserName, isLoading } = useAddUserName();
+  const { addUserName, isLoading, error } = useAddUserName();
   const { onClose } = useAddYourUsernameModalStore();
 
   useBackPress(() => onClose());
 
   return (
     <>
-      {/* inputs sections */}
       <View style={styles.inputsSection}>
-        {/* user name */}
         <AuthFormInputSection label="Nom d'utilisateur">
           <AppInput
             placeholder="John Doe"
@@ -28,6 +26,11 @@ export default function AuthAddUserNameContent() {
             value={userName}
             onChangeText={setUserName}
           />
+          {error && (
+            <AppText color="red" style={{ marginTop: 10 }}>
+              {error}
+            </AppText>
+          )}
         </AuthFormInputSection>
       </View>
 

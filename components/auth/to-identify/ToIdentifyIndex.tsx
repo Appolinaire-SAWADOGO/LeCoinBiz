@@ -3,12 +3,13 @@ import AppText from "@/components/custom/AppText";
 import PageHeader from "@/components/PageHeader";
 import MailDynSvg from "@/components/svg/MailDynSvg";
 import PhoneDynSvg from "@/components/svg/PhoneDynSvg";
-import ShoppingBagDynSvg from "@/components/svg/ShoppingBagDynSvg";
 import GoogleDynSvg from "@/components/svg/social-media/GoogleDynSvg";
+import { useSignInWithGoogle } from "@/hooks/services/auth/signIn/useSignInWithGoogle";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useBackPress } from "@/hooks/useBackPress";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
 import { AuthModalType } from "@/types";
+import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -23,6 +24,12 @@ export default function ToIdentifyIndex({
   const insets = useSafeAreaInsets();
 
   const { onClose } = useAuthModalStore();
+
+  const { signInWithGoogle } = useSignInWithGoogle();
+
+  const handleSignInWithGoogle = useMutation({
+    mutationFn: () => signInWithGoogle(),
+  });
 
   useBackPress(() => onClose());
 
@@ -56,7 +63,7 @@ export default function ToIdentifyIndex({
           justifyContent: "center",
         }}
       >
-        <ShoppingBagDynSvg />
+        {/* <ShoppingBagDynSvg /> */}
         <AppText
           font="Bold"
           color="#fff"
@@ -103,7 +110,14 @@ export default function ToIdentifyIndex({
           style={styles.button}
           textColor={designSystem.colors.primary}
           textStyle={{ fontSize: 14, fontWeight: "bold" }}
+          disabled={handleSignInWithGoogle.isPending}
+          isLoading={handleSignInWithGoogle.isPending}
+          onPress={async () => await handleSignInWithGoogle.mutateAsync()}
         />
+
+        {handleSignInWithGoogle.isError && (
+          <AppText color="red">Error l'ors de la connexion avec google</AppText>
+        )}
       </View>
     </View>
   );

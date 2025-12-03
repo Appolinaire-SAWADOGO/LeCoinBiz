@@ -1,20 +1,13 @@
-import Announcements from "@/components/annoucement/Announcements";
-import NoAds from "@/components/annoucement/NoAds";
+import Announcements from "@/components/announcement/Announcements";
+import NoAds from "@/components/announcement/NoAds";
 import Container from "@/components/Container";
-import AppFullScreenLoader from "@/components/custom/AppFullScreenLoader";
 import MerchantInfoSection from "@/components/Merchand/MerchantInfoSection";
 import PageHeader from "@/components/PageHeader";
-import ProfileContentHead from "@/components/profile/ProfileContentHead";
 import { useGetAdsByUserId } from "@/hooks/services/ads/useGetAdsByUserId";
-import { useGetUserAdsCount } from "@/hooks/services/ads/useGetUserAdsCount";
-import { useGetUserById } from "@/hooks/services/user/useGetUserById";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { UserType } from "@/types";
 import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
 import { RefreshControl, StyleSheet } from "react-native";
@@ -22,20 +15,16 @@ import { RefreshControl, StyleSheet } from "react-native";
 export default function MerchantProfile() {
   const { designSystem } = useAppTheme();
 
-  const { userId } = useLocalSearchParams();
+  const { userRslt, userAdsCountRslt } = useLocalSearchParams();
 
-  const { getUserById } = useGetUserById();
-  const { getUserAdsCount } = useGetUserAdsCount();
+  const user = JSON.parse(userRslt as string) as UserType;
+  const userAdsCount = Number(userAdsCountRslt) as Number;
+
   const { getAdsByUserId } = useGetAdsByUserId();
 
   const [refreshing, setRefreshing] = useState(false);
 
   const queryClient = useQueryClient();
-
-  const { data: user, isLoading: userIsLoading } = useQuery({
-    queryKey: ["user-data", userId, "merchant"],
-    queryFn: () => getUserById(userId as string),
-  });
 
   const {
     data: ads,
@@ -44,23 +33,18 @@ export default function MerchantProfile() {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ["user-ads", userId],
+    queryKey: ["merchant-ads", user.id],
     queryFn: ({ pageParam }) =>
       getAdsByUserId(
-        userId as string,
+        user.id as string,
         "ACTIVATED",
-        pageParam as FirebaseFirestoreTypes.QueryDocumentSnapshot | null,
+        pageParam as FirebaseFirestoreTypes.QueryDocumentSnapshot | null
       ),
     initialPageParam: null as any,
 
     getNextPageParam: (lastPage) => {
       return lastPage?.hasMore ? lastPage.lastDoc : undefined;
     },
-  });
-
-  const { data: adsCount, isLoading: adsCountIsLoading } = useQuery({
-    queryKey: ["user-ads-count", userId, "merchant"],
-    queryFn: () => getUserAdsCount(userId as string),
   });
 
   const allAds = useMemo(() => {
@@ -74,52 +58,48 @@ export default function MerchantProfile() {
     }
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const isLoading = userIsLoading || adsCountIsLoading || adsIsLoading;
-
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await queryClient.invalidateQueries({
-      queryKey: ["user-data", userId, "merchant"],
-    });
-    await queryClient.invalidateQueries({
-      queryKey: ["user-ads", userId],
+      queryKey: ["merchant-ads", user.id],
     });
     setRefreshing(false);
-  }, [queryClient, userId]);
+  }, [queryClient, user.id]);
+
+  const isLoading = adsIsLoading;
+
+  console.log(JSON.stringify(user, null, 2));
 
   return (
     <>
       <Container withBottom style={styles.container} withGoBack>
         <PageHeader name="Profile" style={{ paddingHorizontal: 20 }} />
 
-        {isLoading && <AppFullScreenLoader />}
-
-        {!isLoading && (
-          <Announcements
-            values={allAds}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[designSystem.colors.primary]}
-                tintColor={designSystem.colors.primary}
+        <Announcements
+          values={allAds}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing || isLoading}
+              onRefresh={onRefresh}
+              colors={[designSystem.colors.primary]}
+              tintColor={designSystem.colors.primary}
+              progressViewOffset={155}
+            />
+          }
+          ListHeaderComponent={
+            <>
+              {/* info section */}
+              <MerchantInfoSection
+                data={user!}
+                adsCount={userAdsCount as number}
               />
-            }
-            ListHeaderComponent={
-              <>
-                {/* info section */}
-                <MerchantInfoSection
-                  data={user!}
-                  adsCount={adsCount as number}
-                />
-              </>
-            }
-            onEndReached={handleLoadMore}
-            isLoadingMore={isFetchingNextPage}
-          />
-        )}
+            </>
+          }
+          onEndReached={handleLoadMore}
+          isLoadingMore={isFetchingNextPage}
+        />
 
-        {!isLoading && !user && allAds.length === 0 && !adsCount && (
+        {!isLoading && !allAds && (
           <NoAds
             style={{ paddingTop: "70%" }}
             text="Aucune annonce disponible."

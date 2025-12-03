@@ -1,10 +1,10 @@
 import AppText from "@/components/custom/AppText";
-import { getTimeSinceCreated, getTimeSinceMs, Timestamp } from "@/functions";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { AdStatusType, AnnouncementType } from "@/types";
+import { AnnouncementType } from "@/types";
+import { getTimeSinceCreated, getTimeSinceMs, Timestamp } from "@/utils";
 import { router } from "expo-router";
-import { Clock3, EllipsisVertical, Eye, MapPin } from "lucide-react-native";
-import React, { useState } from "react";
+import { Clock3, Eye, MapPin } from "lucide-react-native";
+import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import AddAdFavoriteButton from "../favorites/AddAdFavoriteButton";
 import ProfileDelOrEdAnnouncement from "../profile/ProfileDelOrEdAnnouncement";
@@ -21,19 +21,25 @@ export default function AnnouncementCard({
   type?: "similar" | "primary";
   createdAt?: string;
   ad: AnnouncementType;
-  openAdId: string | null;
-  setOpenAdId: (id: string | null) => void;
+  openAdId?: string | null;
+  setOpenAdId?: (id: string | null) => void;
 }) {
   const { designSystem } = useAppTheme();
 
   const isSimilarType = type === "similar";
+
   return (
     <TouchableOpacity
       activeOpacity={0.7}
       onPress={() =>
-        router.push(
-          `/(root)/(announcement)/AnnouncementDetails?id=${ad?.id}&from=${useCase}${`&status=${ad?.status}`}`,
-        )
+        router.push({
+          pathname: "/(root)/(announcement)/AnnouncementDetails",
+          params: {
+            initialRslt: JSON.stringify(ad),
+            from: useCase,
+            status: ad.status,
+          },
+        })
       }
       style={[styles.card, { width: isSimilarType ? 170 : 152 }]}
     >

@@ -1,5 +1,5 @@
-import Announcements from "@/components/annoucement/Announcements";
-import NoAds from "@/components/annoucement/NoAds";
+import Announcements from "@/components/announcement/Announcements";
+import NoAds from "@/components/announcement/NoAds";
 import Container from "@/components/Container";
 import AppFullScreenLoader from "@/components/custom/AppFullScreenLoader";
 import MerchantInfoSection from "@/components/Merchand/MerchantInfoSection";
@@ -45,6 +45,12 @@ export default function Profile() {
     useQuery({
       queryKey: ["user-activated-ads-count"],
       queryFn: () => getUserAdsCount(userId as string, "ACTIVATED"),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+
+      refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
+      refetchOnMount: true, // Refetch au montage si données stale
+      retry: 2, // Nombre de tentatives en cas d'erreur
     });
 
   // user desabled ads count
@@ -52,6 +58,12 @@ export default function Profile() {
     useQuery({
       queryKey: ["user-disabled-ads-count"],
       queryFn: () => getUserAdsCount(userId as string, "DISABLED"),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+
+      refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
+      refetchOnMount: true, // Refetch au montage si données stale
+      retry: 2, // Nombre de tentatives en cas d'erreur
     });
 
   // user pending ads count
@@ -59,6 +71,12 @@ export default function Profile() {
     useQuery({
       queryKey: ["user-pending-ads-count"],
       queryFn: () => getUserAdsCount(userId as string, "PENDING"),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+
+      refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
+      refetchOnMount: true, // Refetch au montage si données stale
+      retry: 2, // Nombre de tentatives en cas d'erreur
     });
 
   // activated ads
@@ -80,9 +98,15 @@ export default function Profile() {
     getNextPageParam: (lastPage) => {
       return lastPage?.hasMore ? lastPage.lastDoc : undefined;
     },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+
+    refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
+    refetchOnMount: true, // Refetch au montage si données stale
+    retry: 2, // Nombre de tentatives en cas d'erreur
   });
 
-  // desabled ads
+  // disabled ads
   const {
     data: disabledAdsData,
     isLoading: disabledAdsIsLoading,
@@ -101,6 +125,12 @@ export default function Profile() {
     getNextPageParam: (lastPage) => {
       return lastPage?.hasMore ? lastPage.lastDoc : undefined;
     },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+
+    refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
+    refetchOnMount: true, // Refetch au montage si données stale
+    retry: 2, // Nombre de tentatives en cas d'erreur
   });
 
   // pending ads
@@ -122,6 +152,12 @@ export default function Profile() {
     getNextPageParam: (lastPage) => {
       return lastPage?.hasMore ? lastPage.lastDoc : undefined;
     },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+
+    refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
+    refetchOnMount: true, // Refetch au montage si données stale
+    retry: 2, // Nombre de tentatives en cas d'erreur
   });
 
   const allActivatedAds = useMemo(() => {
@@ -183,18 +219,6 @@ export default function Profile() {
     if (contentHeadSelected === 2) return allPendingAds;
     return [];
   }, [contentHeadSelected, allActivatedAds, allDesabledAds, allPendingAds]);
-
-  const adsCount = useMemo(() => {
-    if (contentHeadSelected === 0) return activatedAdsCount;
-    if (contentHeadSelected === 1) return desabledAdsCount;
-    if (contentHeadSelected === 2) return pendingAdsCount;
-    return 0;
-  }, [
-    contentHeadSelected,
-    activatedAdsCount,
-    desabledAdsCount,
-    pendingAdsCount,
-  ]);
 
   const handleLoadMore = useCallback(() => {
     if (contentHeadSelected === 0) ActivatedAdsHandleLoadMore();

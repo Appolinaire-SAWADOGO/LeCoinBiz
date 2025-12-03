@@ -1,74 +1,68 @@
-import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
-import DropDownPicker from "react-native-dropdown-picker";
-import { Ionicons } from "@expo/vector-icons";
-import AppDropDownPicker from "@/components/custom/picker/AppDropDownPicker";
-import { useAppTheme } from "@/hooks/useAppTheme";
+import Container from "@/components/Container";
+import {
+  GoogleAuthProvider,
+  getAuth,
+  signInWithCredential,
+} from "@react-native-firebase/auth";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import React from "react";
+import { Button } from "react-native";
+
+GoogleSignin.configure({
+  webClientId:
+    "641604581560-ege8p5dejjrpq5327staqvr8te49rr1p.apps.googleusercontent.com",
+});
 
 export default function Test() {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<string | null>(null);
-  const [items, setItems] = useState([
-    { label: "Apple ", value: "apple" },
-    { label: "Banana ", value: "banana" },
-    { label: "Orange ", value: "orange" },
-  ]);
+  async function onGoogleButtonPress() {
+    try {
+      console.log(1);
 
-  const { designSystem } = useAppTheme();
+      // Check if your device supports Google Play
+      await GoogleSignin.hasPlayServices({
+        showPlayServicesUpdateDialog: true,
+      });
+      console.log(2);
+
+      // Get the users ID token
+      const signInResult = await GoogleSignin.signIn();
+      console.log(3);
+
+      // Try the new style of google-sign in result, from v13+ of that module
+      let idToken = signInResult.data?.idToken;
+
+      console.log("IdToken", idToken);
+
+      if (!idToken) {
+        // if you are using older versions of google-signin, try old style result
+        idToken = signInResult.idToken;
+      }
+
+      if (!idToken) {
+        throw new Error("No ID token found");
+      }
+
+      // Create a Google credential with the token
+      const googleCredential = GoogleAuthProvider.credential(idToken);
+
+      console.log("signed with google !");
+
+      // Sign-in the user with the credential
+      return signInWithCredential(getAuth(), googleCredential);
+    } catch (error) {
+      console.log(
+        "Error l'ors de la connexion: ",
+        JSON.stringify(error, null, 2)
+      );
+    }
+  }
 
   return (
-    <View style={styles.container}>
-      {/* 👇 BOUTON ICÔNE MENU */}
-      <TouchableOpacity
-        style={styles.menuButton}
-        onPress={() => setOpen(!open)}
-      >
-        <Ionicons name="menu" size={28} color="black" />
-      </TouchableOpacity>
-
-      {/* 👇 DROPDOWN SANS LE CHAMP */}
-      <AppDropDownPicker
-        items={items}
-        open={open}
-        setOpen={setOpen}
-        value={value}
-        setValue={setValue}
-        listMode={"SCROLLVIEW"}
-        withSearch={false}
-        showTickIcon={false}
-        style={{
-          display: "none",
-        }}
-        dropDownContainerStyle={{
-          width: 150,
-          borderColor: designSystem.colors.inputBorder,
-          borderWidth: 1,
-        }}
-        selectedItemLabelStyle={{
-          color: "#000",
-          fontWeight: "normal",
-        }}
-        onSelectItem={(item) => {
-          console.log("Tu as cliqué :", item.label, item.value);
-        }}
+    <Container>
+      <Button
+        title="Google Sign-In"
+        onPress={async () => await onGoogleButtonPress()}
       />
-    </View>
+    </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 100,
-    paddingHorizontal: 20,
-    zIndex: 2000,
-  },
-  menuButton: {
-    width: 40,
-    height: 40,
-    backgroundColor: "#eee",
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-});

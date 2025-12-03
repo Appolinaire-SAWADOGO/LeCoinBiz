@@ -1,4 +1,3 @@
-import ContinousWithGoogle from "@/components/auth/to-identify/ContinousWithGoogle";
 import ContinousWithPhoneNumber from "@/components/auth/to-identify/ContinousWithPhoneNumber";
 import SignInWithEmail from "@/components/auth/to-identify/SignInWithEmail";
 import SignUpWithEmail from "@/components/auth/to-identify/SignUpWithEmail";
@@ -21,7 +20,6 @@ export default function AuthModal() {
       )}
       {step === "signInWithEmail" && <SignInWithEmail setBigStep={setStep} />}
       {step === "signUpWithEmail" && <SignUpWithEmail setBigStep={setStep} />}
-      {step === "continousWithGoogle" && <ContinousWithGoogle />}
     </AppFullModal>
   );
 }

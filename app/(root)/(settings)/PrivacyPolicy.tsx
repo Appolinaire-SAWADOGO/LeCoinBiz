@@ -14,7 +14,7 @@ export default function PrivacyPolicy() {
   };
 
   return (
-    <Container>
+    <Container withGoBack>
       <PageHeader
         name="Politique de confidentialité"
         style={{ paddingHorizontal: 20 }}

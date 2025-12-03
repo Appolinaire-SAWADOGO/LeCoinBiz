@@ -1,10 +1,10 @@
-import { ifUserIsConnected } from "../../functions/auth";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { CornerDownRight, Heart, MapPin } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { ifUserIsConnected } from "../../utils/auth";
 import AppText from "../custom/AppText";
 
 export default function UserCard() {

@@ -1,4 +1,4 @@
-import AnnouncementCard from "@/components/annoucement/AnnouncementCard";
+import AnnouncementCard from "@/components/announcement/AnnouncementCard";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AnnouncementType } from "@/types";
 import React, { useState } from "react";

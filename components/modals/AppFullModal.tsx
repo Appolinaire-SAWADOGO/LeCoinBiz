@@ -1,17 +1,20 @@
 import { Modal, ModalBackdrop, ModalContent } from "@/components/ui/modal";
+import { ViewStyle } from "@expo/html-elements/build/primitives/View";
 import React from "react";
-import { ColorValue, StyleSheet } from "react-native";
+import { ColorValue, StyleProp, StyleSheet } from "react-native";
 
 export default function AppFullModal({
   children,
   bgColor = "#fff",
   isOpen,
   onClose,
+  style,
 }: {
   children: React.ReactNode;
   bgColor?: ColorValue;
   isOpen: boolean;
   onClose: () => void;
+  style?: StyleProp<ViewStyle>;
 }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="full">
@@ -23,6 +26,7 @@ export default function AppFullModal({
           {
             backgroundColor: bgColor || "transparent",
           },
+          style,
         ]}
       >
         {children}

@@ -60,6 +60,10 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <HomeIcon size={24} fill={fill(color)} color={color} />
           ),
+          tabBarLabelStyle: {
+            fontFamily: "BasisGrotesqueArabicPro-Regular",
+            fontSize: 11,
+          },
         }}
       />
       <Tabs.Screen
@@ -69,6 +73,10 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <Heart size={24} fill={fill(color)} color={color} />
           ),
+          tabBarLabelStyle: {
+            fontFamily: "BasisGrotesqueArabicPro-Regular",
+            fontSize: 11,
+          },
         }}
         listeners={({ navigation }) => ({
           tabPress: (e) => onPress(e, navigation),
@@ -82,6 +90,10 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <User size={24} fill={fill(color)} color={color} />
           ),
+          tabBarLabelStyle: {
+            fontFamily: "BasisGrotesqueArabicPro-Regular",
+            fontSize: 11,
+          },
         }}
         listeners={({ navigation }) => ({
           tabPress: (e) => onPress(e, navigation),
@@ -94,6 +106,10 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <Settings size={24} fill={fill(color)} color={color} />
           ),
+          tabBarLabelStyle: {
+            fontFamily: "BasisGrotesqueArabicPro-Regular",
+            fontSize: 11,
+          },
         }}
       />
     </Tabs>

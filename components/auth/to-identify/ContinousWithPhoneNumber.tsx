@@ -5,6 +5,7 @@ import AuthFormOtpCheck from "@/components/auth/form/AuthFormOtpCheck";
 import AppButton from "@/components/custom/AppButton";
 import AppText from "@/components/custom/AppText";
 import AppMobileNumberInput from "@/components/custom/input/AppMobileNumberInput";
+import { APP_NAME } from "@/constants";
 import { useSignInWithPhoneNumber } from "@/hooks/services/auth/signIn/useSignInWithPhoneNumber";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useBackPress } from "@/hooks/useBackPress";
@@ -14,7 +15,6 @@ import { router } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import AuthAddUserNameContent from "../AuthAddUserNameContent";
-import {APP_NAME} from "@/constants";
 
 export default function ContinousWithPhoneNumber({
   setBigStep,
@@ -29,8 +29,14 @@ export default function ContinousWithPhoneNumber({
 
   const phoneNumberWithCountryCode = `+226${phoneNumber}`;
 
-  const { handleSignInWithPhoneNumber, confirmCode, code, setCode, isLoading } =
-    useSignInWithPhoneNumber(setStep, phoneNumberWithCountryCode);
+  const {
+    handleSignInWithPhoneNumber,
+    confirmCode,
+    code,
+    setCode,
+    isLoading,
+    error,
+  } = useSignInWithPhoneNumber(setStep, phoneNumberWithCountryCode);
 
   const ifContinousButtonDisabled = () => {
     if (step === "enterPhoneNumber" && phoneNumber.length === 8 && !isLoading)
@@ -70,14 +76,14 @@ export default function ContinousWithPhoneNumber({
       {/* enter otp step*/}
       {step === "enterOTP" && (
         <AuthFormOtpCheck
+          isLoading={isLoading}
           phoneNumber={phoneNumber}
           otpCode={code}
           setOtpCode={setCode}
           onEnter={async () => {
-            console.log("otpCode", code);
-
-            confirmCode();
+            await confirmCode();
           }}
+          error={error.enterOTP}
         />
       )}
 
@@ -87,6 +93,10 @@ export default function ContinousWithPhoneNumber({
       {step === "enterPhoneNumber" && (
         <>
           <View style={styles.inputsSection}>
+            {error.enterPhoneNumber && (
+              <AppText color="red">{error.enterPhoneNumber}</AppText>
+            )}
+
             {/*  phone number input  */}
             <AuthFormInputSection label={"Votre numero de telephone"}>
               <AppMobileNumberInput
@@ -98,9 +108,17 @@ export default function ContinousWithPhoneNumber({
           </View>
 
           {/* info card */}
-          <AuthFormInfoCard label=" Vous recevrez un code OTP de Skillr pour confirmer votre numéro." />
+          <AuthFormInfoCard>
+            <AppText fontSize={12}>
+              Vous recevrez un code OTP de{" "}
+              <AppText fontSize={12} font="Medium">
+                {APP_NAME}
+              </AppText>{" "}
+              pour confirmer votre numero de telephone.
+            </AppText>
+          </AuthFormInfoCard>
 
-          {/* continous buutons  */}
+          {/* continous butons  */}
           <AppButton
             isLoading={isLoading}
             title="Continuer"

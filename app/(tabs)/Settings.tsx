@@ -6,9 +6,9 @@ import SettingContactSection from "@/components/settings/sections/SettingContact
 import SettingLegalInformationSection from "@/components/settings/sections/SettingLegalInformationSection";
 import SettingSecuritySection from "@/components/settings/sections/SettingSecuritySection";
 import SettingsLogoutOrdelAcntSection from "@/components/settings/sections/SettingsLogoutOrdelAcntSection";
-import { ifUserIsConnected } from "@/functions/firebase-auth";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useAuthStore } from "@/store/useAuthStore";
+import { ifUserIsConnected } from "@/utils/auth";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 

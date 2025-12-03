@@ -8,7 +8,10 @@ import {
   signInWithPhoneNumber,
 } from "@react-native-firebase/auth";
 import { useEffect, useState } from "react";
-import { checkIfUserNameIsAdded } from "../../../../functions/auth";
+import {
+  checkIfUserNameIsAdded,
+  initialInvalidQuery,
+} from "../../../../utils/auth";
 import { useCreateUserWithPhone } from "../SignUp/useCreateUserWithPhone";
 
 export function useSignInWithPhoneNumber(
@@ -28,6 +31,26 @@ export function useSignInWithPhoneNumber(
   const { onClose } = useAuthModalStore();
 
   const { createUserWithPhone } = useCreateUserWithPhone(phoneNumber);
+
+  const [error, setError] = useState<{
+    enterPhoneNumber: string | null;
+    enterOTP: string | null;
+    addUserName: string | null;
+  }>({
+    enterPhoneNumber: null,
+    enterOTP: null,
+    addUserName: null,
+  });
+
+  const handleSetError = (
+    step: ContinousWithPhomeNumberStepType,
+    message: string | null
+  ) => {
+    setError((prev) => ({
+      ...prev,
+      [step]: message,
+    }));
+  };
 
   // Handle login
   function handleAuthStateChanged(user: any) {
@@ -60,16 +83,16 @@ export function useSignInWithPhoneNumber(
         testPhoneNumber
       );
 
-      console.log(
-        "Confirmation result:",
-        JSON.stringify(confirmation, null, 2)
-      );
-
       setConfirm(confirmation);
+
+      handleSetError("enterPhoneNumber", null);
 
       setStep("enterOTP");
     } catch (error) {
-      console.log("Erreur brute pendant signInWithPhoneNumber:", error);
+      handleSetError(
+        "enterPhoneNumber",
+        "Une erreur est survenue, veuillez réessayer."
+      );
       console.log(
         "Erreur formatée pendant signInWithPhoneNumber:",
         JSON.stringify(error, null, 2)
@@ -83,14 +106,7 @@ export function useSignInWithPhoneNumber(
     try {
       setIsLoading(true);
 
-      console.log("confirming with", code);
-
-      const userCredential = await confirm?.confirm(code);
-
-      console.log(
-        "Utilisateur connecté :",
-        JSON.stringify(userCredential, null, 2)
-      );
+      const userCredential = await confirm?.confirm("000000");
 
       setUserIsLogged(true);
       setConfirm(null);
@@ -98,15 +114,11 @@ export function useSignInWithPhoneNumber(
       const userUuid = userCredential?.user?.uid;
 
       if (userCredential?.additionalUserInfo?.isNewUser) {
-        console.log("isNewUser", userCredential?.additionalUserInfo?.isNewUser);
-
         await createUserWithPhone(userUuid!);
+
         setStep("addUserName");
       } else {
-        console.log("NoNewUser", userCredential?.additionalUserInfo?.isNewUser);
-
         const userNameIsAdded = await checkIfUserNameIsAdded(userUuid!);
-        console.log("userNameIsAdded", userNameIsAdded);
 
         if (userNameIsAdded) {
           setUserNameIsAdded(true);
@@ -115,11 +127,26 @@ export function useSignInWithPhoneNumber(
           setStep("addUserName");
         }
       }
+
+      handleSetError("enterOTP", null);
+
+      await initialInvalidQuery();
     } catch (error) {
+      handleSetError(
+        "enterOTP",
+        "Le code entré est invalide, veuillez réessayer."
+      );
       console.log("Invalid code.", JSON.stringify(error, null, 2));
     } finally {
       setIsLoading(false);
     }
   }
-  return { handleSignInWithPhoneNumber, confirmCode, code, setCode, isLoading };
+  return {
+    handleSignInWithPhoneNumber,
+    confirmCode,
+    code,
+    setCode,
+    isLoading,
+    error,
+  };
 }

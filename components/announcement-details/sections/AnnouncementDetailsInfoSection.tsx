@@ -1,9 +1,9 @@
 import FreeDeliveryImage from "@/assets/images/filter-options/FreeDelevery.png";
 import NeufImage from "@/assets/images/filter-options/Neuf.png";
 import { categoryIcon, subCategoryIcon } from "@/constants/categories";
-import { getTimeSinceCreated } from "@/functions";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AnnouncementType } from "@/types";
+import { getTimeSinceCreated } from "@/utils";
 import { Clock4, MapPin } from "lucide-react-native";
 import React from "react";
 import { Image, StyleSheet, View } from "react-native";
@@ -19,11 +19,11 @@ export default function AnnouncementDetailsInfoSection({
   const { designSystem } = useAppTheme();
 
   const isNew = currentAnnouncement.options.some(
-    (option) => option.label === "Neuf" && option.active,
+    (option) => option.label === "Neuf" && option.active
   );
 
   const isFreeDelivery = currentAnnouncement.options.some(
-    (option) => option.label === "Livraison Gratuite" && option.active,
+    (option) => option.label === "Livraison Gratuite" && option.active
   );
 
   return (
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingTop: 20,
     borderTopWidth: 1,
-    borderColor: "#eee",
+    borderColor: "#E5E5E5",
   },
   conditionTitle: {
     fontSize: 16,
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingTop: 20,
     borderTopWidth: 1,
-    borderColor: "#eee",
+    borderColor: "#E5E5E5",
   },
 
   descriptionText: {

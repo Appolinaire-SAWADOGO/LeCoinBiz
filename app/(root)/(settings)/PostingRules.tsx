@@ -14,7 +14,7 @@ export default function PostingRules() {
   };
 
   return (
-    <Container>
+    <Container withGoBack>
       <PageHeader
         name="Règles de diffusion"
         style={{ paddingHorizontal: 20 }}

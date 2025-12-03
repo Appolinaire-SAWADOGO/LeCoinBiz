@@ -1,4 +1,4 @@
-import AnnouncementCard from "@/components/annoucement/AnnouncementCard";
+import AnnouncementCard from "@/components/announcement/AnnouncementCard";
 import { announcements } from "@/constants/announcements";
 import React from "react";
 import {

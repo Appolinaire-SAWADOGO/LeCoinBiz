@@ -1,5 +1,5 @@
-import Announcements from "@/components/annoucement/Announcements";
-import NoAds from "@/components/annoucement/NoAds";
+import Announcements from "@/components/announcement/Announcements";
+import NoAds from "@/components/announcement/NoAds";
 import Container from "@/components/Container";
 import FavoriesSearchHeaderSection from "@/components/favorites/FavoritesHeaderSection";
 import { useGetFavoriteAdsByUserId } from "@/hooks/services/favorites/useGetFavoritesAdsByUserId";
@@ -32,6 +32,13 @@ export default function Favorites() {
       getNextPageParam: (lastPage) => {
         return lastPage.hasMore ? lastPage.lastDoc : undefined;
       },
+
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+
+      refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
+      refetchOnMount: true, // Refetch au montage si données stale
+      retry: 2, // Nombre de tentatives en cas d'erreur
     });
 
   const allFavorites = useMemo(() => {
@@ -52,8 +59,6 @@ export default function Favorites() {
     await queryClient.invalidateQueries({ queryKey: ["user-favorites"] });
     setRefreshing(false);
   }, [queryClient]);
-
-  console.log("allFavorites : ", allFavorites);
 
   return (
     <Container withBottom={false} style={{ backgroundColor: "#fff" }}>

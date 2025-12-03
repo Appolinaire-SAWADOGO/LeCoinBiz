@@ -14,7 +14,7 @@ export default function TermsOfUse() {
   };
 
   return (
-    <Container>
+    <Container withGoBack>
       <PageHeader
         name="Conditions Générales d'Utilisation"
         style={{ paddingHorizontal: 20 }}
@@ -29,20 +29,22 @@ export default function TermsOfUse() {
         </AppText>
 
         <AppText style={styles.text}>
-          1. Respectez les autres utilisateurs.
+          1. ✔️ Respectez les autres utilisateurs.
         </AppText>
         <AppText style={styles.text}>
-          2. Ne publiez pas de contenu illégal, offensant ou trompeur.
+          2. 🚫 Ne publiez pas de contenu illégal, offensant ou trompeur.
         </AppText>
         <AppText style={styles.text}>
-          3. Les annonces doivent respecter les lois en vigueur dans votre pays.
+          3. 📌 Les annonces doivent respecter les lois en vigueur dans votre
+          pays.
         </AppText>
         <AppText style={styles.text}>
-          4. Nous ne sommes pas responsables des échanges ou transactions entre
-          utilisateurs.
+          4. ⚠️ Nous ne sommes pas responsables des échanges ou transactions
+          entre utilisateurs.
         </AppText>
         <AppText style={styles.text}>
-          5. En cas de comportement abusif, votre compte pourra être suspendu.
+          5. ⛔ En cas de comportement abusif, votre compte pourra être
+          suspendu.
         </AppText>
 
         <AppText style={[styles.text, { marginTop: 20 }]}>

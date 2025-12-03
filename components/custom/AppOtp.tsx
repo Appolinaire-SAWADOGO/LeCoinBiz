@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { Keyboard, StyleSheet, TextInput, View } from "react-native";
 
 export default function AppOtp({
   code,
@@ -8,7 +8,7 @@ export default function AppOtp({
 }: {
   code: string;
   setCode: (value: string) => void;
-  onEnter?: () => void;
+  onEnter?: () => Promise<void>;
 }) {
   const inputs = useRef<(TextInput | null)[]>([]);
 
@@ -54,9 +54,10 @@ export default function AppOtp({
           textAlign="center"
           returnKeyType="done" // Cela affiche un bouton "Valider"
           blurOnSubmit={false}
-          onSubmitEditing={() => {
+          onSubmitEditing={async () => {
             if (i === 5 && code.length === 6) {
-              onEnter?.(); // ✅ L'utilisateur a validé le champ 6
+              Keyboard.dismiss();
+              await onEnter?.(); // ✅ L'utilisateur a validé le champ 6
             }
           }}
         />

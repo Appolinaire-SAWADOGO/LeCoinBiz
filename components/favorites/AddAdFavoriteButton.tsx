@@ -20,7 +20,7 @@ export default function AddAdFavoriteButton({
   const { ifAdIsAddedToFavorites, addAdFavorites } = useAddAdFavorites();
 
   const { data: isSelected } = useQuery({
-    queryKey: ["if_ad_is_added_to_favorites", adId],
+    queryKey: ["if-ad-is-added-to-favorites", adId],
     queryFn: () => ifAdIsAddedToFavorites(adId),
     enabled: !!adId,
   });
