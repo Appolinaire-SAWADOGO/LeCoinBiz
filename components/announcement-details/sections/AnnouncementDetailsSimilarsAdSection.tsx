@@ -102,6 +102,12 @@ export default function AnnouncementDetailsSimilarsAdSection({
         Annonces similaires
       </AppText>
 
+      {!similarsAds?.length  && !isLoading && ( <View style={{ paddingHorizontal: 20, marginTop: 40  , width: '100%' , justifyContent: 'center', alignItems: 'center' }}>
+        <AppText style={{textAlign: "center"}} color={designSystem.colors.subText}>
+          Aucune annonce similaire trouvée pour le moment.
+        </AppText>
+      </View> )}
+
       {isLoading ? (
         <ScrollView
           horizontal

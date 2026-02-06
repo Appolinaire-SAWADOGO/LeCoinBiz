@@ -14,6 +14,8 @@ export default function PostAnAdSection({
   value,
   keyboardType,
   maxLength,
+  viewLenght,
+  multiline,
 }: {
   label: string;
   placeholder?: string;
@@ -24,6 +26,8 @@ export default function PostAnAdSection({
   value?: string;
   keyboardType?: KeyboardTypeOptions | undefined;
   maxLength?: number;
+  viewLenght?: number;
+  multiline?: boolean;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -40,14 +44,8 @@ export default function PostAnAdSection({
   return (
     <View style={{ gap: 8 }}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-        <AppText font="Medium" fontSize={15}>
-          {label}
-        </AppText>
-        {optional && (
-          <AppText fontSize={15} color={"#444"}>
-            (facultatif)
-          </AppText>
-        )}
+        <AppText font="Medium">{label}</AppText>
+        {optional && <AppText color={"#444"}>(facultatif)</AppText>}
       </View>
       {!children ? (
         <AppInput
@@ -57,14 +55,15 @@ export default function PostAnAdSection({
           maxLength={maxLength}
           style={[
             {
-              height: 48,
               borderWidth: 1,
               borderColor: designSystem.colors.inputBorder,
               backgroundColor: "transparent",
             },
             style,
           ]}
+          viewLenght={viewLenght}
           placeholder={placeholder!}
+          multiline={multiline}
         />
       ) : (
         children

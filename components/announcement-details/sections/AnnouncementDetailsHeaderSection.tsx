@@ -1,7 +1,7 @@
 import AddAdFavoriteButton from "@/components/favorites/AddAdFavoriteButton";
 import PageHeader from "@/components/PageHeader";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { AdStatusType } from "@/types";
+import { AdStatusType, AnnouncementType } from "@/types";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -10,11 +10,13 @@ export default function AnnouncementDetailsHeaderSection({
   status,
   name,
   adId,
+  ad,
 }: {
   from: "OtherPage" | "ProfilePage";
   status?: AdStatusType;
   name?: string;
   adId: string;
+  ad: AnnouncementType;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -22,7 +24,11 @@ export default function AnnouncementDetailsHeaderSection({
     <PageHeader style={{ paddingHorizontal: 20, paddingTop: 15 }} name={name}>
       <View style={styles.rightIcons}>
         {from === "OtherPage" && (
-          <AddAdFavoriteButton adId={adId} fromAnnouncementCard={false} />
+          <AddAdFavoriteButton
+            adId={adId}
+            ad={ad}
+            fromAnnouncementCard={false}
+          />
         )}
 
         {/* {status === "ACTIVATED" && (

@@ -1,16 +1,16 @@
 import Announcements from "@/components/announcement/Announcements";
-import NoAds from "@/components/announcement/NoAds";
+import NoData from "@/components/announcement/NoData";
 import Container from "@/components/Container";
 import AppFullScreenLoader from "@/components/custom/AppFullScreenLoader";
 import MerchantInfoSection from "@/components/Merchand/MerchantInfoSection";
 import ProfileContentHead from "@/components/profile/ProfileContentHead";
-import ProfilePageTitleSection from "@/components/profile/ProfilePageTitleSection";
+import ProfileTitleSection from "@/components/profile/ProfileTitleSection";
 import { useGetAdsByUserId } from "@/hooks/services/ads/useGetAdsByUserId";
 import { useGetUserAdsCount } from "@/hooks/services/ads/useGetUserAdsCount";
+import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useGetUserById } from "@/hooks/services/user/useGetUserById";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AdStatusType, UserType } from "@/types";
-import { getAuth } from "@react-native-firebase/auth";
 import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 import {
   useInfiniteQuery,
@@ -23,8 +23,8 @@ import { RefreshControl, StyleSheet } from "react-native";
 export default function Profile() {
   const { designSystem } = useAppTheme();
 
-  const auth = getAuth();
-  const userId = auth.currentUser?.uid;
+  const currentUser = useCurrentUser();
+  const userId = currentUser?.uid;
 
   const { getAdsByUserId } = useGetAdsByUserId();
   const { getUserById } = useGetUserById();
@@ -36,15 +36,17 @@ export default function Profile() {
   const queryClient = useQueryClient();
 
   const { data: userData, isLoading: userIsLoading } = useQuery({
-    queryKey: ["user-data", userId, "profile"],
+    queryKey: ["user", userId, "profile"],
     queryFn: () => getUserById(userId as string),
+    enabled: !!userId,
   });
 
   // user activated ads count
   const { data: activatedAdsCount, isLoading: activatedAdsCountIsLoading } =
     useQuery({
-      queryKey: ["user-activated-ads-count"],
+      queryKey: ["user-activated-ads-count", userId],
       queryFn: () => getUserAdsCount(userId as string, "ACTIVATED"),
+      enabled: !!userId,
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes
 
@@ -56,8 +58,9 @@ export default function Profile() {
   // user desabled ads count
   const { data: desabledAdsCount, isLoading: desabledAdsCountIsLoading } =
     useQuery({
-      queryKey: ["user-disabled-ads-count"],
+      queryKey: ["user-disabled-ads-count", userId],
       queryFn: () => getUserAdsCount(userId as string, "DISABLED"),
+      enabled: !!userId,
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes
 
@@ -69,8 +72,9 @@ export default function Profile() {
   // user pending ads count
   const { data: pendingAdsCount, isLoading: pendingAdsCountIsLoading } =
     useQuery({
-      queryKey: ["user-pending-ads-count"],
+      queryKey: ["user-pending-ads-count", userId],
       queryFn: () => getUserAdsCount(userId as string, "PENDING"),
+      enabled: !!userId,
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes
 
@@ -87,16 +91,17 @@ export default function Profile() {
     hasNextPage: hasNextPageActivated,
     isFetchingNextPage: isFetchingNextPageActivated,
   } = useInfiniteQuery({
-    queryKey: ["user-activated-ads"],
+    queryKey: ["user-activated-ads", userId],
+    enabled: !!userId,
     queryFn: ({ pageParam }) =>
       getAdsByUserId(
         userId as string,
         "ACTIVATED",
-        pageParam as FirebaseFirestoreTypes.QueryDocumentSnapshot | null
+        pageParam as FirebaseFirestoreTypes.QueryDocumentSnapshot | null,
       ),
     initialPageParam: null as any,
     getNextPageParam: (lastPage) => {
-      return lastPage?.hasMore ? lastPage.lastDoc : undefined;
+      return lastPage?.hasMore ? lastPage.lastCreatedAt : undefined;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
@@ -114,16 +119,17 @@ export default function Profile() {
     hasNextPage: hasNextPageDisabled,
     isFetchingNextPage: isFetchingNextPageDisabled,
   } = useInfiniteQuery({
-    queryKey: ["user-disabled-ads"],
+    queryKey: ["user-disabled-ads", userId],
+    enabled: !!userId,
     queryFn: ({ pageParam }) =>
       getAdsByUserId(
         userId as string,
         "DISABLED",
-        pageParam as FirebaseFirestoreTypes.QueryDocumentSnapshot | null
+        pageParam as FirebaseFirestoreTypes.QueryDocumentSnapshot | null,
       ),
     initialPageParam: null as any,
     getNextPageParam: (lastPage) => {
-      return lastPage?.hasMore ? lastPage.lastDoc : undefined;
+      return lastPage?.hasMore ? lastPage.lastCreatedAt : undefined;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
@@ -141,16 +147,17 @@ export default function Profile() {
     hasNextPage: hasNextPagePending,
     isFetchingNextPage: isFetchingNextPagePending,
   } = useInfiniteQuery({
-    queryKey: ["user-pending-ads"],
+    queryKey: ["user-pending-ads", userId],
+    enabled: !!userId,
     queryFn: ({ pageParam }) =>
       getAdsByUserId(
         userId as string,
         "PENDING",
-        pageParam as FirebaseFirestoreTypes.QueryDocumentSnapshot | null
+        pageParam as FirebaseFirestoreTypes.QueryDocumentSnapshot | null,
       ),
     initialPageParam: null as any,
     getNextPageParam: (lastPage) => {
-      return lastPage?.hasMore ? lastPage.lastDoc : undefined;
+      return lastPage?.hasMore ? lastPage.lastCreatedAt : undefined;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
@@ -278,25 +285,25 @@ export default function Profile() {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await queryClient.invalidateQueries({
-      queryKey: ["user-data", userId, "profile"],
+      queryKey: ["user", userId, "profile"],
     });
     await queryClient.invalidateQueries({
-      queryKey: ["user-activated-ads-count"],
+      queryKey: ["user-activated-ads-count", userId],
     });
     await queryClient.invalidateQueries({
-      queryKey: ["user-disabled-ads-count"],
+      queryKey: ["user-disabled-ads-count", userId],
     });
     await queryClient.invalidateQueries({
-      queryKey: ["user-pending-ads-count"],
+      queryKey: ["user-pending-ads-count", userId],
     });
     await queryClient.invalidateQueries({
-      queryKey: ["user-activated-ads"],
+      queryKey: ["user-activated-ads", userId],
     });
     await queryClient.invalidateQueries({
-      queryKey: ["user-disabled-ads"],
+      queryKey: ["user-disabled-ads", userId],
     });
     await queryClient.invalidateQueries({
-      queryKey: ["user-pending-ads"],
+      queryKey: ["user-pending-ads", userId],
     });
     setRefreshing(false);
   }, [queryClient, userId]);
@@ -326,16 +333,12 @@ export default function Profile() {
           }
           ListHeaderComponent={
             <>
-              <ProfilePageTitleSection user={userData as UserType} />
+              <ProfileTitleSection user={userData as UserType} />
 
               {/* info section */}
               <MerchantInfoSection
                 data={userData as UserType}
-                adsCount={
-                  (activatedAdsCount! +
-                    desabledAdsCount! +
-                    pendingAdsCount!) as number
-                }
+                adsCount={activatedAdsCount! as number}
               />
               {/* profile content head */}
               <ProfileContentHead
@@ -354,11 +357,12 @@ export default function Profile() {
         />
       )}
 
-      {!selectedAdsIsLoading &&
+      {!isLoading &&
+        !selectedAdsIsLoading &&
         selectedAds.length === 0 &&
         !selectedAdsCount && (
-          <NoAds
-            style={{ paddingTop: "70%" }}
+          <NoData
+            style={{ paddingTop: "100%" }}
             text="Aucune annonce disponible."
           />
         )}

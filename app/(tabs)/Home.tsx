@@ -1,11 +1,12 @@
 import Announcements from "@/components/announcement/Announcements";
-import NoAds from "@/components/announcement/NoAds";
+import NoData from "@/components/announcement/NoData";
 import Container from "@/components/Container";
 import HeaderHideAnimation from "@/components/HeaderHideAnimation";
 import HomeGoBackMoadal from "@/components/home/HomeGoBackMoadal";
 import HomeHeaderSection from "@/components/home/HomeHeaderSection";
 import PostAnAdButton from "@/components/PostAnAdButton";
 import { useGetHomeAds } from "@/hooks/services/ads/useGetHomeAds";
+import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useBackPress } from "@/hooks/useBackPress";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
@@ -28,6 +29,8 @@ export default function Home() {
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = React.useState(false);
 
+  const userId = useCurrentUser()?.uid;
+
   useBackPress(() => {
     setGoBackIsModalOpen(true);
   });
@@ -40,11 +43,13 @@ export default function Home() {
       getNextPageParam: (lastPage) => {
         return lastPage.hasMore ? lastPage.lastDoc : undefined;
       },
-      staleTime: 1000 * 60 * 3,
-      gcTime: 1000 * 60 * 10,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
+
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+
+      refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
+      refetchOnMount: true, // Refetch au montage si données stale
+      retry: 2, // Nombre de tentatives en cas d'erreur
     });
 
   const allAds = useMemo(() => {
@@ -55,6 +60,9 @@ export default function Home() {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await queryClient.invalidateQueries({ queryKey: ["home-ads"] });
+    await queryClient.invalidateQueries({
+      queryKey: ["notifications", userId],
+    });
     setRefreshing(false);
   }, [queryClient]);
 
@@ -112,10 +120,7 @@ export default function Home() {
 
           {/* Message "aucune annonce" */}
           {!initialLoading && !hasAds && (
-            <NoAds
-              text="Aucune annonce disponible pour le moment. Veuillez réessayer plus tard
-                        ou ajuster vos filtres."
-            />
+            <NoData text="Aucune annonce disponible pour le moment. Veuillez réessayer plus tard." />
           )}
         </View>
       </Container>

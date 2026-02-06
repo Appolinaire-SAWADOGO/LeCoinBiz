@@ -37,12 +37,12 @@ export default function About() {
           Contact
         </AppText>
         <TouchableOpacity
-          onPress={() => Linking.openURL("mailto:support@tonapp.com")}
+          onPress={() => Linking.openURL("mailto:contact.lecoinbiz@gmail.com")}
         >
           <AppText
             style={[styles.text, { color: designSystem.colors.primary }]}
           >
-            support@tonapp.com
+            contact.lecoinbiz@gmail.com
           </AppText>
         </TouchableOpacity>
 

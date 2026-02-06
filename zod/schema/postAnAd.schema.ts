@@ -47,7 +47,7 @@ export const PostAnAddSchema = z
         z.object({
           label: z.string(),
           active: z.boolean(),
-        })
+        }),
       )
       .length(2),
 
@@ -62,7 +62,7 @@ export const PostAnAddSchema = z
       .min(8, "Le numéro de téléphone doit comporter au moins 8 chiffres.")
       .regex(
         /^\d{8}$/,
-        "Le numéro de téléphone doit comporter exactement 8 chiffres."
+        "Le numéro de téléphone doit comporter exactement 8 chiffres.",
       ),
 
     whatsappNumber: z
@@ -70,7 +70,7 @@ export const PostAnAddSchema = z
       .min(8, "Le numéro WhatsApp doit comporter au moins 8 chiffres.")
       .regex(
         /^\d{8}$/,
-        "Le numéro WhatsApp doit comporter exactement 8 chiffres."
+        "Le numéro WhatsApp doit comporter exactement 8 chiffres.",
       ),
   })
   .refine(
@@ -78,5 +78,5 @@ export const PostAnAddSchema = z
     {
       message: "Sous-catégorie invalide pour cette catégorie.",
       path: ["subCategory"],
-    }
+    },
   );

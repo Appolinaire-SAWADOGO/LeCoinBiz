@@ -1,30 +1,24 @@
 import { AdStatusType } from "@/types";
-import firestore from "@react-native-firebase/firestore";
+import functions from "@react-native-firebase/functions";
+
+type GetUserAdsCountResult = { count: number };
 
 export const useGetUserAdsCount = () => {
   const getUserAdsCount = async (
     userId: string,
-    status: AdStatusType = "ACTIVATED"
+    status: AdStatusType = "ACTIVATED",
   ) => {
     try {
-      if (!userId) {
-        console.warn("Aucun ID utilisateur fourni");
-        return;
-      }
+      const getUserAdsCountCallable = functions().httpsCallable<
+        { userId: string; status?: AdStatusType },
+        GetUserAdsCountResult
+      >("getUserAdsCount");
 
-      const rslt = await firestore()
-        .collection("Ads")
-        .where("userId", "==", userId)
-        .where("status", "==", status)
-        .count()
-        .get();
-
-      return rslt.data().count;
+      const response = await getUserAdsCountCallable({ userId, status });
+      return response.data.count;
     } catch (error) {
-      console.error(
-        "Erreur lors de la récupération du nombre d'annonces :",
-        error
-      );
+      console.error("Erreur récupération du nombre d'annonces:", error);
+      return 0;
     }
   };
 

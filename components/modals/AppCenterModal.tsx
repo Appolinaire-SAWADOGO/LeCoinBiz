@@ -68,7 +68,6 @@ export default function AppCenterModal({
             <Icon
               as={CloseIcon}
               size={xSize}
-              className="stroke-background-400 group-[:hover]/modal-close-button:stroke-background-700 group-[:active]/modal-close-button:stroke-background-900 group-[:focus-visible]/modal-close-button:stroke-background-900"
               style={{ color: designSystem.colors.bigText }}
             />
           </ModalCloseButton>
@@ -84,9 +83,12 @@ export default function AppCenterModal({
               }}
               style={{
                 width: 100,
+                borderColor: designSystem.colors.subText,
               }}
             >
-              <ButtonText>Annuler</ButtonText>
+              <ButtonText style={{ color: designSystem.colors.subText }}>
+                Annuler
+              </ButtonText>
             </Button>
           )}
           {withSubmitButton && (

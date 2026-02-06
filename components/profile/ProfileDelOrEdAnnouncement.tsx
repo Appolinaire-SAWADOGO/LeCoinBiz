@@ -43,7 +43,7 @@ export default function ProfileDelOrEdAnnouncement({
       value: "edit",
       icon: <Edit3 size={14} color={designSystem.colors.primary} />,
       onPress: () =>
-        router.push({
+        router.navigate({
           pathname: "/(root)/(announcement)/PostAnAd",
           params: { ad: JSON.stringify(ad), from: "NORMAL" },
         }),
@@ -55,7 +55,7 @@ export default function ProfileDelOrEdAnnouncement({
             label: "Désactiver",
             value: "disable",
             icon: <EyeOff size={14} color="#dc3545" />,
-            onPress: async () => await disableAd(adId, "NORMAL"),
+            onPress: async () => await disableAd(adId, ad.userId, "NORMAL"),
           },
         ]
       : []),
@@ -66,7 +66,7 @@ export default function ProfileDelOrEdAnnouncement({
             label: "Réactiver",
             value: "reactivate",
             icon: <Eye size={14} color={designSystem.colors.primary} />,
-            onPress: async () => await activateAd(adId, "NORMAL"),
+            onPress: async () => await activateAd(adId, ad.userId, "NORMAL"),
           },
         ]
       : []),
@@ -77,7 +77,8 @@ export default function ProfileDelOrEdAnnouncement({
             label: "Supprimer",
             value: "delete",
             icon: <Trash size={14} color="#dc3545" />,
-            onPress: async () => await deleteAd(adId, status, "NORMAL"),
+            onPress: async () =>
+              await deleteAd(adId, ad.userId, ad.images, status, "NORMAL"),
           },
         ]
       : []),

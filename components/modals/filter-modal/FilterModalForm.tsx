@@ -97,7 +97,7 @@ export default function FilterModalForm({ isOpen, close, useCase }: props) {
 
     if (useCase === "Home") {
       resetForm();
-      router.push("/(root)/Filters");
+      router.navigate("/(root)/Filters");
     }
   };
 

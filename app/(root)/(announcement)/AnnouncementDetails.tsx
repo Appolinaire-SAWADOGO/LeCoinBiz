@@ -8,13 +8,15 @@ import AnnouncementDetailsSimilarsAdSection from "@/components/announcement-deta
 import Container from "@/components/Container";
 import AppFullScreenLoader from "@/components/custom/AppFullScreenLoader";
 import { useGetAdById } from "@/hooks/services/ads/useGetAdById";
+import { useIncrementAdClics } from "@/hooks/services/ads/useIncrementAdClics";
+import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AdStatusType, AnnouncementType } from "@/types";
 import { formatCreatedAt } from "@/utils";
-import auth from "@react-native-firebase/auth";
+import { getCurrentUserAuthMethod } from "@/utils/auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 export default function AnnouncementDetails() {
@@ -26,9 +28,12 @@ export default function AnnouncementDetails() {
 
   const initialAd: AnnouncementType = JSON.parse(initialRslt as string);
 
-  const currentUser = auth().currentUser;
+  const currentUser = useCurrentUser();
+  const currentUserAuthMethod = getCurrentUserAuthMethod(currentUser);
 
   const queryClient = useQueryClient();
+
+  const { incrementAdClics } = useIncrementAdClics();
 
   const { data: ad, isLoading: adIsLoading } = useQuery({
     queryKey: ["ad", initialAd.id],
@@ -38,6 +43,16 @@ export default function AnnouncementDetails() {
     },
     refetchOnWindowFocus: false,
   });
+
+  useEffect(() => {
+    (async () => {
+      await incrementAdClics(
+        ad?.id as string,
+        ad?.userId as string,
+        from as "OtherPage" | "ProfilePage",
+      );
+    })();
+  }, []);
 
   const isLoading = adIsLoading;
 
@@ -56,6 +71,7 @@ export default function AnnouncementDetails() {
                 : ad?.title
             }
             adId={ad.id as string}
+            ad={ad}
           />
 
           {/* main */}
@@ -92,10 +108,12 @@ export default function AnnouncementDetails() {
                 {from === "OtherPage" && (
                   <>
                     <AnnouncementDetailsSimilarsAdSection ad={ad} />
-                    {ad.userId !== currentUser?.uid && (
+                    {currentUser && ad.userId !== currentUser?.uid && (
                       <AnnouncementDetailsPublicationReportingSection
                         adId={ad.id}
                         adUserId={ad.userId}
+                        emailVerified={currentUser.emailVerified}
+                        currentUserAuthMethod={currentUserAuthMethod}
                       />
                     )}
                   </>

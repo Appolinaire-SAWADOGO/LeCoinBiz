@@ -1,21 +1,19 @@
 import { AnnouncementType } from "@/types";
-import firestore from "@react-native-firebase/firestore";
+import functions from "@react-native-firebase/functions";
 
 export const useGetAdById = () => {
-  const getAdById = async (id: string) => {
+  const getAdById = async (adId: string): Promise<AnnouncementType | null> => {
     try {
-      const adDoc = await firestore().collection("Ads").doc(id).get();
+      const getAdFn = functions().httpsCallable<
+        { adId: string },
+        { ad: AnnouncementType | null }
+      >("getAdById");
 
-      if (!adDoc.exists) {
-        console.warn("Annonce non trouvée !");
-        return null;
-      }
+      const result = await getAdFn({ adId });
 
-      const adData = adDoc.data() as Omit<AnnouncementType, "id">;
-
-      return { id, ...adData };
+      return result.data.ad;
     } catch (error) {
-      console.error("Erreur récupération annonce/utilisateur :", error);
+      console.error("Erreur de recuperation d'annonce par id [getAdById] :", error);
       return null;
     }
   };

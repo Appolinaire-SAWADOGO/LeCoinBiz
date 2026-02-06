@@ -32,7 +32,7 @@ export default function SectionHeaderText({
         <TouchableOpacity
           activeOpacity={0.3}
           style={styles.right}
-          onPress={() => router.push("/(root)/AllCategories")}
+          onPress={() => router.navigate("/(root)/(category)/AllCategories")}
         >
           <AppText color={designSystem.colors.primary}>Voir tout</AppText>
           <ChevronRight

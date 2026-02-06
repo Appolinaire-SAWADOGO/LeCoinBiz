@@ -1,50 +1,75 @@
-import { showToast } from "@/utils";
-import firestore from "@react-native-firebase/firestore";
+import {
+  addAdToInfiniteList,
+  decrementCount,
+  getAdToInfiniteList,
+  incrementCount,
+  modifyAdToQueryData,
+  removeAdFromInfiniteList,
+  showToast,
+} from "@/utils";
+import functions from "@react-native-firebase/functions";
 import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 
 export const useActivateAd = () => {
   const queryClient = useQueryClient();
 
-  const activateAd = async (adId: string, from: "NORMAL" | "AD_DETAILS") => {
+  const activateAd = async (
+    adId: string,
+    userId: string,
+    from: "NORMAL" | "AD_DETAILS",
+  ) => {
     if (!adId) {
       showToast("error", "Annonce introuvable.");
+      return;
+    }
+
+    if (!userId) {
       return;
     }
 
     showToast("loading", "Traitement en cours.");
 
     try {
-      await firestore()
-        .collection("Ads")
-        .doc(adId)
-        .update({ status: "ACTIVATED" });
+      const activateAdFunction = functions().httpsCallable("activateAd");
+      await activateAdFunction({ adId });
 
-      await queryClient.invalidateQueries({
-        queryKey: ["user-activated-ads-count"],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["user-disabled-ads-count"],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["user-activated-ads"],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["user-disabled-ads"],
-      });
+      const disabledAd = getAdToInfiniteList(
+        ["user-disabled-ads", userId],
+        adId,
+        queryClient,
+      );
+
+      removeAdFromInfiniteList(
+        ["user-disabled-ads", userId],
+        adId,
+        queryClient,
+      );
+      addAdToInfiniteList(
+        ["user-activated-ads", userId],
+        { ...disabledAd, status: "ACTIVATED" },
+        queryClient,
+      );
+      decrementCount(["user-disabled-ads-count", userId], queryClient);
+      incrementCount(["user-activated-ads-count", userId], queryClient);
 
       if (from === "AD_DETAILS") {
-        await queryClient.invalidateQueries({
-          queryKey: ["ad", adId],
-        });
+        modifyAdToQueryData(["ad", adId], { status: "ACTIVATED" }, queryClient);
       }
 
       Toast.hide();
       showToast("success", "Annonce activée.");
-    } catch (error) {
-      console.error("Erreur lors de la activation de l'annonce :", error);
+    } catch (error: any) {
+      console.error("Erreur lors de l'activation de l'annonce :", error);
       Toast.hide();
-      showToast("error", "Une erreur est survenue.");
+
+      if (error.code === "unauthenticated") {
+        showToast("error", "Vous devez être connecté.");
+      } else if (error.code === "invalid-argument") {
+        showToast("error", "Annonce introuvable.");
+      } else {
+        showToast("error", "Une erreur est survenue.");
+      }
       return;
     }
   };

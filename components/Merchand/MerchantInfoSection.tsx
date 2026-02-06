@@ -30,7 +30,7 @@ export default function MerchantInfoSection({
 
         <View style={styles.flex}>
           <MapPin color={designSystem.colors.bigText} width={15} height={15} />
-          <AppText fontSize={14}>Ouagadougou, Burkina</AppText>
+          <AppText>Ouagadougou, Burkina</AppText>
         </View>
 
         <View style={styles.flex}>

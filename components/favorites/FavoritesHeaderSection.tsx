@@ -3,7 +3,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import AppText from "../custom/AppText";
 
-export default function FavoriesSearchHeaderSection({
+export default function FavoriesHeaderSection({
   value,
   setValue,
 }: {

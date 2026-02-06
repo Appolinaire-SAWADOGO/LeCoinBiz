@@ -1,6 +1,10 @@
 import AppText from "@/components/custom/AppText";
-import { useCheckUserAcces } from "@/hooks/services/auth/useCheckUserAcces";
+import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { useAddUsernameModalStore } from "@/store/useAddUsernameModalStore";
+import { useAuthModalStore } from "@/store/useAuthModalStore";
+import { useVerifyEmailStore } from "@/store/useVerifyEmailStore";
+import { getCurrentUserAuthMethod } from "@/utils/auth";
 import { router } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity } from "react-native";
@@ -9,13 +13,36 @@ import PostImage from "../assets/images/Post.png";
 export default function PostAnAdButton() {
   const { designSystem } = useAppTheme();
 
-  const { checkUserAccess } = useCheckUserAcces();
+  const { onOpen: openAddYourUsernameModal } = useAddUsernameModalStore();
+  const { onOpen: openAuthModal } = useAuthModalStore();
+  const { open: openVerifyEmailModal } = useVerifyEmailStore();
+
+  const currentUser = useCurrentUser();
+  const currentUserAuthMethod = getCurrentUserAuthMethod(currentUser);
 
   return (
     <TouchableOpacity
-      onPress={() =>
-        checkUserAccess(() => router.push("/(root)/(announcement)/PostAnAd"))
-      }
+      onPress={() => {
+        if (!currentUser) {
+          openAuthModal();
+          return;
+        }
+
+        if (
+          currentUserAuthMethod === "password" &&
+          !currentUser.emailVerified
+        ) {
+          openVerifyEmailModal();
+          return;
+        }
+
+        if (!currentUser.displayName) {
+          openAddYourUsernameModal();
+          return;
+        }
+
+        router.navigate("/(root)/(announcement)/PostAnAd");
+      }}
       style={[
         styles.container,
         { backgroundColor: designSystem.colors.primary },

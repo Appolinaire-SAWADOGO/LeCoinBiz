@@ -8,9 +8,16 @@ import {
   TouchableOpacity,
 } from "react-native";
 
+const PRIVACY_POLICY_URL =
+  "https://appolinaire-sawadogo.github.io/lecoinbiz-privacy-policy";
+
 export default function PrivacyPolicy() {
   const handleContactPress = () => {
-    Linking.openURL("mailto:support@tonapp.com");
+    Linking.openURL("mailto:contact.lecoinbiz@gmail.com");
+  };
+
+  const handlePrivacyLinkPress = () => {
+    Linking.openURL(PRIVACY_POLICY_URL);
   };
 
   return (
@@ -19,6 +26,7 @@ export default function PrivacyPolicy() {
         name="Politique de confidentialité"
         style={{ paddingHorizontal: 20 }}
       />
+
       <ScrollView contentContainerStyle={styles.container}>
         <AppText font="Bold" fontSize={20} style={styles.title}>
           Protection de vos données
@@ -31,33 +39,57 @@ export default function PrivacyPolicy() {
         </AppText>
 
         <AppText style={styles.text}>
-          1. 📱 Données collectées : nom, e-mail, numéro de téléphone (lors de
-          la création d’annonce ou inscription).
+          1. 📱 Données collectées : nom, adresse e-mail et numéro de téléphone
+          (lors de l’inscription ou de la création d’une annonce).
         </AppText>
+
         <AppText style={styles.text}>
           2. 🔒 Utilisation : ces données sont utilisées uniquement pour le bon
-          fonctionnement de l’application (publication, contact, messagerie).
+          fonctionnement de l’application (publication d’annonces, contact,
+          messagerie).
         </AppText>
+
         <AppText style={styles.text}>
-          3. ❌ Partage : vos données ne sont jamais vendues ni partagées à des
-          tiers sans votre consentement.
+          3. ❌ Partage : vos données personnelles ne sont jamais vendues et ne
+          sont pas partagées avec des tiers sans votre consentement, sauf
+          obligation légale ou services techniques nécessaires.
         </AppText>
+
         <AppText style={styles.text}>
-          4. 🔐 Sécurité : nous mettons en place des mesures de protection pour
-          garantir la sécurité de vos informations.
+          4. 🔐 Sécurité : nous mettons en place des mesures techniques et
+          organisationnelles afin de garantir la sécurité de vos informations.
         </AppText>
+
         <AppText style={styles.text}>
-          5. ⚙️ Vous pouvez à tout moment modifier ou supprimer vos données
-          depuis votre profil.
+          5. ⚙️ Gestion des données : vous pouvez à tout moment modifier ou
+          supprimer vos données depuis votre profil dans l’application.
+        </AppText>
+
+        <AppText style={styles.text}>
+          6. 🗑️ Suppression du compte : vous pouvez demander la suppression
+          complète de votre compte et de vos données en nous contactant par
+          e-mail.
         </AppText>
 
         <AppText style={[styles.text, { marginTop: 20 }]}>
-          Pour toute question sur la confidentialité ou la protection de vos
-          données :
+          Pour toute question concernant la confidentialité ou la protection de
+          vos données :
         </AppText>
+
         <TouchableOpacity onPress={handleContactPress}>
           <AppText style={[styles.text, styles.link]}>
-            support@tonapp.com
+            contact.lecoinbiz@gmail.com
+          </AppText>
+        </TouchableOpacity>
+
+        <AppText style={[styles.text, { marginTop: 24 }]}>
+          La version officielle et à jour de la politique de confidentialité est
+          disponible à l’adresse suivante :
+        </AppText>
+
+        <TouchableOpacity onPress={handlePrivacyLinkPress}>
+          <AppText style={[styles.text, styles.link]}>
+            https://appolinaire-sawadogo.github.io/lecoinbiz-privacy-policy
           </AppText>
         </TouchableOpacity>
       </ScrollView>

@@ -16,15 +16,10 @@ import { AnnouncementType } from "@/types";
 import { PostAnAddSchema } from "@/zod/schema/postAnAd.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocalSearchParams } from "expo-router";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { LayoutChangeEvent, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { z } from "zod";
 
@@ -35,7 +30,31 @@ export default function PostAnAd() {
 
   const parseAd: AnnouncementType | null = ad ? JSON.parse(ad as string) : null;
 
-  console.log(JSON.stringify(parseAd, null, 2));
+  const scrollViewRef = useRef<KeyboardAwareScrollView>(null);
+
+  // Changez le type de refs pour utiliser des positions Y
+  const fieldPositions = useRef<{ [key: string]: number }>({});
+
+  // Refs pour chaque champ
+  const fieldRefs = useRef<{ [key: string]: View | null }>({
+    title: null,
+    category: null,
+    subCategory: null,
+    price: null,
+    description: null,
+    images: null,
+    options: null,
+    conditions: null,
+    city: null,
+    phoneNumber: null,
+    whatsappNumber: null,
+  });
+
+  const handleLayout =
+    (fieldName: keyof typeof fieldPositions.current) =>
+    (event: LayoutChangeEvent) => {
+      fieldPositions.current[fieldName] = event.nativeEvent.layout.y;
+    };
 
   const {
     control,
@@ -71,6 +90,23 @@ export default function PostAnAd() {
   const insets = useSafeAreaInsets();
 
   const category = watch("category");
+
+  // Scroll vers la première erreur - VERSION CORRIGÉE
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      const firstErrorField = Object.keys(
+        errors,
+      )[0] as keyof typeof fieldPositions.current;
+      const yPosition = fieldPositions.current[firstErrorField];
+
+      if (yPosition !== undefined && scrollViewRef.current) {
+        // Utilisez scrollToPosition au lieu de measureLayout
+        setTimeout(() => {
+          scrollViewRef.current?.scrollToPosition(0, yPosition - 100, true);
+        }, 100);
+      }
+    }
+  }, [errors]);
 
   const isButtonActive = () => {
     const ifAllExist =
@@ -117,319 +153,304 @@ export default function PostAnAd() {
         style={{ paddingHorizontal: 20 }}
       />
 
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+      <KeyboardAwareScrollView
+        ref={scrollViewRef}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingTop: 20,
+          paddingBottom: insets.bottom + 10,
+          backgroundColor: "#fff",
+          gap: 20,
+        }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        enableOnAndroid={true}
+        extraScrollHeight={20}
       >
-        {/* scroll view */}
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-            paddingHorizontal: 20,
-            paddingTop: 20,
-            paddingBottom: insets.bottom + 10,
-            backgroundColor: "#fff",
-            gap: 15,
-          }}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          {/*titre*/}
-          <Controller
-            control={control}
-            name="title"
-            render={({ field: { onChange, value } }) => (
-              <View>
-                <PostAnAdSection
-                  onChangeText={onChange}
-                  value={value}
-                  label="Titre"
-                  placeholder="Ecrivez le titre de l'annonce"
-                  maxLength={100}
-                  style={{
-                    borderColor: errors.title ? "red" : "#E5E5E5",
-
-                    padding: 10,
-                  }}
-                />
-                {errors.title && (
-                  <AppText style={{ color: "red", marginTop: 8 }}>
-                    {errors.title.message}
-                  </AppText>
-                )}
-              </View>
-            )}
-          />
-
-          {/*category*/}
-          <Controller
-            control={control}
-            name="category"
-            render={({ field: { onChange, value } }) => (
-              <View>
-                <PostAnAdCategorieSection
-                  value={value}
-                  onChangeText={onChange}
-                  style={{
-                    borderColor: errors.category ? "red" : "#E5E5E5",
-                    padding: 10,
-                  }}
-                />
-                {errors.category && (
-                  <AppText style={{ color: "red", marginTop: 8 }}>
-                    {errors.category.message}
-                  </AppText>
-                )}
-              </View>
-            )}
-          />
-
-          {/* sub category*/}
-          {category && (
-            <Controller
-              control={control}
-              name="subCategory"
-              render={({ field: { onChange, value } }) => (
-                <View>
-                  <PostAnAdSubCategorySection
-                    subCategory={value}
-                    setSubCategory={onChange}
-                    category={category}
-                    style={{
-                      borderColor: errors.subCategory ? "red" : "#E5E5E5",
-
-                      padding: 10,
-                    }}
-                  />
-                  {errors.subCategory && (
-                    <AppText style={{ color: "red", marginTop: 8 }}>
-                      {errors.subCategory.message}
-                    </AppText>
-                  )}
-                </View>
+        {/*titre*/}
+        <Controller
+          control={control}
+          name="title"
+          render={({ field: { onChange, value } }) => (
+            <View onLayout={handleLayout("title")}>
+              <PostAnAdSection
+                onChangeText={onChange}
+                value={value}
+                label="Titre"
+                placeholder="Ecrivez le titre de l'annonce"
+                maxLength={100}
+                style={{
+                  borderColor: errors.title ? "red" : "#E5E5E5",
+                  padding: 10,
+                }}
+              />
+              {errors.title && (
+                <AppText style={{ color: "red", marginTop: 8 }}>
+                  {errors.title.message}
+                </AppText>
               )}
-            />
+            </View>
           )}
+        />
 
-          {/*price*/}
+        {/*category*/}
+        <Controller
+          control={control}
+          name="category"
+          render={({ field: { onChange, value } }) => (
+            <View onLayout={handleLayout("category")}>
+              <PostAnAdCategorieSection
+                value={value}
+                onChangeText={onChange}
+                style={{
+                  borderColor: errors.category ? "red" : "#E5E5E5",
+                  padding: 10,
+                }}
+              />
+              {errors.category && (
+                <AppText style={{ color: "red", marginTop: 8 }}>
+                  {errors.category.message}
+                </AppText>
+              )}
+            </View>
+          )}
+        />
+
+        {/* sub category*/}
+        {category && (
           <Controller
             control={control}
-            name="price"
+            name="subCategory"
             render={({ field: { onChange, value } }) => (
-              <View>
-                <PostAnAdSection
-                  keyboardType={"numeric"}
-                  label="Prix"
-                  maxLength={8}
-                  placeholder="Ecrivez le prix de l'annonce"
-                  onChangeText={onChange}
-                  value={value?.toString()}
+              <View onLayout={handleLayout("subCategory")}>
+                <PostAnAdSubCategorySection
+                  subCategory={value}
+                  setSubCategory={onChange}
+                  category={category}
                   style={{
-                    borderColor: errors.price ? "red" : "#E5E5E5",
-
+                    borderColor: errors.subCategory ? "red" : "#E5E5E5",
                     padding: 10,
                   }}
                 />
-                {errors.price && (
+                {errors.subCategory && (
                   <AppText style={{ color: "red", marginTop: 8 }}>
-                    {errors.price.message}
+                    {errors.subCategory.message}
                   </AppText>
                 )}
               </View>
             )}
           />
+        )}
 
-          {/*description*/}
-          <Controller
-            control={control}
-            name="description"
-            render={({ field: { onChange, value } }) => (
-              <>
-                <PostAnAdSection
-                  label="Description"
-                  maxLength={1000}
-                  placeholder="Ecrivez la description de l'annonce"
-                  onChangeText={onChange}
-                  value={value?.toString()}
-                  style={{
-                    borderColor: errors.description ? "red" : "#E5E5E5",
+        {/*price*/}
+        <Controller
+          control={control}
+          name="price"
+          render={({ field: { onChange, value } }) => (
+            <View onLayout={handleLayout("price")}>
+              <PostAnAdSection
+                keyboardType={"numeric"}
+                label="Prix"
+                maxLength={8}
+                placeholder="Ecrivez le prix de l'annonce"
+                onChangeText={onChange}
+                value={value?.toString()}
+                style={{
+                  borderColor: errors.price ? "red" : "#E5E5E5",
+                  padding: 10,
+                }}
+              />
+              {errors.price && (
+                <AppText style={{ color: "red", marginTop: 8 }}>
+                  {errors.price.message}
+                </AppText>
+              )}
+            </View>
+          )}
+        />
 
-                    padding: 10,
-                  }}
-                />
-                {errors.description && (
-                  <AppText style={{ color: "red", marginTop: 8 }}>
-                    {errors.description.message}
-                  </AppText>
-                )}
-              </>
-            )}
-          />
+        {/*description*/}
+        <Controller
+          control={control}
+          name="description"
+          render={({ field: { onChange, value } }) => (
+            <View onLayout={handleLayout("description")}>
+              <PostAnAdSection
+                label="Description"
+                maxLength={1000}
+                placeholder="Ecrivez la description de l'annonce"
+                onChangeText={onChange}
+                value={value?.toString()}
+                style={{
+                  borderColor: errors.description ? "red" : "#E5E5E5",
+                  padding: 10,
+                  height: 150,
+                  textAlignVertical: "top",
+                }}
+                viewLenght={150}
+                multiline={true}
+              />
+              {errors.description && (
+                <AppText style={{ color: "red", marginTop: 8 }}>
+                  {errors.description.message}
+                </AppText>
+              )}
+            </View>
+          )}
+        />
 
-          {/*images*/}
-          <Controller
-            control={control}
-            name="images"
-            render={({ field: { onChange, value } }) => (
-              <View>
-                <PostAnAdPhotosSection
-                  value={value}
-                  onChange={onChange}
-                  style={{
-                    borderColor: errors.images ? "red" : "#E5E5E5",
-                  }}
-                />
-                {errors.images && (
-                  <AppText style={{ color: "red", marginTop: 10 }}>
-                    {errors.images.message}
-                  </AppText>
-                )}
-              </View>
-            )}
-          />
+        {/*images*/}
+        <Controller
+          control={control}
+          name="images"
+          render={({ field: { onChange, value } }) => (
+            <View onLayout={handleLayout("images")}>
+              <PostAnAdPhotosSection
+                value={value}
+                onChange={onChange}
+                style={{
+                  borderColor: errors.images ? "red" : "#E5E5E5",
+                }}
+              />
+              {errors.images && (
+                <AppText style={{ color: "red", marginTop: 10 }}>
+                  {errors.images.message}
+                </AppText>
+              )}
+            </View>
+          )}
+        />
 
-          {/*options*/}
-          <Controller
-            control={control}
-            name="options"
-            render={({ field: { onChange, value } }) => (
+        {/*options*/}
+        <Controller
+          control={control}
+          name="options"
+          render={({ field: { onChange, value } }) => (
+            <View onLayout={handleLayout("options")}>
               <PostAnAdOptionsSection value={value} onChange={onChange} />
-            )}
-          />
+            </View>
+          )}
+        />
 
-          {/*conditions*/}
-          <Controller
-            control={control}
-            name="conditions"
-            render={({ field: { onChange, value } }) => (
-              <View>
-                <PostAnAdConditionsSection
-                  value={value}
+        {/*conditions*/}
+        <Controller
+          control={control}
+          name="conditions"
+          render={({ field: { onChange, value } }) => (
+            <View onLayout={handleLayout("conditions")}>
+              <PostAnAdConditionsSection
+                value={value}
+                onChange={onChange}
+                style={{
+                  borderColor: errors.conditions ? "red" : "#E5E5E5",
+                }}
+              />
+              {errors.conditions && (
+                <AppText style={{ color: "red", marginTop: 10 }}>
+                  {errors.conditions.message}
+                </AppText>
+              )}
+            </View>
+          )}
+        />
+
+        {/*city*/}
+        <Controller
+          control={control}
+          name="city"
+          render={({ field: { onChange, value } }) => (
+            <View onLayout={handleLayout("city")}>
+              <PostAnAdCitySection
+                value={value}
+                onChange={onChange}
+                style={{
+                  borderColor: errors.city ? "red" : "#E5E5E5",
+                }}
+              />
+              {errors.city && (
+                <AppText style={{ color: "red", marginTop: 10 }}>
+                  {errors.city.message}
+                </AppText>
+              )}
+            </View>
+          )}
+        />
+
+        {/*phoneNumber*/}
+        <Controller
+          control={control}
+          name="phoneNumber"
+          render={({ field: { onChange, value } }) => (
+            <View onLayout={handleLayout("phoneNumber")}>
+              <PostAnAdSection label="Numero de telephone">
+                <AppMobileNumberInput
+                  phoneNumber={value}
                   onChange={onChange}
                   style={{
-                    borderColor: errors.conditions ? "red" : "#E5E5E5",
+                    borderColor: errors.phoneNumber ? "red" : "#E5E5E5",
+                  }}
+                  leftStyle={{
+                    borderColor: errors.phoneNumber ? "red" : "#E5E5E5",
                   }}
                 />
-                {errors.conditions && (
-                  <AppText style={{ color: "red", marginTop: 10 }}>
-                    {errors.conditions.message}
-                  </AppText>
-                )}
-              </View>
-            )}
-          />
+              </PostAnAdSection>
+              {errors.phoneNumber && (
+                <AppText style={{ color: "red", marginTop: 10 }}>
+                  {errors.phoneNumber.message}
+                </AppText>
+              )}
+            </View>
+          )}
+        />
 
-          {/*city*/}
-          <Controller
-            control={control}
-            name="city"
-            render={({ field: { onChange, value } }) => (
-              <View>
-                <PostAnAdCitySection
-                  value={value}
+        {/*whatsappNumber*/}
+        <Controller
+          control={control}
+          name="whatsappNumber"
+          render={({ field: { onChange, value } }) => (
+            <View onLayout={handleLayout("whatsappNumber")}>
+              <PostAnAdSection label="Numero whatsapp">
+                <AppMobileNumberInput
+                  phoneNumber={value}
                   onChange={onChange}
                   style={{
-                    borderColor: errors.city ? "red" : "#E5E5E5",
+                    borderColor: errors.whatsappNumber ? "red" : "#E5E5E5",
+                  }}
+                  leftStyle={{
+                    borderColor: errors.whatsappNumber ? "red" : "#E5E5E5",
                   }}
                 />
-                {errors.city && (
-                  <AppText style={{ color: "red", marginTop: 10 }}>
-                    {errors.city.message}
-                  </AppText>
-                )}
-              </View>
-            )}
-          />
+              </PostAnAdSection>
+              {errors.whatsappNumber && (
+                <AppText style={{ color: "red", marginTop: 10 }}>
+                  {errors.whatsappNumber.message}
+                </AppText>
+              )}
+            </View>
+          )}
+        />
 
-          {/*phoneNumber*/}
-          <Controller
-            control={control}
-            name="phoneNumber"
-            render={({ field: { onChange, value } }) => (
-              <View>
-                <PostAnAdSection label="Numero de telephone">
-                  <AppMobileNumberInput
-                    phoneNumber={value}
-                    onChange={onChange}
-                    style={{
-                      borderColor: errors.phoneNumber ? "red" : "#E5E5E5",
-                    }}
-                    leftStyle={{
-                      borderColor: errors.phoneNumber ? "red" : "#E5E5E5",
-                    }}
-                  />
-                </PostAnAdSection>
-                {errors.phoneNumber && (
-                  <AppText style={{ color: "red", marginTop: 10 }}>
-                    {errors.phoneNumber.message}
-                  </AppText>
-                )}
-              </View>
-            )}
-          />
-
-          {/*whatsappNumber*/}
-          <Controller
-            control={control}
-            name="whatsappNumber"
-            render={({ field: { onChange, value } }) => (
-              <View>
-                <PostAnAdSection label="Numero whatsapp">
-                  <AppMobileNumberInput
-                    phoneNumber={value}
-                    onChange={onChange}
-                    style={{
-                      borderColor: errors.whatsappNumber ? "red" : "#E5E5E5",
-                    }}
-                    leftStyle={{
-                      borderColor: errors.whatsappNumber ? "red" : "#E5E5E5",
-                    }}
-                  />
-                </PostAnAdSection>
-                {errors.whatsappNumber && (
-                  <AppText style={{ color: "red", marginTop: 10 }}>
-                    {errors.whatsappNumber.message}
-                  </AppText>
-                )}
-              </View>
-            )}
-          />
-
-          {/* submit button  */}
-          <AppButton
-            title={parseAd ? "Modifier" : "Publier"}
-            style={{ borderRadius: 8, elevation: 0 }}
-            onPress={handleSubmit(async (data) => {
-              if (parseAd) {
-                await editAd(
-                  data,
-                  parseAd,
-                  parseAd.status,
-                  parseAd.id,
-                  from as "NORMAL" | "AD_DETAILS"
-                );
-              } else {
-                await postAnAdd(data, resetForm);
-              }
-            })}
-            isLoading={isSubmitting}
-            disabled={!isButtonActive() || isSubmitting}
-          />
-        </ScrollView>
-      </KeyboardAvoidingView>
+        {/* submit button  */}
+        <AppButton
+          title={parseAd ? "Modifier" : "Publier"}
+          style={{ borderRadius: 8, elevation: 0, marginTop: 20 }}
+          onPress={handleSubmit(async (data) => {
+            if (parseAd) {
+              await editAd(
+                data,
+                parseAd,
+                parseAd.status,
+                parseAd.id,
+                from as "NORMAL" | "AD_DETAILS",
+              );
+            } else {
+              await postAnAdd(data, resetForm);
+            }
+          })}
+          isLoading={isSubmitting}
+          disabled={!isButtonActive() || isSubmitting}
+        />
+      </KeyboardAwareScrollView>
     </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  inner: { flex: 1, justifyContent: "center", padding: 20 },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 12,
-  },
-});

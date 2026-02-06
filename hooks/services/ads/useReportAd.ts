@@ -1,12 +1,10 @@
 import { showToast } from "@/utils";
-import auth from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
-import "react-native-get-random-values";
+import functions from "@react-native-firebase/functions";
 import Toast from "react-native-toast-message";
-import { v4 as uuidv4 } from "uuid";
+import { useCurrentUser } from "../auth/signIn/useCurrentUser";
 
 export const useReportAd = () => {
-  const currentUser = auth().currentUser;
+  const currentUser = useCurrentUser();
 
   const reportAd = async (adId: string, adUserId: string) => {
     if (!currentUser) {
@@ -22,47 +20,36 @@ export const useReportAd = () => {
     showToast("loading", "Traitement en cours.");
 
     try {
-      const existingReportQuery = await firestore()
-        .collection("Reports")
-        .where("userId", "==", currentUser.uid)
-        .where("adId", "==", adId)
-        .limit(1)
-        .get();
+      const reportAdCallable = functions().httpsCallable<
+        { userId: string; adId: string; adUserId: string },
+        { message: "already_exists" | "created" }
+      >("reportAd");
 
-      if (!existingReportQuery.empty) {
-        const existingReportDoc = existingReportQuery.docs[0];
+      const response = await reportAdCallable({
+        userId: currentUser.uid,
+        adId,
+        adUserId,
+      });
 
-        await firestore()
-          .collection("Reports")
-          .doc(existingReportDoc.id)
-          .update({
-            count: firestore.FieldValue.increment(1),
-            updatedAt: firestore.FieldValue.serverTimestamp(),
-          });
+      Toast.hide();
 
-        Toast.hide();
-        showToast("success", "Votre signalement a été mis à jour.");
+      if (response.data.message === "already_exists") {
+        showToast("error", "Vous avez déjà signalé cette annonce.");
       } else {
-        const docId = uuidv4();
-
-        await firestore().collection("Reports").doc(docId).set({
-          userId: currentUser.uid,
-          adId,
-          count: 1,
-          createdAt: firestore.FieldValue.serverTimestamp(),
-          updatedAt: firestore.FieldValue.serverTimestamp(),
-        });
-
-        Toast.hide();
         showToast("success", "Annonce signalée avec succès.");
       }
+
+      return response.data.message;
     } catch (error) {
       Toast.hide();
       showToast(
         "error",
-        "Échec du signalement de l'annonce. Vérifiez votre connexion ou réessayez."
+        "Échec du signalement de l'annonce. Vérifiez votre connexion ou réessayez.",
       );
-      console.error("Erreur lors du signalement de l'annonce :", error);
+      console.error(
+        "Erreur lors du signalement de l'annonce via Cloud Function :",
+        error,
+      );
       return null;
     }
   };

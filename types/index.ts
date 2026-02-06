@@ -1,4 +1,3 @@
-import { Timestamp } from "@react-native-firebase/firestore";
 import { UseFormReset } from "react-hook-form";
 import { ImageSourcePropType } from "react-native";
 
@@ -34,45 +33,12 @@ export type AnnouncementType = {
   };
   status: AdStatusType;
   createdAt: {
-    seconds: number;
-    nanoseconds: number;
+    _seconds: number;
+    _nanoseconds: number;
   };
   updatedAt: {
-    seconds: number;
-    nanoseconds: number;
-  };
-};
-
-export type AlgoliaAnnouncementType = {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  category: string;
-  subCategory: string;
-  city: string;
-  phoneNumber: string;
-  whatsappNumber: string;
-  userId: string;
-  conditions: string[];
-  options: {
-    label: string;
-    active: boolean;
-  }[];
-  images: string[];
-  stats: {
-    clicks: number;
-    favorites: number;
-    views: number;
-  };
-  status: AdStatusType;
-  createdAt: {
-    seconds: number;
-    nanoseconds: number;
-  };
-  updatedAt: {
-    seconds: number;
-    nanoseconds: number;
+    _seconds: number;
+    _nanoseconds: number;
   };
 };
 
@@ -83,7 +49,10 @@ export type UserType = {
   userName: string;
   firstAndLastName: string;
   gender: "MAN" | "WOMAN";
-  dateOfBirth: Timestamp;
+  dateOfBirth: {
+    _seconds: number;
+    _nanoseconds: number;
+  };
   image: string;
   location: {
     city: string;
@@ -94,12 +63,12 @@ export type UserType = {
   email: string;
   authMethod: AuthMethodType;
   createdAt: {
-    seconds: number;
-    nanoseconds: number;
+    _seconds: number;
+    _nanoseconds: number;
   };
   updatedAt: {
-    seconds: number;
-    nanoseconds: number;
+    _seconds: number;
+    _nanoseconds: number;
   };
 };
 
@@ -108,12 +77,28 @@ export type FavoriteType = {
   adId: string;
   userId: string;
   createdAt: {
-    seconds: number;
-    nanoseconds: number;
+    _seconds: number;
+    _nanoseconds: number;
   };
   updatedAt: {
-    seconds: number;
-    nanoseconds: number;
+    _seconds: number;
+    _nanoseconds: number;
+  };
+};
+
+export type NotificationType = {
+  id: string;
+  title: string;
+  body: string;
+  type: "USER_NOTIFICATION" | "GENERAL_NOTIFICATION";
+  userId?: string;
+  createdAt: {
+    _seconds: number;
+    _nanoseconds: number;
+  };
+  updatedAt: {
+    _seconds: number;
+    _nanoseconds: number;
   };
 };
 
@@ -141,12 +126,11 @@ export type AdOptionsPickerType = {
 
 export type FilterModalUseCaseType = "Home" | "Filter";
 
-export type ContinousWithPhomeNumberStepType =
-  | "enterPhoneNumber"
-  | "enterOTP"
-  | "addUserName";
+export type ContinousWithPhomeNumberStepType = "enterPhoneNumber" | "enterOTP";
 
-export type AuthModalType =
+export type SignInWithEmailStepType = "signin" | "forgotPassword";
+
+export type AuthModalStepType =
   | "Index"
   | "continousWithPhoneNumber"
   | "signInWithEmail"

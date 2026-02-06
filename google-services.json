@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "641604581560-2a31okgdm0atdjr34hr18bhi35r0i1tg.apps.googleusercontent.com",
+          "client_id": "641604581560-jis82d4j05js8hdhiftcr8718pf24gfi.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.appolinaire_sdg.LeCoinBiz",
-            "certificate_hash": "4c848561ef331ee82bc998f6410c72b3dcc59bd1"
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {

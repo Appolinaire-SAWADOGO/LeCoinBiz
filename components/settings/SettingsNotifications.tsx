@@ -1,5 +1,6 @@
+import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { useNotificationSettingsStore } from "@/store/useNotificationSettingsSotore";
+import { useNotificationSettingsStore } from "@/store/useNotificationSettingsStore";
 import React from "react";
 import { Linking, Platform, TouchableOpacity } from "react-native";
 import AppSwitch from "../custom/AppSwitch";
@@ -7,21 +8,16 @@ import AppText from "../custom/AppText";
 import AppCenterModal from "../modals/AppCenterModal";
 
 export default function SettingsNotifications() {
-  const {
-    toggle,
-    enabled,
-    isOpenModal,
-    setIsOpenModal,
-    setEnabled,
-    setLoading,
-  } = useNotificationSettingsStore();
+  const userId = useCurrentUser()?.uid;
+
+  const { toggle, enabled, isOpenModal, setIsOpenModal, setEnabled } =
+    useNotificationSettingsStore();
 
   const { designSystem } = useAppTheme();
 
   const onCancel = () => {
     setIsOpenModal(false);
     setEnabled(false);
-    setLoading(false);
   };
 
   return (
@@ -63,7 +59,7 @@ export default function SettingsNotifications() {
 
       <AppSwitch
         value={enabled}
-        onValueChange={async () => await toggle(!enabled)}
+        onValueChange={async () => await toggle(!enabled, userId)}
       />
     </>
   );

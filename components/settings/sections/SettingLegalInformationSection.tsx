@@ -12,21 +12,21 @@ export default function SettingLegalInformationSection() {
         color="#6C757D"
         fill="none"
         label="Conditions générales d'utilisation"
-        onClick={() => router.push("/(root)/(settings)/TermsOfUs")}
+        onClick={() => router.navigate("/(root)/(settings)/TermsOfUs")}
       />
       <SettingElement
         Icon={ShieldCheck}
         color="#0CA789"
         fill="none"
         label="Politique de confidentialité"
-        onClick={() => router.push("/(root)/(settings)/PrivacyPolicy")}
+        onClick={() => router.navigate("/(root)/(settings)/PrivacyPolicy")}
       />
       <SettingElement
         Icon={LayoutList}
         color="#FF8C42"
         fill="none"
         label="Règles de diffusion"
-        onClick={() => router.push("/(root)/(settings)/PostingRules")}
+        onClick={() => router.navigate("/(root)/(settings)/PostingRules")}
       />
     </SettingsSectionContainer>
   );

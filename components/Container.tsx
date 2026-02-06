@@ -1,11 +1,8 @@
 import { useBackPress } from "@/hooks/useBackPress";
-import { useNetworkStore } from "@/store/useNetworkStore";
 import { router } from "expo-router";
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import NoInternet from "./NoInternet";
-import TopBottomBackground from "./TopBottomBackground";
 
 export default function Container({
   children,
@@ -18,7 +15,7 @@ export default function Container({
   withBottom?: boolean;
   withGoBack?: boolean;
 }) {
-  const { isConnected } = useNetworkStore();
+  // const { isConnected } = useNetworkStore();
 
   useBackPress(() => {
     if (withGoBack) router.back();
@@ -38,14 +35,14 @@ export default function Container({
         style,
       ]}
     >
-      {isConnected ? (
-        <>{children}</>
-      ) : (
+      {/* {isConnected ? ( */}
+      {children}
+      {/* ) : (
         <>
           <TopBottomBackground withBottom={false} bgColor={"#fff"} />
           <NoInternet />
         </>
-      )}
+      )} */}
     </SafeAreaView>
   );
 }

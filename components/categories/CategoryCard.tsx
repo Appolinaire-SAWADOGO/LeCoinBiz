@@ -50,7 +50,7 @@ export default function CategoryCard({
       onPress={async () => {
         setCategory(name);
 
-        router.push(`/(root)/Filters?category=${encodedName}`);
+        router.navigate(`/(root)/Filters?category=${encodedName}`);
 
         await queryClient.invalidateQueries({
           queryKey: ["filter-ads", filters],

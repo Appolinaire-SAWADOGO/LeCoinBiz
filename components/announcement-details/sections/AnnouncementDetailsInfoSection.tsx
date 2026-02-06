@@ -114,7 +114,7 @@ export default function AnnouncementDetailsInfoSection({
           }}
         >
           <Clock4 width={16} height={16} color={designSystem.colors.subText} />
-          <AppText style={{ fontSize: 14 }} color={designSystem.colors.subText}>
+          <AppText color={designSystem.colors.subText}>
             {currentAnnouncement.stats.clicks} Clicks
           </AppText>
         </View>
@@ -130,7 +130,7 @@ export default function AnnouncementDetailsInfoSection({
         }}
       >
         <Clock4 width={16} height={16} color={designSystem.colors.subText} />
-        <AppText style={{ fontSize: 14 }} color={designSystem.colors.subText}>
+        <AppText color={designSystem.colors.subText}>
           {getTimeSinceCreated(currentAnnouncement.createdAt)}
         </AppText>
       </View>
@@ -218,9 +218,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginRight: 8,
   },
-  ratingText: {
-    fontSize: 13,
-  },
+  ratingText: {},
   deliveryTag: {
     flexDirection: "row",
     marginTop: 10,
@@ -249,7 +247,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   categoryLabel: {
-    fontSize: 14,
     marginRight: 6,
     color: "#333",
   },
@@ -265,7 +262,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   locationText: {
-    fontSize: 14,
     marginLeft: 5,
   },
   conditionContainer: {
@@ -275,7 +271,6 @@ const styles = StyleSheet.create({
     borderColor: "#E5E5E5",
   },
   conditionTitle: {
-    fontSize: 16,
     marginBottom: 10,
   },
   conditionList: {
@@ -291,9 +286,7 @@ const styles = StyleSheet.create({
     height: 5,
     borderRadius: 5,
   },
-  conditionText: {
-    fontSize: 14,
-  },
+  conditionText: {},
   descriptionSection: {
     marginTop: 20,
     paddingTop: 20,
@@ -302,7 +295,6 @@ const styles = StyleSheet.create({
   },
 
   descriptionText: {
-    fontSize: 14,
     lineHeight: 20,
   },
 });

@@ -3,38 +3,55 @@ import AppButton from "@/components/custom/AppButton";
 import AppText from "@/components/custom/AppText";
 import AppCityPicker from "@/components/custom/picker/AppCityPicker";
 import LocDynSvg from "@/components/svg/LocDynSvg";
+import { useGetHomeAds } from "@/hooks/services/ads/useGetHomeAds";
+import { useGetNotifications } from "@/hooks/services/notifications/useGetNotifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 
 export default function ChooseCity() {
+  const queryClient = useQueryClient();
+  const { getHomeAds } = useGetHomeAds();
+  const { getNotifications } = useGetNotifications();
+
   const [city, setCity] = useState<string>("");
   const [showPicker, setShowPicker] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const saveCity = async () => {
     if (!city) return;
 
     try {
+      setIsLoading(true);
+
       await AsyncStorage.setItem(
         "user_location",
         JSON.stringify({
           country: "burkina faso",
           city: city,
-        })
+        }),
       );
-      router.push("/(tabs)/Home");
+
+      setIsLoading(false);
+      setIsError(false);
+
+      router.replace("/(tabs)/Home");
     } catch (error) {
+      setIsLoading(false);
+      setIsError(true);
       console.error("Erreur lors du stockage du pays :", error);
     }
   };
 
   return (
     <Container style={[styles.container]}>
-      <LocDynSvg width={150} height={150} />
+      <LocDynSvg width={200} height={200} />
 
       <AppText style={styles.headerTitle} font="Bold">
-        Dites-nous où vous êtes 📍
+        Dites-nous où vous êtes
       </AppText>
 
       <AppText style={styles.subTitle}>
@@ -45,17 +62,27 @@ export default function ChooseCity() {
         cityPickerOpen={showPicker}
         setCityPickerOpen={setShowPicker}
         cityValue={city}
-        setCityValue={setCity}
+        setCityValue={(value: string) => {
+          setCity(value);
+          setIsError(false);
+        }}
         withAllCity={false}
         style={styles.cityPicker}
       />
+
+      {isError && (
+        <AppText style={{ alignSelf: "flex-start", color: "red" }}>
+          Une erreur est survenue, veuillez réessayer.
+        </AppText>
+      )}
 
       <AppButton
         onPress={saveCity}
         title="Valider ma ville"
         style={[styles.button]}
         textStyle={styles.buttonText}
-        disabled={!city}
+        disabled={!city || isLoading}
+        isLoading={isLoading}
       />
     </Container>
   );
@@ -83,12 +110,13 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   cityPicker: {
-    marginBottom: 30,
+    marginBottom: 15,
     backgroundColor: "#F3F4F6", // Gris clair pour contraste doux
     borderRadius: 10,
     padding: 10,
   },
   button: {
+    marginTop: 15,
     borderRadius: 10,
     paddingVertical: 15,
     width: "100%",

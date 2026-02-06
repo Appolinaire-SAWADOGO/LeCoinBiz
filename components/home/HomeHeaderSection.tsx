@@ -2,9 +2,9 @@ import HeaderTexture2 from "@/assets/images/textures/HeaderTexture2.png";
 import AppText from "@/components/custom/AppText";
 import HomeCategories from "@/components/home/HomeHeaderCategories";
 import { APP_NAME } from "@/constants";
-import { useCheckUserAcces } from "@/hooks/services/auth/useCheckUserAcces";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useFilterStatesStore } from "@/store/useFilterStatesStore";
+import { useNotificationStore } from "@/store/useNotificationStore";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { BellRing, Search, SlidersHorizontal } from "lucide-react-native";
@@ -32,8 +32,6 @@ export default function HomeHeaderSection() {
 
   const queryClient = useQueryClient();
 
-  const { checkUserAccess } = useCheckUserAcces();
-
   const filters = {
     search,
     category,
@@ -44,6 +42,8 @@ export default function HomeHeaderSection() {
     tempPub,
     options,
   };
+
+  const { hasNotifications, setHasNotifications } = useNotificationStore();
 
   return (
     <>
@@ -66,12 +66,16 @@ export default function HomeHeaderSection() {
               {APP_NAME}
             </AppText>
             <TouchableOpacity
-              onPress={() =>
-                checkUserAccess(() => router.push("/(root)/Notifications"))
-              }
+              onPress={() => {
+                setHasNotifications(false);
+                router.navigate("/(root)/Notifications");
+              }}
               style={styles.notificationIcon}
             >
               <BellRing size={18} color={"#fff"} />
+
+              {/* Badge */}
+              {hasNotifications && <View style={styles.dot} />}
             </TouchableOpacity>
           </View>
 
@@ -80,7 +84,7 @@ export default function HomeHeaderSection() {
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={async () => {
-                router.push("/(root)/Filters");
+                router.navigate("/(root)/Filters");
 
                 await queryClient.invalidateQueries({
                   queryKey: ["filter-ads", filters],
@@ -212,5 +216,14 @@ const styles = StyleSheet.create({
     paddingBottom: 7,
     paddingHorizontal: 20,
     gap: 12,
+  },
+  dot: {
+    position: "absolute",
+    top: 1,
+    right: 3,
+    width: 7.5,
+    height: 7.5,
+    borderRadius: 4,
+    backgroundColor: "#FF3B30",
   },
 });

@@ -5,17 +5,17 @@ import SettingAppVersionSection from "@/components/settings/sections/SettingAppV
 import SettingContactSection from "@/components/settings/sections/SettingContactSection";
 import SettingLegalInformationSection from "@/components/settings/sections/SettingLegalInformationSection";
 import SettingSecuritySection from "@/components/settings/sections/SettingSecuritySection";
-import SettingsLogoutOrdelAcntSection from "@/components/settings/sections/SettingsLogoutOrdelAcntSection";
+import SettingsLoginSection from "@/components/settings/sections/SettingsLoginSection";
+import SettingsLogoutAndDelAcntSection from "@/components/settings/sections/SettingsLogoutOrDelAcntSection";
+import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { useAuthStore } from "@/store/useAuthStore";
-import { ifUserIsConnected } from "@/utils/auth";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 export default function Settings() {
   const { designSystem } = useAppTheme();
 
-  const { userIsLogged, userNameIsAdded } = useAuthStore();
+  const currentUser = useCurrentUser();
 
   return (
     <Container style={styles.container} withBottom={false}>
@@ -45,9 +45,9 @@ export default function Settings() {
         <SettingSecuritySection />
 
         {/* supprimer ou se deconnecter */}
-        {userIsLogged && userNameIsAdded && ifUserIsConnected() && (
-          <SettingsLogoutOrdelAcntSection />
-        )}
+        {currentUser && <SettingsLogoutAndDelAcntSection />}
+
+        {!currentUser && <SettingsLoginSection />}
 
         {/*  Version de l'app */}
         <SettingAppVersionSection />

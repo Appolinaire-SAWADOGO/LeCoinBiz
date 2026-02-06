@@ -1,4 +1,5 @@
 import { isValidEmail } from "@/utils/auth";
+import { validateEmail } from "@/utils/auth/validation";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import AppText from "../AppText";
@@ -21,18 +22,14 @@ export default function AppEmailInput({
   onChangeText?: ((text: string) => void) | undefined;
   actionError?: string | null;
 }) {
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (value: string) => {
     setEmail(value);
 
-    if (!value.trim()) {
-      setError("Champ requis");
-    } else if (!isValidEmail(value)) {
-      setError("Email invalide");
-    } else {
-      setError("");
-    }
+    if (!validateEmail(value).isValid)
+      setError(validateEmail(value).error as string);
+    else setError(null);
 
     if (onChangeText) {
       onChangeText(value);
@@ -50,9 +47,10 @@ export default function AppEmailInput({
         value={email}
         onChangeText={handleChange}
         model="withBorder"
+        maxLength={150}
         style={[error ? { borderColor: "red" } : { borderColor: "#ccc" }]}
       />
-      {(error || actionError) && (
+      {(error || actionError) && !isValidEmail(value as string) && (
         <AppText style={styles.error}>{error || actionError}</AppText>
       )}
     </View>

@@ -4,7 +4,6 @@ import { router } from "expo-router";
 import { CornerDownRight, Heart, MapPin } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { ifUserIsConnected } from "../../utils/auth";
 import AppText from "../custom/AppText";
 
 export default function UserCard() {
@@ -12,7 +11,7 @@ export default function UserCard() {
 
   return (
     <TouchableOpacity
-      onPress={() => router.push("/MerchantProfile")}
+      onPress={() => router.navigate("/MerchantProfile")}
       style={[
         styles.card,
         {
@@ -52,9 +51,9 @@ export default function UserCard() {
 
       {/* Action */}
       <TouchableOpacity
-        onPress={() => {
-          if (!ifUserIsConnected()) return router.push("/(root)/(auth)/Index");
-        }}
+        // onPress={() => {
+        //   if (!ifUserIsConnected()) return router.navigate("/(root)/(auth)/Index");
+        // }}
         style={styles.iconBtn}
       >
         <Heart

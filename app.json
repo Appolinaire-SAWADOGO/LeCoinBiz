@@ -4,10 +4,15 @@
     "slug": "LeCoinBiz",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icons/icon.png",
     "scheme": "LeCoinBiz",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/icons/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#641BB4"
+    },
     "ios": {
       "googleServicesFile": "./GoogleService-Info.plist",
       "bundleIdentifier": "com.appolinaire-sdg.LeCoinBiz",
@@ -16,8 +21,18 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icons/adaptive-icon.png",
         "backgroundColor": "#641BB4"
+      },
+      "splash": {
+        "image": "./assets/images/icons/splash-icon.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#641BB4",
+        "mdpi": "./assets/images/icons/splash-icon.png",
+        "hdpi": "./assets/images/icons/splash-icon.png",
+        "xhdpi": "./assets/images/icons/splash-icon.png",
+        "xxhdpi": "./assets/images/icons/splash-icon.png",
+        "xxxhdpi": "./assets/images/icons/splash-icon.png"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.appolinaire_sdg.LeCoinBiz"
@@ -25,14 +40,14 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png",
+      "favicon": "./assets/images/icons/favicon.png",
       "ok": 1
     },
     "plugins": [
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
       "@react-native-firebase/crashlytics",
-      "@react-native-google-signin/google-signin",
+      "@react-native-firebase/app-check",
       [
         "expo-build-properties",
         {
@@ -45,10 +60,14 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/icons/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#641BB4"
+          "backgroundColor": "#641BB4",
+          "dark": {
+            "image": "./assets/images/icons/splash-icon.png",
+            "backgroundColor": "#641BB4"
+          }
         }
       ]
     ],

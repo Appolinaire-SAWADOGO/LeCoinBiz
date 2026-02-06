@@ -1,58 +1,65 @@
-import { AdStatusType } from "@/types";
-import { showToast } from "@/utils";
-import firestore from "@react-native-firebase/firestore";
+import { decrementCount, removeAdFromInfiniteList, showToast } from "@/utils";
+import functions from "@react-native-firebase/functions";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
+import { useDeleteImgs } from "./useDeleteImgs";
 
 export const useDeleteAd = () => {
   const queryClient = useQueryClient();
 
+  const { deleteImgs } = useDeleteImgs();
+
   const deleteAd = async (
     adId: string,
-    adStatus: AdStatusType,
-    from: "NORMAL" | "AD_DETAILS"
+    userId: string,
+    images: string[],
+    adStatus: "PENDING" | "DISABLED" | "ACTIVATED",
+    from: "NORMAL" | "AD_DETAILS",
   ) => {
     if (!adId) {
       showToast("error", "Annonce introuvable.");
       return;
     }
 
-    if (adStatus === "ACTIVATED") {
-      showToast("error", "Vous ne pouvez pas supprimer une annonce activée.");
-      return;
-    }
-
     showToast("loading", "Traitement en cours.");
 
     try {
-      await firestore().collection("Ads").doc(adId).delete();
+      const deleteAdFunction = functions().httpsCallable("deleteAd");
+      const result = await deleteAdFunction({ adId, adStatus });
+      const { success, adStatus: status } = result.data as {
+        success: boolean;
+        adStatus: "PENDING" | "DISABLED" | "ACTIVATED";
+      };
 
-      if (adStatus === "DISABLED") {
-        await queryClient.invalidateQueries({
-          queryKey: ["user-disabled-ads-count"],
-        });
-        await queryClient.invalidateQueries({
-          queryKey: ["user-disabled-ads"],
-        });
-      } else if (adStatus === "PENDING") {
-        await queryClient.invalidateQueries({
-          queryKey: ["user-pending-ads-count"],
-        });
-        await queryClient.invalidateQueries({
-          queryKey: ["user-pending-ads"],
-        });
+      if (success) {
+        await deleteImgs(images);
+
+        if (status === "DISABLED") {
+          decrementCount(["user-disabled-ads-count", userId], queryClient);
+          removeAdFromInfiniteList(
+            ["user-disabled-ads", userId],
+            adId,
+            queryClient,
+          );
+        } else if (status === "PENDING") {
+          decrementCount(["user-pending-ads-count", userId], queryClient);
+          removeAdFromInfiniteList(
+            ["user-pending-ads", userId],
+            adId,
+            queryClient,
+          );
+        }
+
+        Toast.hide();
+        showToast("success", "Annonce supprimée.");
+
+        if (from === "AD_DETAILS") router.back();
       }
-
-      Toast.hide();
-      showToast("success", "Annonce supprimée.");
-
-      if (from === "AD_DETAILS") router.back();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erreur lors de la suppression de l'annonce :", error);
       Toast.hide();
       showToast("error", "Une erreur est survenue.");
-      return;
     }
   };
 

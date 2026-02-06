@@ -1,101 +1,113 @@
-// import Container from "@/components/Container";
-// import AppText from "@/components/custom/AppText";
-// import PageHeader from "@/components/PageHeader";
-// import React from "react";
-// import { View } from "react-native";
-
-// export default function Notifications() {
-//   return (
-//     <Container>
-//       <PageHeader name="Notifications" style={{ paddingHorizontal: 20 }} />
-//       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-//         <AppText>Pas de Notifications</AppText>
-//       </View>
-//     </Container>
-//   );
-// }
-
+import NoData from "@/components/announcement/NoData";
 import Container from "@/components/Container";
-import AppText from "@/components/custom/AppText";
-import { useNotification } from "@/context/NotificationContext";
-import * as Updates from "expo-updates";
-import { useEffect, useState } from "react";
-import { Alert, Button, Platform, SafeAreaView, StatusBar } from "react-native";
+import NotificationCard from "@/components/Notification/NotificationCard";
+import PageHeader from "@/components/PageHeader";
+import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
+import { useGetNotifications } from "@/hooks/services/notifications/useGetNotifications";
+import { useAppTheme } from "@/hooks/useAppTheme";
+import { useBackPress } from "@/hooks/useBackPress";
+import {
+  useAppNotificationStore,
+  useNotificationStore,
+} from "@/store/useNotificationStore";
+import { NotificationType } from "@/types";
+import { getTimeSinceCreated } from "@/utils";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { router } from "expo-router";
+import React, { useCallback, useEffect } from "react";
+import { FlatList, RefreshControl } from "react-native";
 
 export default function Notifications() {
-  const { notification, expoPushToken, error } = useNotification();
-  const { currentlyRunning, isUpdateAvailable, isUpdatePending } =
-    Updates.useUpdates();
+  const queryClient = useQueryClient();
+  const { getNotifications } = useGetNotifications();
+  const { setHasNotifications } = useNotificationStore();
+  const { setIsAppNotificationBackground, isAppNotificationBackground } =
+    useAppNotificationStore();
 
-  const [dummyState, setDummyState] = useState(0);
+  const { designSystem } = useAppTheme();
 
-  if (error) {
-    return <AppText>Error: {error.message}</AppText>;
-  }
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const userId = useCurrentUser()?.uid;
+
+  const { data, isLoading, isFetching, isRefetching } = useQuery<
+    NotificationType[]
+  >({
+    queryKey: ["notifications", userId],
+    queryFn: () => getNotifications(),
+
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+
+    refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
+    refetchOnMount: true, // Refetch au montage si données stale
+    retry: 2, // Nombre de tentatives en cas d'erreur
+  });
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await queryClient.invalidateQueries({
+      queryKey: ["notifications", userId],
+    });
+    setHasNotifications(false);
+    setRefreshing(false);
+  }, [queryClient]);
 
   useEffect(() => {
-    if (isUpdatePending) {
-      // Update has successfully downloaded; apply it now
-      // Updates.reloadAsync();
-      // setDummyState(dummyState + 1);
-      // Alert.alert("Update downloaded and applied");
+    setHasNotifications(false);
+  }, [isFetching, isLoading, refreshing]);
 
-      dummyFunction();
+  useEffect(() => {
+    if (isAppNotificationBackground) {
+      setIsAppNotificationBackground(false);
+      onRefresh();
     }
-  }, [isUpdatePending]);
+  }, [isAppNotificationBackground]);
 
-  const dummyFunction = async () => {
-    try {
-      await Updates.reloadAsync();
-    } catch (e) {
-      Alert.alert("Error");
-    }
-
-    // UNCOMMENT TO REPRODUCE EAS UPDATE ERROR
-    // } finally {
-    //   setDummyState(dummyState + 1);
-    //   console.log("dummyFunction");
-    // }
-  };
-
-  // If true, we show the button to download and run the update
-  const showDownloadButton = isUpdateAvailable;
-
-  // Show whether or not we are running embedded code or an update
-  const runTypeMessage = currentlyRunning.isEmbeddedLaunch
-    ? "This app is running from built-in code"
-    : "This app is running an update";
+  useBackPress(() => {
+    router.replace("/(tabs)/Home");
+    return;
+  });
 
   return (
-    <Container
-      withGoBack
-      style={{
-        flex: 1,
-        padding: 10,
-        paddingTop: Platform.OS == "android" ? StatusBar.currentHeight : 10,
-      }}
-    >
-      <SafeAreaView style={{ flex: 1 }}>
-        <AppText>Updates Demo 5</AppText>
-        <AppText>{runTypeMessage}</AppText>
-        <Button
-          onPress={() => Updates.checkForUpdateAsync()}
-          title="Check manually for updates"
+    <Container>
+      <PageHeader
+        name="Notifications"
+        style={{ paddingHorizontal: 20 }}
+        onBack={() => router.replace("/(tabs)/Home")}
+      />
+
+      {!isLoading && !isFetching && data && data.length === 0 && (
+        <NoData
+          style={{ paddingTop: "40%" }}
+          text="Vous n'avez aucune notification pour le moment."
         />
-        {showDownloadButton ? (
-          <Button
-            onPress={() => Updates.fetchUpdateAsync()}
-            title="Download and run update"
+      )}
+
+      <FlatList
+        data={data}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingVertical: 20,
+          gap: 15,
+        }}
+        renderItem={({ item }) => (
+          <NotificationCard
+            title={item.title}
+            message={item.body}
+            createdAt={getTimeSinceCreated(item.createdAt)}
           />
-        ) : null}
-        <AppText>Your push token:</AppText>
-        <AppText>{expoPushToken}</AppText>
-        <AppText>Latest notification:</AppText>
-        <AppText>{notification?.request.content.title}</AppText>
-        <AppText>
-          {JSON.stringify(notification?.request.content.data, null, 2)}
-        </AppText>
-      </SafeAreaView>
+        )}
+        keyExtractor={(item) => item.id}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing || isLoading || isFetching || isRefetching}
+            onRefresh={onRefresh}
+            colors={[designSystem.colors.primary]}
+            tintColor={designSystem.colors.primary}
+          />
+        }
+      />
     </Container>
   );
 }

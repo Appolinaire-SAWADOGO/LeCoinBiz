@@ -53,7 +53,7 @@ export default function PageHeader({
       )}
 
       {name && (
-        <AppText fontSize={18} font="Medium">
+        <AppText fontSize={16.5} font="Medium">
           {name}
         </AppText>
       )}

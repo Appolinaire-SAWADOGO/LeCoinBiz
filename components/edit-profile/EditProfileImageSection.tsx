@@ -1,4 +1,6 @@
 import { DEFAULT_PROFILE_IMG } from "@/constants";
+import { useEditProfile } from "@/hooks/services/user/useEditProfile";
+import { useAppTheme } from "@/hooks/useAppTheme";
 import { usePickImage } from "@/hooks/usePickImage";
 import { Edit3, Trash2 } from "lucide-react-native";
 import React from "react";
@@ -6,25 +8,28 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import AppText from "../custom/AppText";
 
 export default function EditProfileImageSection({
-  value,
-  onChange,
   userImg,
 }: {
-  value: string;
-  onChange: (url: string) => void;
   userImg: string;
 }) {
   const { pickImage } = usePickImage();
+  const { designSystem } = useAppTheme();
+
+  const [value, setValue] = React.useState<string>(userImg);
+
+  const { editImage } = useEditProfile();
+
+  const handlePickImage = async () => {
+    await pickImage(
+      async (img: string) => await editImage(value, img, setValue),
+    );
+  };
 
   return (
-    <View style={styles.container}>
-      <AppText font="Medium" fontSize={15} style={styles.title}>
-        Photo de profil
-      </AppText>
-      <TouchableOpacity
-        onPress={async () => await pickImage((img: string) => onChange(img))}
-        style={styles.imageWrapper}
-      >
+    <View style={[styles.container]}>
+      <AppText font="Medium">Photo de profil</AppText>
+
+      <TouchableOpacity onPress={handlePickImage} style={styles.imageWrapper}>
         <Image
           source={{
             uri: value || DEFAULT_PROFILE_IMG,
@@ -33,7 +38,9 @@ export default function EditProfileImageSection({
         />
         <TouchableOpacity
           activeOpacity={value ? 0.5 : 1}
-          onPress={() => value && onChange("")}
+          onPress={async () =>
+            value ? await editImage(value, "", setValue) : handlePickImage()
+          }
           style={styles.editBadge}
         >
           <Text style={styles.editText}>
@@ -46,12 +53,11 @@ export default function EditProfileImageSection({
 }
 
 const styles = StyleSheet.create({
-  container: { alignItems: "center" },
-  title: { marginBottom: 10 },
+  container: { alignItems: "center", gap: 8 },
   imageWrapper: { position: "relative" },
   profileImage: {
-    width: 120,
-    height: 120,
+    width: 100,
+    height: 100,
     borderRadius: 60,
     borderWidth: 2,
     borderColor: "#ccc",

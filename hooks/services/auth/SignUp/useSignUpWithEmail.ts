@@ -1,19 +1,32 @@
-import { useAuthStore } from "@/store/useAuthStore";
-import {
-  initialInvalidQuery,
-  isValidEmail,
-  isValidPassword,
-  validateUsername,
-} from "@/utils/auth";
+import { useAuthModalStore } from "@/store/useAuthModalStore";
+import { useVerifyEmailStore } from "@/store/useVerifyEmailStore";
+import { showToast } from "@/utils";
+import { isValidEmail, isValidPassword } from "@/utils/auth";
+import { validateUsername } from "@/utils/auth/validation";
+import { authEvents } from "@/utils/EventEmitter";
+import { subscribeToUserTopic } from "@/utils/notifications";
 import {
   createUserWithEmailAndPassword,
   getAuth,
 } from "@react-native-firebase/auth";
-import { router } from "expo-router";
+import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
+import { useGetAdsByUserId } from "../../ads/useGetAdsByUserId";
+import { useGetUserAdsCount } from "../../ads/useGetUserAdsCount";
+import { useGetFavoriteAdsByUserId } from "../../favorites/useGetFavoritesAdsByUserId";
+import { useGetUserById } from "../../user/useGetUserById";
 import { useCreateUserWithEmail } from "./useCreateUserWithEmail";
 
 export const useSignUpWithEmail = () => {
+  const queryClient = useQueryClient();
+  const { getFavoritesAdsByUserId } = useGetFavoriteAdsByUserId();
+  const { getUserById } = useGetUserById();
+  const { getUserAdsCount } = useGetUserAdsCount();
+  const { getAdsByUserId } = useGetAdsByUserId();
+
+  const { onClose: closeAuthModal } = useAuthModalStore();
+  const { open: openVerifyEmailModal } = useVerifyEmailStore();
+
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<{
     email: string | null;
@@ -30,14 +43,12 @@ export const useSignUpWithEmail = () => {
     }));
   };
 
-  const { setUserNameIsAdded, setUserIsLogged } = useAuthStore();
-
   const { createUserWithEmail } = useCreateUserWithEmail();
 
   const handleSignUpWithEmail = async (
     email: string,
     password: string,
-    userName: string
+    userName: string,
   ) => {
     if (
       !email ||
@@ -56,32 +67,40 @@ export const useSignUpWithEmail = () => {
       const userCredential = await createUserWithEmailAndPassword(
         getAuth(),
         email,
-        password
+        password,
       );
 
-      await createUserWithEmail(userName, email, userCredential.user.uid);
+      await userCredential.user.updateProfile({
+        displayName: userName,
+      });
+      await userCredential.user.reload();
+      authEvents.emit("profile_updated");
 
-      setUserIsLogged(true);
-      setUserNameIsAdded(true);
+      await createUserWithEmail(userCredential.user.uid, userName, email);
+
+      await subscribeToUserTopic(userCredential.user.uid);
 
       handleSetError("email", null);
       handleSetError("all", null);
 
-      await initialInvalidQuery();
+      closeAuthModal();
+      if (!userCredential.user.emailVerified) openVerifyEmailModal();
 
-      router.dismiss();
+      showToast("success", "Connexion réussie !", 100);
     } catch (error: any) {
       switch (error.code) {
         case "auth/email-already-in-use":
           handleSetError(
             "email",
-            "Adresse e-mail déjà utilisée par autres utilisateurs."
+            "Adresse e-mail déjà utilisée par autres utilisateurs.",
           );
           break;
         case "auth/invalid-email":
           handleSetError("email", "Adresse e-mail est invalide.");
           break;
-
+        case "auth/weak-password":
+          handleSetError("email", "Le mot de passe est trop faible.");
+          break;
         default:
           handleSetError("all", "Une erreur est survenue. Veuillez réessayer.");
           console.error("Erreur lors de la connexion avec email:", error);

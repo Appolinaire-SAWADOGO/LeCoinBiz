@@ -27,14 +27,17 @@ export default function SettingApplicationSection() {
           label="Évaluez notre application"
           onClick={() => setIsEvaluatedModalOpen(true)}
         >
-          <SettingsEvaluateAppModal />
+          <SettingsEvaluateAppModal
+            isEvaluatedModalOpen={isEvaluatedModalOpen}
+            setIsEvaluatedModalOpen={setIsEvaluatedModalOpen}
+          />
         </SettingElement>
         <SettingElement
           Icon={CircleAlert}
           color="#25B7D3"
           fill="none"
           label="À propos de nous"
-          onClick={() => router.push("/(root)/(settings)/About")}
+          onClick={() => router.navigate("/(root)/(settings)/About")}
         />
         <SettingElement
           Icon={Share2}

@@ -1,7 +1,8 @@
+import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { useAddYourUsernameModalStore } from "@/store/useAddYourUsernameModalStore";
+import { useAddUsernameModalStore } from "@/store/useAddUsernameModalStore";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
-import { useAuthStore } from "@/store/useAuthStore";
+import { getCurrentUserAuthMethod } from "@/utils/auth";
 import { EventArg } from "@react-navigation/native";
 import { Tabs } from "expo-router";
 import { Heart, HomeIcon, Settings, User } from "lucide-react-native";
@@ -11,27 +12,34 @@ import { Platform } from "react-native";
 export default function TabLayout() {
   const { designSystem } = useAppTheme();
 
-  const { userIsLogged, userNameIsAdded } = useAuthStore();
   const { onOpen: onOpenAuthModal } = useAuthModalStore();
-  const { onOpen: onOpenAddUsernameModal } = useAddYourUsernameModalStore();
+  const { onOpen: onOpenAddUsernameModal } = useAddUsernameModalStore();
 
   const fill = (color: string) =>
     color === designSystem.colors.primary
       ? designSystem.colors.primaryLight
       : "transparent";
 
+  const currentUser = useCurrentUser();
+  const currentUserAuthMethod = getCurrentUserAuthMethod(currentUser);
+
   const onPress = (
     e: EventArg<"tabPress", true, undefined>,
-    navigation: any
+    navigation: any,
+    withUserNameIsAdded: boolean
   ) => {
-    if (!userIsLogged) {
+    if (!currentUser) {
       e.preventDefault();
       onOpenAuthModal();
       navigation.navigate("Home");
       return;
     }
 
-    if (!userNameIsAdded) {
+    if (
+      currentUserAuthMethod === "phone" &&
+      !currentUser?.displayName &&
+      withUserNameIsAdded
+    ) {
       e.preventDefault();
       onOpenAddUsernameModal();
       navigation.navigate("Home");
@@ -79,7 +87,7 @@ export default function TabLayout() {
           },
         }}
         listeners={({ navigation }) => ({
-          tabPress: (e) => onPress(e, navigation),
+          tabPress: (e) => onPress(e, navigation, false),
         })}
       />
 
@@ -96,7 +104,7 @@ export default function TabLayout() {
           },
         }}
         listeners={({ navigation }) => ({
-          tabPress: (e) => onPress(e, navigation),
+          tabPress: (e) => onPress(e, navigation, true),
         })}
       />
       <Tabs.Screen

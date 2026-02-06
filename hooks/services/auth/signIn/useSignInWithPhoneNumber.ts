@@ -1,34 +1,43 @@
+import { useAddUsernameModalStore } from "@/store/useAddUsernameModalStore";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
-import { useAuthStore } from "@/store/useAuthStore";
 import { ContinousWithPhomeNumberStepType } from "@/types";
+import { showToast } from "@/utils";
+import { subscribeToUserTopic } from "@/utils/notifications";
 import {
   FirebaseAuthTypes,
   getAuth,
   onAuthStateChanged,
   signInWithPhoneNumber,
 } from "@react-native-firebase/auth";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import {
-  checkIfUserNameIsAdded,
-  initialInvalidQuery,
-} from "../../../../utils/auth";
+import { useGetAdsByUserId } from "../../ads/useGetAdsByUserId";
+import { useGetUserAdsCount } from "../../ads/useGetUserAdsCount";
+import { useGetFavoriteAdsByUserId } from "../../favorites/useGetFavoritesAdsByUserId";
+import { useGetUserById } from "../../user/useGetUserById";
 import { useCreateUserWithPhone } from "../SignUp/useCreateUserWithPhone";
 
 export function useSignInWithPhoneNumber(
   setStep: React.Dispatch<
     React.SetStateAction<ContinousWithPhomeNumberStepType>
   >,
-  phoneNumber: string
+  phoneNumber: string,
 ) {
+  const queryClient = useQueryClient();
+  const { getFavoritesAdsByUserId } = useGetFavoriteAdsByUserId();
+  const { getUserById } = useGetUserById();
+  const { getUserAdsCount } = useGetUserAdsCount();
+  const { getAdsByUserId } = useGetAdsByUserId();
+
   const [confirm, setConfirm] =
     useState<FirebaseAuthTypes.ConfirmationResult | null>(null);
 
-  const [code, setCode] = useState("123456");
+  const [code, setCode] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const { setUserIsLogged, setUserNameIsAdded } = useAuthStore();
-  const { onClose } = useAuthModalStore();
+  const { onClose: closeAuthModal } = useAuthModalStore();
+  const { onOpen: openAddUsernameModal } = useAddUsernameModalStore();
 
   const { createUserWithPhone } = useCreateUserWithPhone(phoneNumber);
 
@@ -44,7 +53,7 @@ export function useSignInWithPhoneNumber(
 
   const handleSetError = (
     step: ContinousWithPhomeNumberStepType,
-    message: string | null
+    message: string | null,
   ) => {
     setError((prev) => ({
       ...prev,
@@ -76,12 +85,9 @@ export function useSignInWithPhoneNumber(
 
       console.log("trying with", phoneNumber);
 
-      const testPhoneNumber = `+1 650-555-3434`;
+      // const testPhoneNumber = `+1 650-555-3434`;
 
-      const confirmation = await signInWithPhoneNumber(
-        getAuth(),
-        testPhoneNumber
-      );
+      const confirmation = await signInWithPhoneNumber(getAuth(), phoneNumber);
 
       setConfirm(confirmation);
 
@@ -91,12 +97,9 @@ export function useSignInWithPhoneNumber(
     } catch (error) {
       handleSetError(
         "enterPhoneNumber",
-        "Une erreur est survenue, veuillez réessayer."
+        "Une erreur est survenue, veuillez réessayer.",
       );
-      console.log(
-        "Erreur formatée pendant signInWithPhoneNumber:",
-        JSON.stringify(error, null, 2)
-      );
+      console.log("Erreur pendant signInWithPhoneNumber:", error);
     } finally {
       setIsLoading(false);
     }
@@ -106,37 +109,39 @@ export function useSignInWithPhoneNumber(
     try {
       setIsLoading(true);
 
-      const userCredential = await confirm?.confirm("000000");
+      const userCredential = await confirm?.confirm(code);
 
-      setUserIsLogged(true);
       setConfirm(null);
 
       const userUuid = userCredential?.user?.uid;
 
+      await subscribeToUserTopic(userUuid!);
+
       if (userCredential?.additionalUserInfo?.isNewUser) {
         await createUserWithPhone(userUuid!);
 
-        setStep("addUserName");
+        closeAuthModal();
+        openAddUsernameModal();
       } else {
-        const userNameIsAdded = await checkIfUserNameIsAdded(userUuid!);
+        if (userCredential?.user.displayName) {
+          handleSetError("enterOTP", null);
 
-        if (userNameIsAdded) {
-          setUserNameIsAdded(true);
-          onClose();
+          closeAuthModal();
+
+          showToast("success", "Connexion réussie !", 100);
         } else {
-          setStep("addUserName");
+          handleSetError("enterOTP", null);
+
+          closeAuthModal();
+          openAddUsernameModal();
         }
       }
-
-      handleSetError("enterOTP", null);
-
-      await initialInvalidQuery();
     } catch (error) {
       handleSetError(
         "enterOTP",
-        "Le code entré est invalide, veuillez réessayer."
+        "Le code entré est invalide, veuillez réessayer.",
       );
-      console.log("Invalid code.", JSON.stringify(error, null, 2));
+      console.log("Invalid code.", error);
     } finally {
       setIsLoading(false);
     }

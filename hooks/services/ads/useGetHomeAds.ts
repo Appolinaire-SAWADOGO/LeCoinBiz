@@ -1,40 +1,37 @@
 import { AnnouncementType } from "@/types";
-import firestore, {
-  FirebaseFirestoreTypes,
-} from "@react-native-firebase/firestore";
+import { getUserCity } from "@/utils";
+import functions from "@react-native-firebase/functions";
 
-const PAGE_SIZE = 10;
+type PageParam = {
+  path: string;
+  fromUserCity: boolean;
+} | null;
 
-type PageParam =
-  | FirebaseFirestoreTypes.QueryDocumentSnapshot
-  | null
-  | undefined;
+type GetHomeAdsResult = {
+  ads: AnnouncementType[];
+  lastDoc: PageParam;
+  hasMore: boolean;
+};
 
 export const useGetHomeAds = () => {
-  const getHomeAds = async ({ pageParam }: { pageParam: PageParam }) => {
+  const getHomeAds = async ({ pageParam }: { pageParam?: PageParam }) => {
     try {
-      let query = firestore()
-        .collection("Ads")
-        .where("status", "==", "ACTIVATED")
-        .orderBy("createdAt", "desc")
-        .limit(PAGE_SIZE);
+      const userCity = await getUserCity();
 
-      if (pageParam) {
-        query = query.startAfter(pageParam);
+      if (!userCity) {
+        return { ads: [], lastDoc: null, hasMore: false };
       }
 
-      const result = await query.get();
-      const ads = result.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as AnnouncementType[];
+      const getHomeAdsCallable = functions().httpsCallable("getHomeAds");
 
-      const lastDoc = result.docs[result.docs.length - 1];
-      const hasMore = result.docs.length === PAGE_SIZE;
+      const response = await getHomeAdsCallable({
+        pageParam,
+        userCity,
+      });
 
-      return { ads: ads, lastDoc, hasMore };
+      return response.data as GetHomeAdsResult;
     } catch (error) {
-      console.log("Erreur récupération annonces :", error);
+      console.error("Erreur récupération annonces [getHomeAds]:", error);
       return { ads: [], lastDoc: null, hasMore: false };
     }
   };

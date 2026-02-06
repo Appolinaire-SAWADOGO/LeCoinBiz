@@ -63,10 +63,10 @@ export default function AnnouncementDetailsProfileSection({
   return (
     <TouchableOpacity
       onPress={() =>
-        router.push({
+        router.navigate({
           pathname: "/(root)/MerchantProfile",
           params: {
-            userRslt: JSON.stringify(user),
+            userRslt: encodeURIComponent(JSON.stringify(user)),
             userAdsCountRslt: userAdsCount,
           },
         })

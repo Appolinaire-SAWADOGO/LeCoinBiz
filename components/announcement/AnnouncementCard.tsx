@@ -32,10 +32,10 @@ export default function AnnouncementCard({
     <TouchableOpacity
       activeOpacity={0.7}
       onPress={() =>
-        router.push({
+        router.navigate({
           pathname: "/(root)/(announcement)/AnnouncementDetails",
           params: {
-            initialRslt: JSON.stringify(ad),
+            initialRslt: encodeURIComponent(JSON.stringify(ad)),
             from: useCase,
             status: ad.status,
           },
@@ -56,7 +56,7 @@ export default function AnnouncementCard({
 
       {/* Favoris button  */}
       {useCase === "OtherPage" && (
-        <AddAdFavoriteButton adId={ad?.id as string} />
+        <AddAdFavoriteButton adId={ad?.id as string} ad={ad} />
       )}
 
       {/* announcement image */}

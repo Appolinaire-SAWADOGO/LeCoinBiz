@@ -1,6 +1,9 @@
 import { useAddAdFavorites } from "@/hooks/services/ads/useAddAdFavorites";
-import { useCheckUserAcces } from "@/hooks/services/auth/useCheckUserAcces";
+import { useCheckAdFavorite } from "@/hooks/services/ads/useCheckAdFavorite";
+import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { useAuthModalStore } from "@/store/useAuthModalStore";
+import { AnnouncementType } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { Heart } from "lucide-react-native";
 import React from "react";
@@ -8,28 +11,61 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 
 export default function AddAdFavoriteButton({
   adId,
+  ad,
   fromAnnouncementCard = true,
+  useCase,
 }: {
   adId: string;
+  ad: AnnouncementType;
   fromAnnouncementCard?: boolean;
+  useCase?: "OtherPage" | "ProfilePage" | "HomePage";
 }) {
   const { designSystem } = useAppTheme();
 
-  const { checkUserAccess } = useCheckUserAcces();
+  const { addAdFavorites } = useAddAdFavorites();
 
-  const { ifAdIsAddedToFavorites, addAdFavorites } = useAddAdFavorites();
+  const { ifAdIsAddedToFavorites } = useCheckAdFavorite();
+
+  const { onOpen: openAuthModal } = useAuthModalStore();
+
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const { data: isSelected } = useQuery({
     queryKey: ["if-ad-is-added-to-favorites", adId],
     queryFn: () => ifAdIsAddedToFavorites(adId),
     enabled: !!adId,
+
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+
+    refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
+    refetchOnMount: true, // Refetch au montage si données stale
+    retry: 2, // Nombre de tentatives en cas d'erreur
   });
+
+  const currentUser = useCurrentUser();
 
   return (
     <TouchableOpacity
-      style={fromAnnouncementCard ? styles.favButton : {}}
+      onPress={async () => {
+        if (!currentUser) {
+          openAuthModal();
+          return;
+        }
+
+        setIsLoading(true);
+
+        await addAdFavorites(adId, ad);
+
+        setIsLoading(false);
+      }}
       hitSlop={10}
-      onPress={() => checkUserAccess(async () => await addAdFavorites(adId))}
+      style={
+        fromAnnouncementCard
+          ? [styles.favButton, { opacity: isLoading ? 0.5 : 1 }]
+          : { opacity: isLoading ? 0.5 : 1 }
+      }
+      disabled={isLoading}
     >
       {fromAnnouncementCard ? (
         <Heart

@@ -1,91 +1,57 @@
-import { showToast } from "@/utils";
-import auth from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
+import { AnnouncementType } from "@/types";
+import {
+  addAdToInfiniteList,
+  removeAdFromInfiniteList,
+  showToast,
+} from "@/utils";
+import functions from "@react-native-firebase/functions";
 import { useQueryClient } from "@tanstack/react-query";
-import "react-native-get-random-values";
 import Toast from "react-native-toast-message";
-import { v4 as uuidv4 } from "uuid";
+import { useCurrentUser } from "../auth/signIn/useCurrentUser";
 
 export const useAddAdFavorites = () => {
   const queryClient = useQueryClient();
 
-  const currentUser = auth().currentUser;
-  const userId = currentUser?.uid;
+  const userId = useCurrentUser()?.uid;
 
-  const ifAdIsAddedToFavorites = async (adId: string) => {
-    if (!userId) {
-      return false;
-    }
+  const addAdFavorites = async (adId: string, ad: AnnouncementType) => {
+    if (!userId) return;
 
-    try {
-      const snapshot = await firestore()
-        .collection("Favorites")
-        .where("adId", "==", adId)
-        .where("userId", "==", userId)
-        .get();
+    if (!adId) return;
 
-      return !snapshot.empty;
-    } catch (error) {
-      console.error(
-        "Erreur lors de la recherche si l'annonce est dans les favoris",
-        error
-      );
-      return false;
-    }
-  };
-
-  const addAdFavorites = async (adId: string) => {
-    if (!userId) {
-      showToast("error", "Connectez-vous pour ajouter aux favoris.");
-      return;
-    }
-
-    showToast("loading", "Traitement en cours.");
+    showToast("loading", "Traitement en cours.", 0);
 
     try {
-      const snapshot = await firestore()
-        .collection("Favorites")
-        .where("adId", "==", adId)
-        .where("userId", "==", userId)
-        .get();
+      const addFavoriteFunction = functions().httpsCallable("addAdFavorite");
+      const result = await addFavoriteFunction({ adId });
 
-      const isAlreadyAdded = !snapshot.empty;
+      const { added } = result.data as { success: boolean; added: boolean };
 
-      if (isAlreadyAdded) {
-        await Promise.all(snapshot.docs.map((doc) => doc.ref.delete()));
+      queryClient.setQueryData(["if-ad-is-added-to-favorites", adId], added);
+
+      if (added) {
+        addAdToInfiniteList(["user-favorites", userId], ad, queryClient);
       } else {
-        const docId = uuidv4();
-        await firestore().collection("Favorites").doc(docId).set({
-          adId,
-          userId,
-          createdAt: firestore.FieldValue.serverTimestamp(),
-          updatedAt: firestore.FieldValue.serverTimestamp(),
-        });
+        removeAdFromInfiniteList(["user-favorites", userId], adId, queryClient);
       }
-
-      queryClient.setQueryData(
-        ["if-ad-is-added-to-favorites", adId],
-        !isAlreadyAdded
-      );
-
-      await queryClient.invalidateQueries({ queryKey: ["user-favorites"] });
 
       Toast.hide();
       showToast(
         "success",
-        isAlreadyAdded
-          ? "Annonce supprimée des favoris !"
-          : "Annonce ajoutée aux favoris !"
+        added
+          ? "Annonce ajoutée aux favoris !"
+          : "Annonce supprimée des favoris !",
+        0,
       );
-    } catch (error) {
+    } catch (error: any) {
       console.error(
-        "Erreur lors de l'ajout de l'annonce dans les favoris",
-        error
+        "Erreur lors de la modification des favoris :",
+        error.message,
       );
       Toast.hide();
-      showToast("error", "Une erreur est survenue.");
+      showToast("error", "Une erreur est survenue.", 0);
     }
   };
 
-  return { ifAdIsAddedToFavorites, addAdFavorites };
+  return { addAdFavorites };
 };

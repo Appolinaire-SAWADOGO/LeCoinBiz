@@ -1,5 +1,5 @@
 import Announcements from "@/components/announcement/Announcements";
-import NoAds from "@/components/announcement/NoAds";
+import NoData from "@/components/announcement/NoData";
 import Container from "@/components/Container";
 import AppSearchInput from "@/components/custom/input/AppSearchInput";
 import HeaderHideAnimation from "@/components/HeaderHideAnimation";
@@ -42,13 +42,13 @@ export default function Filters() {
   const setSearch = useFilterStatesStore((state) => state.setSeach);
 
   const filtersSearchModalIsOpen = useFiltersSearchModalStore(
-    (state) => state.isOpen
+    (state) => state.isOpen,
   );
   const filtersSearchModalClose = useFiltersSearchModalStore(
-    (state) => state.close
+    (state) => state.close,
   );
   const filtersSearchModalOpen = useFiltersSearchModalStore(
-    (state) => state.open
+    (state) => state.open,
   );
 
   const filters = useMemo(
@@ -62,7 +62,7 @@ export default function Filters() {
       tempPub,
       options,
     }),
-    [search, categoryFilter, subCategory, city, min, max, tempPub, options]
+    [search, categoryFilter, subCategory, city, min, max, tempPub, options],
   );
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -159,7 +159,7 @@ export default function Filters() {
 
       {/* Message "aucune annonce" */}
       {!initialLoading && !hasAds && (
-        <NoAds
+        <NoData
           text="Aucune annonce disponible pour le moment. Veuillez réessayer plus tard
               ou ajuster vos filtres."
         />

@@ -1,17 +1,17 @@
 import Announcements from "@/components/announcement/Announcements";
-import NoAds from "@/components/announcement/NoAds";
+import NoData from "@/components/announcement/NoData";
 import Container from "@/components/Container";
-import FavoriesSearchHeaderSection from "@/components/favorites/FavoritesHeaderSection";
+import FavoriesHeaderSection from "@/components/favorites/FavoritesHeaderSection";
+import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useGetFavoriteAdsByUserId } from "@/hooks/services/favorites/useGetFavoritesAdsByUserId";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useCallback, useMemo } from "react";
 import { Animated, RefreshControl, StyleSheet } from "react-native";
 
 export default function Favorites() {
   const [value, setValue] = React.useState<"annonces" | "utilisateurs">(
-    "annonces"
+    "annonces",
   );
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = React.useState(false);
@@ -21,13 +21,12 @@ export default function Favorites() {
 
   const { getFavoritesAdsByUserId } = useGetFavoriteAdsByUserId();
 
+  const userId = useCurrentUser()?.uid;
+
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ["user-favorites"],
-      queryFn: ({ pageParam }) =>
-        getFavoritesAdsByUserId(
-          pageParam as FirebaseFirestoreTypes.QueryDocumentSnapshot | null
-        ),
+      queryKey: ["user-favorites", userId],
+      queryFn: ({ pageParam }) => getFavoritesAdsByUserId(pageParam as any),
       initialPageParam: null as any,
       getNextPageParam: (lastPage) => {
         return lastPage.hasMore ? lastPage.lastDoc : undefined;
@@ -43,9 +42,7 @@ export default function Favorites() {
 
   const allFavorites = useMemo(() => {
     if (!data?.pages) return [];
-    return data.pages
-      .flatMap((page) => page?.favoritesAds || [])
-      .filter(Boolean);
+    return data.pages.flatMap((page) => page?.ads || []).filter(Boolean);
   }, [data]);
 
   const handleLoadMore = useCallback(() => {
@@ -56,7 +53,9 @@ export default function Favorites() {
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await queryClient.invalidateQueries({ queryKey: ["user-favorites"] });
+    await queryClient.invalidateQueries({
+      queryKey: ["user-favorites", userId],
+    });
     setRefreshing(false);
   }, [queryClient]);
 
@@ -74,7 +73,7 @@ export default function Favorites() {
           />
         }
         ListHeaderComponent={
-          <FavoriesSearchHeaderSection value={value} setValue={setValue} />
+          <FavoriesHeaderSection value={value} setValue={setValue} />
         }
         scrollY={scrollY}
         onEndReached={handleLoadMore}
@@ -83,7 +82,7 @@ export default function Favorites() {
 
       {!isLoading && allFavorites.length === 0 && (
         <>
-          <NoAds text="Aucune annonce en favoris" />
+          <NoData text="Aucune annonce en favoris." />
         </>
       )}
 

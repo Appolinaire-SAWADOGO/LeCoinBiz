@@ -1,9 +1,18 @@
 import React from "react";
-import { Dimensions, FlatList, Image, StyleSheet, View } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  Modal,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from "react-native";
+import ImageViewer from "react-native-image-zoom-viewer";
 import AppText from "../../custom/AppText";
 import AnnouncementDetailsSubImagesCard from "../AnnouncementDetailsSubImagesCard";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 export default function AnnouncementDetailsImagesSection({
   images,
@@ -11,16 +20,25 @@ export default function AnnouncementDetailsImagesSection({
   images: string[];
 }) {
   const [subImageSelected, setSubImageSelected] = React.useState<number>(0);
+  const [isZoomVisible, setIsZoomVisible] = React.useState<boolean>(false);
+
+  // Formater les images pour le viewer
+  const imageUrls = images.map((url) => ({ url }));
 
   return (
     <>
       {/* main image */}
       {images && (
         <View style={styles.imageGallery}>
-          <Image
-            source={{ uri: images[subImageSelected] }}
-            style={styles.mainImage}
-          />
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => setIsZoomVisible(true)}
+          >
+            <Image
+              source={{ uri: images[subImageSelected] }}
+              style={styles.mainImage}
+            />
+          </TouchableOpacity>
           <View style={styles.imageBadge}>
             <AppText style={styles.badgeText}>
               {subImageSelected + 1}/{images.length}
@@ -45,9 +63,39 @@ export default function AnnouncementDetailsImagesSection({
           />
         )}
       />
+
+      {/* Modal de zoom */}
+      <Modal
+        visible={isZoomVisible}
+        transparent={true}
+        onRequestClose={() => setIsZoomVisible(false)}
+      >
+        <ImageViewer
+          imageUrls={imageUrls}
+          index={subImageSelected}
+          onSwipeDown={() => setIsZoomVisible(false)}
+          enableSwipeDown={true}
+          backgroundColor="black"
+          renderIndicator={(currentIndex, allSize) => (
+            <View style={styles.zoomIndicator}>
+              <AppText style={styles.zoomIndicatorText}>
+                {currentIndex}/{allSize}
+              </AppText>
+            </View>
+          )}
+          onChange={(index) => setSubImageSelected(index || 0)}
+        />
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={() => setIsZoomVisible(false)}
+        >
+          <AppText style={styles.closeButtonText}>✕</AppText>
+        </TouchableOpacity>
+      </Modal>
     </>
   );
 }
+
 const styles = StyleSheet.create({
   imageGallery: {
     position: "relative",
@@ -57,7 +105,6 @@ const styles = StyleSheet.create({
     height: width * 0.9,
     backgroundColor: "#f1f1f1",
   },
-
   imageBadge: {
     position: "absolute",
     bottom: 15,
@@ -77,5 +124,34 @@ const styles = StyleSheet.create({
     gap: 10,
     flex: 1,
     justifyContent: "center",
+  },
+  zoomIndicator: {
+    position: "absolute",
+    top: 50,
+    alignSelf: "center",
+    backgroundColor: "rgba(0,0,0,0.6)",
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 15,
+  },
+  zoomIndicatorText: {
+    color: "#fff",
+    fontSize: 14,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 40,
+    right: 20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  closeButtonText: {
+    color: "#fff",
+    fontSize: 24,
+    fontWeight: "bold",
   },
 });

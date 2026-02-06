@@ -1,9 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RemoteMessage } from "@react-native-firebase/messaging";
+import { QueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
+import { v4 as uuidv4 } from "uuid";
 
 export type Timestamp = {
-  seconds: number;
-  nanoseconds: number;
+  _seconds: number;
+  _nanoseconds: number;
 };
 
 export function getTimeBasedGreeting(): string {
@@ -48,7 +51,8 @@ export const generateDesignSystem = (primary: string) => ({
 
 export const showToast = (
   type: "success" | "error" | "loading",
-  text?: string
+  text?: string,
+  bottomOffset?: number,
 ) => {
   Toast.show({
     type: type,
@@ -56,6 +60,7 @@ export const showToast = (
     position: "bottom",
     visibilityTime: type === "loading" ? undefined : 3000,
     autoHide: type !== "loading",
+    bottomOffset,
   });
 };
 
@@ -79,10 +84,10 @@ export async function addRecentSearch(newSearch: string) {
 }
 
 export const getTimeSinceCreated = (createdAt: Timestamp): string => {
-  if (!createdAt?.seconds) return "";
+  if (!createdAt?._seconds) return "";
 
   const createdDate = new Date(
-    createdAt.seconds * 1000 + createdAt.nanoseconds / 1_000_000
+    createdAt._seconds * 1000 + createdAt._nanoseconds / 1_000_000,
   );
   const now = new Date();
   const diffMs = now.getTime() - createdDate.getTime();
@@ -105,12 +110,12 @@ export const getTimeSinceCreated = (createdAt: Timestamp): string => {
 };
 
 export const getUserAccountTimeSinceCreated = (
-  createdAt: Timestamp
+  createdAt: Timestamp,
 ): string => {
-  if (!createdAt?.seconds) return "";
+  if (!createdAt?._seconds) return "";
 
   const createdDate = new Date(
-    createdAt.seconds * 1000 + createdAt.nanoseconds / 1_000_000
+    createdAt._seconds * 1000 + createdAt._nanoseconds / 1_000_000,
   );
   const now = new Date();
   const diffMs = now.getTime() - createdDate.getTime();
@@ -160,7 +165,7 @@ export const formatCreatedAt = (createdAt: Timestamp): string => {
   if (!createdAt) return "";
 
   const date = new Date(
-    createdAt.seconds * 1000 + Math.floor(createdAt.nanoseconds / 1000000)
+    createdAt._seconds * 1000 + Math.floor(createdAt._nanoseconds / 1000000),
   );
 
   const day = date.getDate().toString().padStart(2, "0");
@@ -174,3 +179,157 @@ export const hookResponse = (success: boolean, message: string) => ({
   success,
   message,
 });
+
+export const breakTextEvery = (text: string, limit: number) => {
+  const regex = new RegExp(`(.{1,${limit}})`, "g");
+  return text.match(regex)?.join("\n");
+};
+
+export const getUserCity = async (): Promise<string | null> => {
+  try {
+    const locationString = await AsyncStorage.getItem("user_location");
+    if (locationString) {
+      const location = JSON.parse(locationString);
+      return location.city;
+    }
+    return null;
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération de la localisation utilisateur :",
+      error,
+    );
+    return null;
+  }
+};
+
+export const removeAdFromInfiniteList = (
+  queryKey: any[],
+  adId: string,
+  queryClient: QueryClient,
+) => {
+  queryClient.setQueryData(queryKey, (oldData: any) => {
+    if (!oldData) return oldData;
+
+    return {
+      ...oldData,
+      pages: oldData.pages.map((page: any) => ({
+        ...page,
+        ads: page.ads.filter((ad: any) => ad.id !== adId),
+      })),
+    };
+  });
+};
+
+export const addAdToInfiniteList = (
+  queryKey: any[],
+  ad: any,
+  queryClient: QueryClient,
+) => {
+  queryClient.setQueryData(queryKey, (oldData: any) => {
+    if (!oldData) return oldData;
+
+    return {
+      ...oldData,
+      pages: oldData.pages.map((page: any, index: number) => {
+        if (index === 0) {
+          return {
+            ...page,
+            ads: [ad, ...page.ads],
+          };
+        }
+        return page;
+      }),
+    };
+  });
+};
+
+export const decrementCount = (queryKey: any[], queryClient: QueryClient) => {
+  queryClient.setQueryData<number>(queryKey, (old) => {
+    if (typeof old !== "number") return old;
+
+    return Math.max(old - 1, 0);
+  });
+};
+
+export const incrementCount = (queryKey: any[], queryClient: QueryClient) => {
+  queryClient.setQueryData<number>(queryKey, (old) => {
+    if (typeof old !== "number") return old;
+
+    return old + 1;
+  });
+};
+
+export const getAdToInfiniteList = (
+  queryKey: any[],
+  adId: string,
+  queryClient: QueryClient,
+) => {
+  const data = queryClient.getQueryData(queryKey) as any;
+
+  const ad = data?.pages
+    .flatMap((page: any) => page.ads)
+    .find((ad: any) => ad.id === adId);
+
+  return ad;
+};
+
+export const modifyAdToQueryData = (
+  queryKey: any[],
+  modification: any,
+  queryClient: QueryClient,
+) => {
+  queryClient.setQueryData(queryKey, (oldData: any) => {
+    if (!oldData) return oldData;
+    return { ...oldData, ...modification };
+  });
+};
+
+export const filterNotificationsQueryData = (
+  queryClient: QueryClient,
+  userId: string,
+) => {
+  queryClient.setQueryData(["notifications"], (oldData: any) => {
+    if (!oldData) return oldData;
+    return oldData.filter((data: any) => data.userId === userId);
+  });
+};
+
+export const addNotificationToQueryData = (
+  queryClient: QueryClient,
+  notification: RemoteMessage,
+  userId?: string,
+) => {
+  console.log("1-----------------");
+
+  queryClient.setQueryData(["notifications"], (oldData: any) => {
+    console.log("2-----------------");
+    console.log("oldData:", oldData); // 👈 Ajoutez ce log pour vérifier
+
+    const time = notification.sentTime ?? Date.now();
+
+    const timestamp = {
+      _seconds: Math.floor(time / 1000),
+      _nanoseconds: (time % 1000) * 1_000_000,
+    };
+
+    console.log("3-----------------");
+
+    const newNotification = {
+      id: notification.data?.id ?? uuidv4(),
+      title: notification.notification?.title ?? "",
+      body: notification.notification?.body ?? "",
+      type: notification.data?.type,
+      userId:
+        notification.data?.type === "USER_NOTIFICATION" ? userId : undefined,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+
+    console.log(
+      "new notification added : ",
+      JSON.stringify(newNotification, null, 2),
+    );
+
+    return [newNotification, ...(oldData ?? [])];
+  });
+};

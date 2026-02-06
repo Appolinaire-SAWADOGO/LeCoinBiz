@@ -2,13 +2,13 @@ import AppButton from "@/components/custom/AppButton";
 import AppText from "@/components/custom/AppText";
 import PageHeader from "@/components/PageHeader";
 import MailDynSvg from "@/components/svg/MailDynSvg";
-import PhoneDynSvg from "@/components/svg/PhoneDynSvg";
 import GoogleDynSvg from "@/components/svg/social-media/GoogleDynSvg";
+import { APP_NAME } from "@/constants";
 import { useSignInWithGoogle } from "@/hooks/services/auth/signIn/useSignInWithGoogle";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useBackPress } from "@/hooks/useBackPress";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
-import { AuthModalType } from "@/types";
+import { AuthModalStepType } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { StyleSheet, View } from "react-native";
@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 export default function ToIdentifyIndex({
   setStep,
 }: {
-  setStep: React.Dispatch<React.SetStateAction<AuthModalType>>;
+  setStep: React.Dispatch<React.SetStateAction<AuthModalStepType>>;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -61,6 +61,7 @@ export default function ToIdentifyIndex({
           height: "100%",
           alignItems: "center",
           justifyContent: "center",
+          gap: 20,
         }}
       >
         {/* <ShoppingBagDynSvg /> */}
@@ -69,23 +70,21 @@ export default function ToIdentifyIndex({
           color="#fff"
           fontSize={40}
           style={{
-            marginBottom: 20,
-            marginTop: 30,
             textAlign: "center",
-            lineHeight: 45,
+            marginBottom: -15,
           }}
         >
-          Rejoignez nous
+          {APP_NAME}
         </AppText>
         <AppText
-          style={{ textAlign: "center", marginBottom: 20 }}
+          style={{ textAlign: "center", marginBottom: 15, lineHeight: 20 }}
           fontSize={15}
           color="#fff"
         >
-          Trouvez facilement des produits et vendeurs de confiance autour de
-          vous.
+          Des milliers d'annonces près de chez vous.{"\n"}
+          Vendez facilement, achetez en confiance.
         </AppText>
-        <AppButton
+        {/* <AppButton
           title={"Continuer avec un numéro de téléphone"}
           Icon={PhoneDynSvg}
           iconColor={designSystem.colors.primary}
@@ -93,7 +92,7 @@ export default function ToIdentifyIndex({
           textColor={designSystem.colors.primary}
           textStyle={{ fontSize: 14, fontWeight: "bold" }}
           onPress={() => setStep("continousWithPhoneNumber")}
-        />
+        /> */}
         <AppButton
           title={"Continuer avec un e-mail"}
           Icon={MailDynSvg}
@@ -112,11 +111,15 @@ export default function ToIdentifyIndex({
           textStyle={{ fontSize: 14, fontWeight: "bold" }}
           disabled={handleSignInWithGoogle.isPending}
           isLoading={handleSignInWithGoogle.isPending}
+          loaderColor={designSystem.colors.primary}
+          loaderSize={25}
           onPress={async () => await handleSignInWithGoogle.mutateAsync()}
         />
 
         {handleSignInWithGoogle.isError && (
-          <AppText color="red">Error l'ors de la connexion avec google</AppText>
+          <AppText style={{ marginTop: 20 }} color="red">
+            Error l'ors de la connexion avec google
+          </AppText>
         )}
       </View>
     </View>
@@ -127,6 +130,5 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "white",
     width: "100%",
-    marginBottom: 20,
   },
 });

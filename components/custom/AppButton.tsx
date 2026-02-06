@@ -19,12 +19,14 @@ export default function AppButton({
   textStyle,
   Icon,
   textColor = "#fff",
-  textWeight = "Medium",
+  textWeight = "Bold",
   variant = "primary",
   isLoading = false,
   iconColor = "#fff",
+  loaderColor = "#fff",
+  loaderSize,
 }: {
-  onPress?: () => void | Promise<void>;
+  onPress?: (() => void) | (() => Promise<void>);
   title: string;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -35,6 +37,8 @@ export default function AppButton({
   variant?: "primary" | "secondary";
   isLoading?: boolean;
   iconColor?: string;
+  loaderColor?: string;
+  loaderSize?: number;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -102,7 +106,7 @@ export default function AppButton({
           </View>
         </>
       ) : (
-        <ActivityIndicator color={"#fff"} />
+        <ActivityIndicator size={loaderSize} color={loaderColor} />
       )}
     </TouchableOpacity>
   );
@@ -120,7 +124,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   appButtonText: {
-    fontSize: 18,
+    fontSize: 15,
     color: "#fff",
     textAlign: "center",
   },

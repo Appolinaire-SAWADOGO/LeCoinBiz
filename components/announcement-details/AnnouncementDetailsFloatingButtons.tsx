@@ -75,7 +75,7 @@ Merci beaucoup et bonne journée !
   const handleActionWithWarning = async (action: () => void) => {
     try {
       const value = await AsyncStorage.getItem(
-        "no_longer_called_ad_detail_warning"
+        "no_longer_called_ad_detail_warning",
       );
 
       if (value === "true") {
@@ -84,11 +84,12 @@ Merci beaucoup et bonne journée !
         setModalMessage(
           "Ne donnez jamais d’argent au vendeur sans voir physiquement le produit. " +
             "Privilégiez les rencontres en personne. Nous ne sommes pas responsables des problèmes " +
-            "entre acheteurs et vendeurs. Nous servons uniquement d’intermédiaire."
+            "entre acheteurs et vendeurs. Nous servons uniquement d’intermédiaire.",
         );
-        setIsModalOpen(true);
 
         pendingAction.current = action;
+
+        setIsModalOpen(true);
       }
     } catch (error) {
       console.error("Erreur lors de la lecture du stockage :", error);
@@ -118,7 +119,7 @@ Merci beaucoup et bonne journée !
       await SMS.sendSMSAsync([cleanNumber], message);
     } catch {
       setModalMessage(
-        "Impossible d’ouvrir l’application SMS. Veuillez vérifier qu’elle est bien installée sur votre appareil."
+        "Impossible d’ouvrir l’application SMS. Veuillez vérifier qu’elle est bien installée sur votre appareil.",
       );
       setIsModalOpen(true);
     }
@@ -131,7 +132,7 @@ Merci beaucoup et bonne journée !
 
     Linking.openURL(url).catch(() => {
       setModalMessage(
-        "Impossible d’ouvrir l’application Téléphone. Vérifiez qu’elle est disponible sur votre appareil."
+        "Impossible d’ouvrir l’application Téléphone. Vérifiez qu’elle est disponible sur votre appareil.",
       );
       setIsModalOpen(true);
     });
@@ -161,7 +162,7 @@ Merci beaucoup et bonne journée !
           setModalMessage("");
           await AsyncStorage.setItem(
             "no_longer_called_ad_detail_warning",
-            switchValue.toString()
+            switchValue.toString(),
           );
 
           if (pendingAction.current) {
@@ -227,7 +228,7 @@ Merci beaucoup et bonne journée !
             <AnnouncementDetailsFloatingButtonsCard
               useCase="edit"
               onPress={() =>
-                router.push({
+                router.navigate({
                   pathname: "/(root)/(announcement)/PostAnAd",
                   params: { ad: JSON.stringify(ad), from: "AD_DETAILS" },
                 })
@@ -236,20 +237,30 @@ Merci beaucoup et bonne journée !
             {status === "ACTIVATED" && (
               <AnnouncementDetailsFloatingButtonsCard
                 useCase="disable"
-                onPress={async () => await disableAd(adId, "AD_DETAILS")}
+                onPress={async () =>
+                  await disableAd(adId, ad.userId, "AD_DETAILS")
+                }
               />
             )}
             {status === "DISABLED" && (
               <AnnouncementDetailsFloatingButtonsCard
                 useCase="enable"
-                onPress={async () => await activateAd(adId, "AD_DETAILS")}
+                onPress={async () =>
+                  await activateAd(adId, ad.userId, "AD_DETAILS")
+                }
               />
             )}
             {status !== "ACTIVATED" && (
               <AnnouncementDetailsFloatingButtonsCard
                 useCase="delete"
                 onPress={async () =>
-                  await deleteAd(adId, ad.status, "AD_DETAILS")
+                  await deleteAd(
+                    adId,
+                    ad.userId,
+                    ad.images,
+                    ad.status,
+                    "AD_DETAILS",
+                  )
                 }
               />
             )}

@@ -12,7 +12,7 @@ export default function SettingSecuritySection() {
         color="#DC3545"
         fill="none"
         label="Conseils de sécurité"
-        onClick={() => router.push("/(root)/(settings)/SecurityTips")}
+        onClick={() => router.navigate("/(root)/(settings)/SecurityTips")}
       />
     </SettingSectionContainer>
   );

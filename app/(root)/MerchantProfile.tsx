@@ -1,5 +1,5 @@
 import Announcements from "@/components/announcement/Announcements";
-import NoAds from "@/components/announcement/NoAds";
+import NoData from "@/components/announcement/NoData";
 import Container from "@/components/Container";
 import MerchantInfoSection from "@/components/Merchand/MerchantInfoSection";
 import PageHeader from "@/components/PageHeader";
@@ -38,12 +38,12 @@ export default function MerchantProfile() {
       getAdsByUserId(
         user.id as string,
         "ACTIVATED",
-        pageParam as FirebaseFirestoreTypes.QueryDocumentSnapshot | null
+        pageParam as FirebaseFirestoreTypes.QueryDocumentSnapshot | null,
       ),
     initialPageParam: null as any,
 
     getNextPageParam: (lastPage) => {
-      return lastPage?.hasMore ? lastPage.lastDoc : undefined;
+      return lastPage?.hasMore ? lastPage.lastCreatedAt : undefined;
     },
   });
 
@@ -67,8 +67,6 @@ export default function MerchantProfile() {
   }, [queryClient, user.id]);
 
   const isLoading = adsIsLoading;
-
-  console.log(JSON.stringify(user, null, 2));
 
   return (
     <>
@@ -97,10 +95,11 @@ export default function MerchantProfile() {
           }
           onEndReached={handleLoadMore}
           isLoadingMore={isFetchingNextPage}
+          style={{ gap: 7 }}
         />
 
         {!isLoading && !allAds && (
-          <NoAds
+          <NoData
             style={{ paddingTop: "70%" }}
             text="Aucune annonce disponible."
           />
@@ -111,23 +110,8 @@ export default function MerchantProfile() {
 }
 
 const styles = StyleSheet.create({
-  stickyTab: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    backgroundColor: "#fff",
-    zIndex: 100,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-    paddingHorizontal: 20,
-  },
   container: {},
   columnWrapper: {
     justifyContent: "space-between",
-  },
-  itemWrapper: {
-    flex: 1,
-    maxWidth: "48%",
-    marginBottom: 20,
   },
 });

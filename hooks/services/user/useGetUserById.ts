@@ -1,25 +1,23 @@
 import { UserType } from "@/types";
-import firestore from "@react-native-firebase/firestore";
+import functions from "@react-native-firebase/functions";
 
 export const useGetUserById = () => {
   const getUserById = async (id: string) => {
     try {
       if (!id) return;
 
-      const userSnap = await firestore().collection("Users").doc(id).get();
+      const getUserCallable = functions().httpsCallable<
+        { id: string },
+        UserType
+      >("getUserById");
 
-      if (!userSnap.exists) {
-        console.warn("Utilisateur introuvable :", id);
-        return;
-      }
+      const response = await getUserCallable({ id });
 
-      const userData = userSnap.data() as Omit<UserType, "id">;
-
-      return { id, ...userData };
+      return response.data;
     } catch (error) {
       console.error(
         "Erreur lors de la récupération de l'utilisateur et de ses annonces :",
-        error
+        error,
       );
     }
   };

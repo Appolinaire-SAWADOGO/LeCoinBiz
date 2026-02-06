@@ -1,7 +1,6 @@
 import AppText from "@/components/custom/AppText";
 import ReviewCard from "@/components/ReviewCard";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { router } from "expo-router";
 import { ChevronRight, Star } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
@@ -27,9 +26,9 @@ export default function AnnouncementDetailsReviewSection() {
         </View>
         <TouchableOpacity
           style={{ flexDirection: "row", alignItems: "center" }}
-          onPress={() =>
-            router.push("/(root)/(announcement)/AnnouncementReviewPage")
-          }
+          // onPress={() =>
+          //   router.navigate("/(root)/(announcement)/AnnouncementReviewPage")
+          // }
         >
           <AppText fontSize={14} color={designSystem.colors.primary}>
             Tout voir

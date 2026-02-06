@@ -10,7 +10,7 @@ import {
 
 export default function TermsOfUse() {
   const handleContactPress = () => {
-    Linking.openURL("mailto:support@tonapp.com");
+    Linking.openURL("mailto:contact.lecoinbiz@gmail.com");
   };
 
   return (
@@ -52,7 +52,7 @@ export default function TermsOfUse() {
         </AppText>
         <TouchableOpacity onPress={() => handleContactPress}>
           <AppText style={[styles.text, styles.link]}>
-            support@tonapp.com
+            contact.lecoinbiz@gmail.com
           </AppText>
         </TouchableOpacity>
       </ScrollView>

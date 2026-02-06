@@ -110,7 +110,7 @@ export default function ProfileContentHead({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "transparent",
-    paddingBottom: 10,
+    marginBottom: 10,
   },
   tabsWrapper: {
     flexDirection: "row",

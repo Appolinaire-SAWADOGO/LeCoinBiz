@@ -13,7 +13,9 @@ export default function AppSwitch({
   return (
     <Switch
       size="md"
-      onValueChange={onValueChange}
+      onValueChange={() => {
+        onValueChange?.(true);
+      }}
       value={value}
       trackColor={{
         false: colors.neutral[300],

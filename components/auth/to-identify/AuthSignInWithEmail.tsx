@@ -1,0 +1,172 @@
+import AuthPagesContainer from "@/components/auth/AuthPagesContainer";
+import AuthFormInputSection from "@/components/auth/form/AuthFormInputSection";
+import AppButton from "@/components/custom/AppButton";
+import AppText from "@/components/custom/AppText";
+import AppEmailInput from "@/components/custom/input/AppEmailInput";
+import { APP_NAME } from "@/constants";
+import { useSignInWithEmail } from "@/hooks/services/auth/signIn/useSignInWithEmail";
+import { useAppTheme } from "@/hooks/useAppTheme";
+import { useBackPress } from "@/hooks/useBackPress";
+import { AuthModalStepType, SignInWithEmailStepType } from "@/types";
+import { isValidEmail, isValidPassword } from "@/utils/auth";
+import React from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import AuthPasswordInput from "../form/AuthPasswordInput";
+import AuthForgotPassword from "./AuthForgotPassword";
+
+export default function AuthSignInWithEmail({
+  setBigStep,
+}: {
+  setBigStep: React.Dispatch<React.SetStateAction<AuthModalStepType>>;
+}) {
+  const { designSystem } = useAppTheme();
+
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
+  const { handleSignInWithEmail, isLoading, error, setError } =
+    useSignInWithEmail();
+
+  const { ifPasswordValided } = isValidPassword(password);
+
+  const [step, setStep] = React.useState<SignInWithEmailStepType>("signin");
+
+  useBackPress(() => {
+    setBigStep("Index");
+  });
+
+  return (
+    <>
+      {step === "signin" && (
+        <AuthPagesContainer onBack={() => setBigStep("Index")}>
+          {/* page name */}
+          <AppText
+            fontSize={28}
+            font="Bold"
+            color={designSystem.colors.bigText}
+            style={{ marginBottom: 32 }}
+          >
+            Connecter vous à {APP_NAME}
+          </AppText>
+
+          <View style={styles.inputsSection}>
+            {/* error  */}
+            {error && <AppText style={styles.error}>{error}</AppText>}
+
+            {/*  email input  */}
+            <AuthFormInputSection label={"Votre adresse email"}>
+              <AppEmailInput
+                editable
+                email={email}
+                setEmail={(text) => {
+                  if (error) setError(null);
+                  setEmail(text);
+                }}
+                placeholder="example@gmail.com"
+              />
+            </AuthFormInputSection>
+
+            {/*  password input  */}
+            <AuthFormInputSection label={"Votre mot de passe"}>
+              <>
+                <AuthPasswordInput
+                  editable
+                  value={password}
+                  placeholder="*********"
+                  onChangeText={(text) => {
+                    if (error) setError(null);
+                    setPassword(text);
+                  }}
+                />
+
+                <TouchableOpacity
+                  disabled={isLoading}
+                  onPress={() => {
+                    if (!isLoading) setStep("forgotPassword");
+                  }}
+                >
+                  <AppText
+                    color={
+                      isLoading
+                        ? designSystem.colors.secondary
+                        : designSystem.colors.primary
+                    }
+                    style={[styles.link, { marginTop: 16 }]}
+                  >
+                    Mot de passe oublie ?
+                  </AppText>
+                </TouchableOpacity>
+              </>
+            </AuthFormInputSection>
+          </View>
+
+          {/* continous button */}
+          <AppButton
+            isLoading={isLoading}
+            title="Continuer"
+            textStyle={{ fontSize: 14, fontWeight: "bold" }}
+            onPress={async () => {
+              if (isLoading) return;
+
+              if (email && isValidEmail(email) && ifPasswordValided)
+                await handleSignInWithEmail(
+                  email,
+                  password,
+                  setEmail,
+                  setPassword
+                );
+            }}
+            disabled={
+              !email || !isValidEmail(email) || !ifPasswordValided || isLoading
+            }
+          />
+
+          {/* link to sign up page */}
+          <View
+            style={{
+              marginTop: 16,
+              flexDirection: "row",
+              gap: 4,
+              flexWrap: "wrap",
+            }}
+          >
+            <AppText>Vous n&rsquo;avez pas de compte ? </AppText>
+
+            <TouchableOpacity
+              disabled={isLoading}
+              onPress={() => {
+                if (!isLoading) setBigStep("signUpWithEmail");
+              }}
+            >
+              <AppText
+                color={
+                  isLoading
+                    ? designSystem.colors.secondary
+                    : designSystem.colors.primary
+                }
+                style={[styles.link]}
+              >
+                Inscrivez-vous
+              </AppText>
+            </TouchableOpacity>
+          </View>
+        </AuthPagesContainer>
+      )}
+
+      {step === "forgotPassword" && <AuthForgotPassword setBigStep={setStep} />}
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  inputsSection: {
+    marginBottom: 24,
+    gap: 20,
+  },
+  error: {
+    color: "red",
+  },
+  link: {
+    fontWeight: "bold",
+  },
+});

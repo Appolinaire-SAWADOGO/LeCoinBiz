@@ -1,4 +1,4 @@
-import firestore from "@react-native-firebase/firestore";
+import functions from "@react-native-firebase/functions";
 import React from "react";
 
 export const useCreateUserWithPhone = (phoneNumber: string) => {
@@ -8,37 +8,18 @@ export const useCreateUserWithPhone = (phoneNumber: string) => {
     if (!phoneNumber) return;
     if (!userId) return;
 
-    console.log(
-      JSON.stringify(
-        {
-          phoneNumber,
-        },
-        null,
-        2
-      )
-    );
-
     try {
       setIsLoading(true);
 
-      console.log("userId", userId);
+      const createUserCallable = functions().httpsCallable<
+        { uid: string; phoneNumber: string },
+        { success: boolean }
+      >("createUserWithPhone");
 
-      await firestore()
-        .collection("Users")
-        .doc(userId)
-        .set({
-          image: "",
-          lacation: {
-            country: "burkina faso",
-            city: "ouagadougou",
-          },
-          authMethod: "PHONE_NUMBER",
-          phoneNumber: phoneNumber,
-          createdAt: firestore.FieldValue.serverTimestamp(),
-          updatedAt: firestore.FieldValue.serverTimestamp(),
-        });
-
-      console.log("User created!");
+      await createUserCallable({
+        uid: userId,
+        phoneNumber,
+      });
     } catch (error) {
       console.log("Error creating user with phone number:", error);
     } finally {

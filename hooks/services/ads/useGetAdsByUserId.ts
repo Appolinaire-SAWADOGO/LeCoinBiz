@@ -1,56 +1,40 @@
 import { AdStatusType, AnnouncementType } from "@/types";
-import firestore, {
-  FirebaseFirestoreTypes,
-} from "@react-native-firebase/firestore";
-
-const PAGE_SIZE = 10;
-
-type PageParam =
-  | FirebaseFirestoreTypes.QueryDocumentSnapshot
-  | null
-  | undefined;
+import functions from "@react-native-firebase/functions";
 
 export const useGetAdsByUserId = () => {
   const getAdsByUserId = async (
-    id: string,
+    userId: string,
     status: AdStatusType = "ACTIVATED",
-    pageParam: PageParam
-  ) => {
+    lastCreatedAt?: any,
+  ): Promise<{
+    ads: AnnouncementType[];
+    lastCreatedAt: any;
+    hasMore: boolean;
+  }> => {
     try {
-      if (!id) return { ads: [], lastDoc: null, hasMore: false };
+      const getAdsFn = functions().httpsCallable<
+        {
+          userId: string;
+          status: AdStatusType;
+          lastCreatedAt?: any;
+        },
+        {
+          ads: AnnouncementType[];
+          lastCreatedAt: any;
+          hasMore: boolean;
+        }
+      >("getAdsByUserId");
 
-      let adsSnap = firestore()
-        .collection("Ads")
-        .where("userId", "==", id)
-        .where("status", "==", status)
-        .orderBy("createdAt", "desc")
-        .limit(PAGE_SIZE);
+      const result = await getAdsFn({
+        userId,
+        status,
+        lastCreatedAt,
+      });
 
-      if (pageParam) {
-        adsSnap = adsSnap.startAfter(pageParam);
-      }
-
-      const result = await adsSnap.get();
-
-      const adsData: AnnouncementType[] = result.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as AnnouncementType[];
-
-      const lastDoc = result.docs[result.docs.length - 1];
-      const hasMore = result.docs.length === PAGE_SIZE;
-
-      return {
-        ads: adsData,
-        lastDoc,
-        hasMore,
-      };
+      return result.data;
     } catch (error) {
-      console.error(
-        "Erreur lors de la recupération des annonces de l'utilisateur :",
-        error
-      );
-      return { ads: [], lastDoc: null, hasMore: false };
+      console.error("getAdsByUserId error:", error);
+      return { ads: [], lastCreatedAt: null, hasMore: false };
     }
   };
 
