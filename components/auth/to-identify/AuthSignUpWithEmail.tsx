@@ -9,6 +9,7 @@ import { APP_NAME } from "@/constants";
 import { useSignUpWithEmail } from "@/hooks/services/auth/SignUp/useSignUpWithEmail";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useBackPress } from "@/hooks/useBackPress";
+import { useAuthModalStore } from "@/store/useAuthModalStore";
 import { AuthModalStepType } from "@/types";
 import { isValidEmail, isValidPassword } from "@/utils/auth";
 import { validateUsername } from "@/utils/auth/validation";
@@ -30,6 +31,8 @@ export default function AuthSignUpWithEmail({
 
   const { handleSignUpWithEmail, isLoading, error, setError } =
     useSignUpWithEmail();
+
+  const { onClose: closeAuthModal } = useAuthModalStore();
 
   const { ifPasswordValided } = isValidPassword(password);
 
@@ -117,17 +120,29 @@ export default function AuthSignUpWithEmail({
         <InfoDynSvg />
         <AppText fontSize={12} style={{ lineHeight: 16 }}>
           En sélectionnant Suivant, j&apos;accepte{" "}
-          <Link style={styles.infoLink} href="/(root)/(settings)/TermsOfUs">
+          <Link
+            style={styles.infoLink}
+            href="/(root)/(settings)/TermsOfUs"
+            onPress={closeAuthModal}
+          >
             {" "}
             les Conditions Générales d&apos;Utilisation
           </Link>{" "}
           ,
-          <Link style={styles.infoLink} href="/(root)/(settings)/PrivacyPolicy">
+          <Link
+            style={styles.infoLink}
+            href="/(root)/(settings)/PrivacyPolicy"
+            onPress={closeAuthModal}
+          >
             {" "}
             la Politique de Confidentialité
           </Link>{" "}
           et
-          <Link style={styles.infoLink} href="/(root)/(settings)/PostingRules">
+          <Link
+            style={styles.infoLink}
+            href="/(root)/(settings)/PostingRules"
+            onPress={closeAuthModal}
+          >
             {" "}
             les Règles de Diffusion
           </Link>{" "}

@@ -26,7 +26,7 @@ export default function TabLayout() {
   const onPress = (
     e: EventArg<"tabPress", true, undefined>,
     navigation: any,
-    withUserNameIsAdded: boolean
+    withUserNameIsAdded: boolean,
   ) => {
     if (!currentUser) {
       e.preventDefault();

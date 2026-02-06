@@ -1,5 +1,6 @@
 import { Facebook, Mail, MessageCircle } from "lucide-react-native";
 import React from "react";
+import { Linking } from "react-native";
 import SettingElement from "../SettingElement";
 import SettingsSectionContainer from "../SettingSectionContainer";
 
@@ -12,16 +13,44 @@ export default function SettingContactSection() {
           color="#7D5AFC"
           fill="none"
           label="Nous contacter par e-mail"
+          onClick={() =>
+            Linking.openURL("mailto:contact.lecoinbiz@gmail.com").catch(
+              (err) => {
+                console.error(
+                  "Erreur lors de l'ouverture du client mail : ",
+                  err,
+                );
+              },
+            )
+          }
         />
         <SettingElement
           Icon={MessageCircle}
           color="#2BB741"
           label="Nous contacter sur WhatsApp"
+          onClick={() =>
+            Linking.openURL("https://wa.me/22677976643").catch((err) => {
+              console.error(
+                "WhatsApp n'est pas installé sur ce téléphone : ",
+                err,
+              );
+            })
+          }
         />
         <SettingElement
           Icon={Facebook}
           color="#1877F2"
           label="Nous suivre sur Facebook"
+          onClick={() =>
+            Linking.openURL("https://www.facebook.com/share/1Ae57kVgHY/").catch(
+              (err) => {
+                console.error(
+                  "Erreur lors de l'ouverture du client Facebook : ",
+                  err,
+                );
+              },
+            )
+          }
         />
       </SettingsSectionContainer>
     </>
