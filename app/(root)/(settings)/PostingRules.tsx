@@ -53,8 +53,8 @@ export default function PostingRules() {
         </AppText>
 
         <AppText style={[styles.text, { marginTop: 20 }]}>
-          En cas de non-respect de ces règles, votre annonce pourra être
-          désactivée automatiquement.
+          En cas de non-respect de ces règles, votre annonce pourra être mise en
+          attente pour vérification.
         </AppText>
 
         <AppText style={[styles.text, { marginTop: 20 }]}>

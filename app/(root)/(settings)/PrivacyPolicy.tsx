@@ -66,9 +66,9 @@ export default function PrivacyPolicy() {
         </AppText>
 
         <AppText style={styles.text}>
-          6. 🗑️ Suppression du compte : vous pouvez demander la suppression
-          complète de votre compte et de vos données en nous contactant par
-          e-mail.
+          6. 🗑️ Suppression du compte : vous pouvez supprimer complètement votre
+          compte et vos données directement depuis les paramètres de
+          l’application.
         </AppText>
 
         <AppText style={[styles.text, { marginTop: 20 }]}>

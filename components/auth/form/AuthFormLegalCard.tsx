@@ -1,6 +1,6 @@
 import AppText from "@/components/custom/AppText";
 import InfoDynSvg from "@/components/svg/InfoDynSvg";
-import { appName } from "@/constants";
+import { APP_NAME } from "@/constants";
 import { Link } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
@@ -25,7 +25,7 @@ export default function AuthFormLegalCard() {
           {" "}
           les Règles de Diffusion
         </Link>{" "}
-        de {appName}.
+        de {APP_NAME}.
       </AppText>
     </View>
   );
