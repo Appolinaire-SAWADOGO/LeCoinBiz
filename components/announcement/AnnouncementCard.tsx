@@ -41,7 +41,7 @@ export default function AnnouncementCard({
           },
         })
       }
-      style={[styles.card, { width: isSimilarType ? 170 : 152 }]}
+      style={[styles.card, { width: isSimilarType ? 170 : "100%" }]}
     >
       {/*menu*/}
       {useCase === "ProfilePage" && (

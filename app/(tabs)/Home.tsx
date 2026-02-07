@@ -44,12 +44,13 @@ export default function Home() {
         return lastPage.hasMore ? lastPage.lastDoc : undefined;
       },
 
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
+      staleTime: Infinity, // ✅ Les données ne deviennent JAMAIS stale
+      gcTime: Infinity, // ✅ Les données ne sont JAMAIS supprimées du cache
 
-      refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
-      refetchOnMount: true, // Refetch au montage si données stale
-      retry: 2, // Nombre de tentatives en cas d'erreur
+      refetchOnWindowFocus: false, // ✅ Pas de refetch au focus
+      refetchOnMount: false, // ✅ Pas de refetch au montage
+      refetchOnReconnect: false, // ✅ Pas de refetch lors de la reconnexion
+      retry: 2,
     });
 
   const allAds = useMemo(() => {

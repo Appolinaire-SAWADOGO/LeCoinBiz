@@ -9,6 +9,7 @@ import {
   RefreshControlProps,
   StyleProp,
   StyleSheet,
+  useWindowDimensions,
   View,
   ViewStyle,
 } from "react-native";
@@ -41,11 +42,19 @@ const Announcements = ({
 
   const [openAdId, setOpenAdId] = useState<string | null>(null);
 
+  const { width } = useWindowDimensions();
+
+  const isTablet = width >= 700;
+  const numColumns = isTablet ? 3 : 2;
+
+  const itemWidth = isTablet ? "31%" : "48%";
+
   return (
     <View style={styles.container}>
       <FlatList
         data={values || []}
-        numColumns={2}
+        key={numColumns}
+        numColumns={numColumns}
         contentContainerStyle={[style, { paddingHorizontal: 20 }]}
         columnWrapperStyle={styles.columnWrapper}
         showsVerticalScrollIndicator
@@ -73,7 +82,7 @@ const Announcements = ({
           if (!item || !item.id) return null;
 
           return (
-            <View style={styles.itemWrapper}>
+            <View style={[styles.itemWrapper, { maxWidth: itemWidth }]}>
               <AnnouncementCard
                 useCase={announcementCardUseCase}
                 ad={item}
@@ -102,7 +111,6 @@ const styles = StyleSheet.create({
   },
   itemWrapper: {
     flex: 1,
-    maxWidth: "48%",
     marginBottom: 20,
   },
   footerLoader: {

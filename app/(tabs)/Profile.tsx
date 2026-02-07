@@ -47,12 +47,14 @@ export default function Profile() {
       queryKey: ["user-activated-ads-count", userId],
       queryFn: () => getUserAdsCount(userId as string, "ACTIVATED"),
       enabled: !!userId,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
 
-      refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
-      refetchOnMount: true, // Refetch au montage si données stale
-      retry: 2, // Nombre de tentatives en cas d'erreur
+      staleTime: Infinity, // ✅ Les données ne deviennent JAMAIS stale
+      gcTime: Infinity, // ✅ Les données ne sont JAMAIS supprimées du cache
+
+      refetchOnWindowFocus: false, // ✅ Pas de refetch au focus
+      refetchOnMount: false, // ✅ Pas de refetch au montage
+      refetchOnReconnect: false, // ✅ Pas de refetch lors de la reconnexion
+      retry: 2,
     });
 
   // user desabled ads count
@@ -61,12 +63,14 @@ export default function Profile() {
       queryKey: ["user-disabled-ads-count", userId],
       queryFn: () => getUserAdsCount(userId as string, "DISABLED"),
       enabled: !!userId,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
 
-      refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
-      refetchOnMount: true, // Refetch au montage si données stale
-      retry: 2, // Nombre de tentatives en cas d'erreur
+      staleTime: Infinity, // ✅ Les données ne deviennent JAMAIS stale
+      gcTime: Infinity, // ✅ Les données ne sont JAMAIS supprimées du cache
+
+      refetchOnWindowFocus: false, // ✅ Pas de refetch au focus
+      refetchOnMount: false, // ✅ Pas de refetch au montage
+      refetchOnReconnect: false, // ✅ Pas de refetch lors de la reconnexion
+      retry: 2,
     });
 
   // user pending ads count
@@ -75,12 +79,14 @@ export default function Profile() {
       queryKey: ["user-pending-ads-count", userId],
       queryFn: () => getUserAdsCount(userId as string, "PENDING"),
       enabled: !!userId,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
 
-      refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
-      refetchOnMount: true, // Refetch au montage si données stale
-      retry: 2, // Nombre de tentatives en cas d'erreur
+      staleTime: Infinity, // ✅ Les données ne deviennent JAMAIS stale
+      gcTime: Infinity, // ✅ Les données ne sont JAMAIS supprimées du cache
+
+      refetchOnWindowFocus: false, // ✅ Pas de refetch au focus
+      refetchOnMount: false, // ✅ Pas de refetch au montage
+      refetchOnReconnect: false, // ✅ Pas de refetch lors de la reconnexion
+      retry: 2,
     });
 
   // activated ads
@@ -103,12 +109,14 @@ export default function Profile() {
     getNextPageParam: (lastPage) => {
       return lastPage?.hasMore ? lastPage.lastCreatedAt : undefined;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
 
-    refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
-    refetchOnMount: true, // Refetch au montage si données stale
-    retry: 2, // Nombre de tentatives en cas d'erreur
+    staleTime: Infinity, // ✅ Les données ne deviennent JAMAIS stale
+    gcTime: Infinity, // ✅ Les données ne sont JAMAIS supprimées du cache
+
+    refetchOnWindowFocus: false, // ✅ Pas de refetch au focus
+    refetchOnMount: false, // ✅ Pas de refetch au montage
+    refetchOnReconnect: false, // ✅ Pas de refetch lors de la reconnexion
+    retry: 2,
   });
 
   // disabled ads
@@ -131,12 +139,14 @@ export default function Profile() {
     getNextPageParam: (lastPage) => {
       return lastPage?.hasMore ? lastPage.lastCreatedAt : undefined;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
 
-    refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
-    refetchOnMount: true, // Refetch au montage si données stale
-    retry: 2, // Nombre de tentatives en cas d'erreur
+    staleTime: Infinity, // ✅ Les données ne deviennent JAMAIS stale
+    gcTime: Infinity, // ✅ Les données ne sont JAMAIS supprimées du cache
+
+    refetchOnWindowFocus: false, // ✅ Pas de refetch au focus
+    refetchOnMount: false, // ✅ Pas de refetch au montage
+    refetchOnReconnect: false, // ✅ Pas de refetch lors de la reconnexion
+    retry: 2,
   });
 
   // pending ads
@@ -159,12 +169,14 @@ export default function Profile() {
     getNextPageParam: (lastPage) => {
       return lastPage?.hasMore ? lastPage.lastCreatedAt : undefined;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
 
-    refetchOnWindowFocus: false, // Ne pas refetch au focus de l'app
-    refetchOnMount: true, // Refetch au montage si données stale
-    retry: 2, // Nombre de tentatives en cas d'erreur
+    staleTime: Infinity, // ✅ Les données ne deviennent JAMAIS stale
+    gcTime: Infinity, // ✅ Les données ne sont JAMAIS supprimées du cache
+
+    refetchOnWindowFocus: false, // ✅ Pas de refetch au focus
+    refetchOnMount: false, // ✅ Pas de refetch au montage
+    refetchOnReconnect: false, // ✅ Pas de refetch lors de la reconnexion
+    retry: 2,
   });
 
   const allActivatedAds = useMemo(() => {

@@ -7,15 +7,18 @@ export default function AppText({
   color,
   children,
   style,
+  numberOfLines,
 }: {
   font?: "Black" | "Bold" | "Light" | "Medium" | "Regular";
   fontSize?: number;
   color?: string;
   children: React.ReactNode;
   style?: StyleProp<TextStyle>;
+  numberOfLines?: number | undefined;
 }) {
   return (
     <Text
+      numberOfLines={numberOfLines}
       style={[
         {
           fontFamily: font

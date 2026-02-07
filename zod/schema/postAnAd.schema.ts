@@ -33,8 +33,8 @@ export const PostAnAddSchema = z
       .refine((arr) => arr.length > 0, {
         message: "Veuillez ajouter au moins une condition.",
       })
-      .refine((arr) => arr.every((c) => c.trim().length >= 5), {
-        message: "Chaque condition doit contenir au moins 5 caractères.",
+      .refine((arr) => arr.every((c) => c.trim().length >= 3), {
+        message: "Chaque condition doit contenir au moins 3 caractères.",
       }),
 
     images: z

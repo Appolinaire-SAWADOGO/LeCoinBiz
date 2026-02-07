@@ -51,6 +51,7 @@ import Terrain from "@/assets/images/sub-categories/Terrain.png";
 import TissageEtCouture from "@/assets/images/sub-categories/TissageEtCouture.png";
 import TissusEtPagnes from "@/assets/images/sub-categories/TissusEtPagnes.png";
 import TransportEtDemenagement from "@/assets/images/sub-categories/TransportEtDemenagement.png";
+import Velos from "@/assets/images/sub-categories/velos.png";
 import Vetements from "@/assets/images/sub-categories/Vetements.png";
 import VetementsBebe from "@/assets/images/sub-categories/VetementsBebe.png";
 import Voitures from "@/assets/images/sub-categories/Voitures.png";
@@ -127,148 +128,149 @@ export const SUB_CATEGORIES = [
   { id: 3, categoryId: 2, name: "Terrains", icon: Terrain },
   { id: 4, categoryId: 2, name: "Bureaux & magasins", icon: BurreauxEtMagasin },
 
-  { id: 5, categoryId: 1, name: "Voitures", icon: Voitures },
+  { id: 5, categoryId: 1, name: "Vélos", icon: Velos },
   { id: 6, categoryId: 1, name: "Motos & tricycles", icon: MotosEtTricycles },
-  { id: 7, categoryId: 1, name: "Camions & bus", icon: CamionsEtBus },
+  { id: 7, categoryId: 1, name: "Voitures", icon: Voitures },
+  { id: 8, categoryId: 1, name: "Camions & bus", icon: CamionsEtBus },
   {
-    id: 8,
+    id: 9,
     categoryId: 1,
     name: "Pièces & accessoires",
     icon: PiecesEtAccessoires,
   },
 
   {
-    id: 9,
+    id: 10,
     categoryId: 3,
     name: "Téléphones portables",
     icon: TelephonesPortables,
   },
   {
-    id: 10,
+    id: 11,
     categoryId: 3,
     name: "Ordinateurs & tablettes",
     icon: OrdinateursEtTablettes,
   },
-  { id: 11, categoryId: 3, name: "Accessoires", icon: Accessoires },
+  { id: 12, categoryId: 3, name: "Accessoires", icon: Accessoires },
   {
-    id: 12,
+    id: 13,
     categoryId: 3,
     name: "Réparation & maintenance",
     icon: ReparationEtMaintenance,
   },
 
-  { id: 13, categoryId: 4, name: "Meubles & déco", icon: MeublesEtDeco },
+  { id: 14, categoryId: 4, name: "Meubles & déco", icon: MeublesEtDeco },
   {
-    id: 14,
+    id: 15,
     categoryId: 4,
     name: "Appareils électroménagers",
     icon: AppareilsElectromenagers,
   },
   {
-    id: 15,
+    id: 16,
     categoryId: 4,
     name: "Cuisine & ustensiles",
     icon: CuisineEtUstensiles,
   },
   {
-    id: 16,
+    id: 17,
     categoryId: 4,
     name: "Bricolage & outils",
     icon: BricolageEtOutils,
   },
 
-  { id: 17, categoryId: 5, name: "Vêtements", icon: Vetements },
-  { id: 18, categoryId: 5, name: "Chaussures", icon: Chaussures },
-  { id: 19, categoryId: 5, name: "Montres & bijoux", icon: MontresEtBijoux },
-  { id: 20, categoryId: 5, name: "Produits de beauté", icon: ProduitsDeBeaute },
-  { id: 21, categoryId: 5, name: "Tissus & pagnes", icon: TissusEtPagnes },
+  { id: 18, categoryId: 5, name: "Vêtements", icon: Vetements },
+  { id: 19, categoryId: 5, name: "Chaussures", icon: Chaussures },
+  { id: 20, categoryId: 5, name: "Montres & bijoux", icon: MontresEtBijoux },
+  { id: 21, categoryId: 5, name: "Produits de beauté", icon: ProduitsDeBeaute },
+  { id: 22, categoryId: 5, name: "Tissus & pagnes", icon: TissusEtPagnes },
 
-  { id: 22, categoryId: 6, name: "Vêtements pour bébé", icon: VetementsBebe },
-  { id: 23, categoryId: 6, name: "jouets pour bébé", icon: JouetsBebe },
+  { id: 23, categoryId: 6, name: "Vêtements pour bébé", icon: VetementsBebe },
+  { id: 24, categoryId: 6, name: "jouets pour bébé", icon: JouetsBebe },
   {
-    id: 24,
+    id: 25,
     categoryId: 6,
     name: "Accessoires pour bébé",
     icon: AccessoiresBebe,
   },
 
-  { id: 25, categoryId: 7, name: "Matériel de sport", icon: MaterielDeSport },
+  { id: 26, categoryId: 7, name: "Matériel de sport", icon: MaterielDeSport },
   {
-    id: 26,
+    id: 27,
     categoryId: 7,
     name: "Instruments de musique",
     icon: InstrumentsDeMusique,
   },
-  { id: 27, categoryId: 7, name: "Livres", icon: Livres },
-  { id: 28, categoryId: 7, name: "Jeux", icon: Jeux },
+  { id: 28, categoryId: 7, name: "Livres", icon: Livres },
+  { id: 29, categoryId: 7, name: "Jeux", icon: Jeux },
 
   {
-    id: 29,
+    id: 30,
     categoryId: 8,
     name: "Matériel de construction",
     icon: MaterielDeConstruction,
   },
-  { id: 30, categoryId: 8, name: "Matériel agricole", icon: MaterielAgricole },
-  { id: 31, categoryId: 8, name: "Outillage", icon: Outillage },
+  { id: 31, categoryId: 8, name: "Matériel agricole", icon: MaterielAgricole },
+  { id: 32, categoryId: 8, name: "Outillage", icon: Outillage },
   {
-    id: 32,
+    id: 33,
     categoryId: 8,
     name: "Bureaux & fournitures",
     icon: BureauxEtFournitures,
   },
 
-  { id: 33, categoryId: 9, name: "Bœufs & vaches", icon: BœufsEtVaches },
-  { id: 34, categoryId: 9, name: "Moutons & chèvres", icon: MoutonsEtChevres },
-  { id: 35, categoryId: 9, name: "Volaille", icon: Volaille },
-  { id: 36, categoryId: 9, name: "Chiens & chats", icon: ChiensEtChats },
+  { id: 34, categoryId: 9, name: "Bœufs & vaches", icon: BœufsEtVaches },
+  { id: 35, categoryId: 9, name: "Moutons & chèvres", icon: MoutonsEtChevres },
+  { id: 36, categoryId: 9, name: "Volaille", icon: Volaille },
+  { id: 37, categoryId: 9, name: "Chiens & chats", icon: ChiensEtChats },
   {
-    id: 37,
+    id: 38,
     categoryId: 9,
     name: "Accessoires & alimentation d'animaux",
     icon: AccessoiresEtAlimentationAnimaux,
   },
 
-  { id: 38, categoryId: 10, name: "Objets d’art", icon: ObjetsArt },
+  { id: 39, categoryId: 10, name: "Objets d’art", icon: ObjetsArt },
   {
-    id: 39,
+    id: 40,
     categoryId: 10,
     name: "Poterie & sculpture",
     icon: PoterieEtSculpture,
   },
-  { id: 40, categoryId: 10, name: "Tissage & couture", icon: TissageEtCouture },
+  { id: 41, categoryId: 10, name: "Tissage & couture", icon: TissageEtCouture },
   {
-    id: 41,
+    id: 42,
     categoryId: 10,
     name: "Peinture & décoration",
     icon: PeintureEtDecoration,
   },
 
   {
-    id: 42,
+    id: 43,
     categoryId: 11,
     name: "Cours & formations",
     icon: CoursEtFormations,
   },
   {
-    id: 43,
+    id: 44,
     categoryId: 11,
     name: "Transport & déménagement",
     icon: TransportEtDemenagement,
   },
   {
-    id: 44,
+    id: 45,
     categoryId: 11,
     name: "Services de réparations",
     icon: ServicesDeReparations,
   },
   {
-    id: 45,
+    id: 46,
     categoryId: 11,
     name: "Services événementiel",
     icon: ServicesEvenementiel,
   },
   {
-    id: 46,
+    id: 47,
     categoryId: 11,
     name: "Services à domicile",
     icon: ServicesADomicile,
@@ -277,19 +279,19 @@ export const SUB_CATEGORIES = [
 
 export const subCategoriesNames = (categoryName: string) => {
   const categoryId = CATEGORIES.find(
-    (category) => category.name === categoryName
+    (category) => category.name === categoryName,
   )?.id;
   return SUB_CATEGORIES.filter(
-    (subCategory) => subCategory.categoryId === categoryId
+    (subCategory) => subCategory.categoryId === categoryId,
   ).map((subCategory) => subCategory.name);
 };
 
 export const subCategories = (categoryName: string) => {
   const categoryId = CATEGORIES.find(
-    (category) => category.name === categoryName
+    (category) => category.name === categoryName,
   )?.id;
   return SUB_CATEGORIES.filter(
-    (subCategory) => subCategory.categoryId === categoryId
+    (subCategory) => subCategory.categoryId === categoryId,
   );
 };
 
