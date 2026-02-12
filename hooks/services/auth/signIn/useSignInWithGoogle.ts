@@ -8,19 +8,9 @@ import {
 } from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { useQueryClient } from "@tanstack/react-query";
-import { useGetAdsByUserId } from "../../ads/useGetAdsByUserId";
-import { useGetUserAdsCount } from "../../ads/useGetUserAdsCount";
-import { useGetFavoriteAdsByUserId } from "../../favorites/useGetFavoritesAdsByUserId";
-import { useGetUserById } from "../../user/useGetUserById";
 
 export const useSignInWithGoogle = () => {
   const { onClose } = useAuthModalStore();
-  const queryClient = useQueryClient();
-  const { getFavoritesAdsByUserId } = useGetFavoriteAdsByUserId();
-  const { getUserById } = useGetUserById();
-  const { getUserAdsCount } = useGetUserAdsCount();
-  const { getAdsByUserId } = useGetAdsByUserId();
 
   const signInWithGoogle = async () => {
     try {
@@ -37,6 +27,8 @@ export const useSignInWithGoogle = () => {
       idToken = signInResult.data?.idToken;
 
       if (!idToken) {
+        console.log("signInResult : ", JSON.stringify(signInResult, null, 2));
+
         return;
       }
 

@@ -46,7 +46,8 @@ export default function SettingApplicationSection() {
           onClick={async () => {
             try {
               await Share.share({
-                message: "https://google.com/LeCoinBiz",
+                message:
+                  "https://play.google.com/store/apps/details?id=com.appolinaire_sdg.LeCoinBiz&pcampaignid=web_share",
               });
             } catch (error) {
               console.log("Error sharing:", error);

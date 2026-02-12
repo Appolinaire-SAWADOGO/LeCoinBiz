@@ -2,7 +2,7 @@
   "expo": {
     "name": "LeCoinBiz",
     "slug": "LeCoinBiz",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icons/icon.png",
     "scheme": "LeCoinBiz",
@@ -83,3 +83,12 @@
     }
   }
 }
+
+// Pour des corrections de bugs :
+// 1.0.0 → 1.0.1 → 1.0.2 (incrémenter le dernier chiffre)
+
+// Pour de nouvelles fonctionnalités :
+// 1.0.0 → 1.1.0 → 1.2.0 (incrémenter le chiffre du milieu)
+
+// Pour des changements majeurs :
+// 1.0.0 → 2.0.0 (incrémenter le premier chiffre)
