@@ -50,12 +50,13 @@ export default function Home() {
       return lastPage.hasMore ? lastPage.lastDoc : undefined;
     },
 
-    staleTime: Infinity, // ✅ Les données ne deviennent JAMAIS stale
-    gcTime: Infinity, // ✅ Les données ne sont JAMAIS supprimées du cache
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: Infinity, // cache conservé
 
-    refetchOnWindowFocus: false, // ✅ Pas de refetch au focus
-    refetchOnMount: false, // ✅ Pas de refetch au montage
-    refetchOnReconnect: false, // ✅ Pas de refetch lors de la reconnexion
+    refetchOnMount: true, // refetch si stale
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true, // recommandé pour app mobile
+
     retry: 2,
   });
 

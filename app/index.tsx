@@ -1,14 +1,7 @@
 import TopBottomBackground from "@/components/TopBottomBackground";
-import { useGetAdsByUserId } from "@/hooks/services/ads/useGetAdsByUserId";
-import { useGetHomeAds } from "@/hooks/services/ads/useGetHomeAds";
-import { useGetUserAdsCount } from "@/hooks/services/ads/useGetUserAdsCount";
-import { useGetFavoriteAdsByUserId } from "@/hooks/services/favorites/useGetFavoritesAdsByUserId";
-import { useGetNotifications } from "@/hooks/services/notifications/useGetNotifications";
-import { useGetUserById } from "@/hooks/services/user/useGetUserById";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useAppNotificationStore } from "@/store/useNotificationStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useQueryClient } from "@tanstack/react-query";
 import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -19,14 +12,6 @@ export default function Index() {
   const { designSystem } = useAppTheme();
   const [isLoading, setIsLoading] = useState(true);
   const insets = useSafeAreaInsets();
-
-  const queryClient = useQueryClient();
-  const { getHomeAds } = useGetHomeAds();
-  const { getFavoritesAdsByUserId } = useGetFavoriteAdsByUserId();
-  const { getUserById } = useGetUserById();
-  const { getUserAdsCount } = useGetUserAdsCount();
-  const { getAdsByUserId } = useGetAdsByUserId();
-  const { getNotifications } = useGetNotifications();
 
   const { isAppNotificationClosed, setIsAppNotificationClosed } =
     useAppNotificationStore();

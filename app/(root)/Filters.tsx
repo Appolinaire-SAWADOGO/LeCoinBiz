@@ -147,7 +147,7 @@ export default function Filters() {
             onRefresh={onRefresh}
             colors={[designSystem.colors.primary]}
             tintColor={designSystem.colors.primary}
-            progressViewOffset={145}
+            progressViewOffset={120}
           />
         }
         values={allAds}

@@ -119,20 +119,6 @@ export default function RootLayout() {
     })();
   }, [currentUser?.uid]);
 
-  useEffect(() => {
-    (async () => {
-      await queryClient.prefetchInfiniteQuery({
-        queryKey: ["home-ads"],
-        queryFn: (context) => getHomeAds({ pageParam: context.pageParam }),
-        initialPageParam: null as any,
-        getNextPageParam: (lastPage) => {
-          return lastPage?.hasMore ? lastPage.lastDoc : undefined;
-        },
-        pages: 1,
-      });
-    })();
-  }, []);
-
   // useEffect(() => {
   //   initNetworkListener.initNetwokListener();
   // }, [initNetworkListener]);
@@ -143,6 +129,11 @@ export default function RootLayout() {
     <PersistQueryClientProvider
       client={queryClient}
       persistOptions={{ persister: asyncStoragePersister }}
+      onSuccess={async () => {
+        await queryClient.invalidateQueries({
+          queryKey: ["home-ads"],
+        });
+      }}
     >
       <GluestackUIProvider mode="light">
         <SafeAreaProvider>

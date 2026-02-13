@@ -31,7 +31,7 @@ export const AD_OPTIONS: AdOptionsType = [
 
 export const APP_NAME = "LeCoinBiz";
 
-export const APP_VERION = "1.0.2";
+export const APP_VERION = "1.0.3";
 
 export const DEFAULT_PROFILE_IMG =
   "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg";

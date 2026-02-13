@@ -6,13 +6,22 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_WEB_CLIENT_ID": "641604581560-ege8p5dejjrpq5327staqvr8te49rr1p.apps.googleusercontent.com"
+      }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_WEB_CLIENT_ID": "641604581560-ege8p5dejjrpq5327staqvr8te49rr1p.apps.googleusercontent.com"
+      }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_WEB_CLIENT_ID": "641604581560-ege8p5dejjrpq5327staqvr8te49rr1p.apps.googleusercontent.com"
+      }
     }
   },
   "submit": {

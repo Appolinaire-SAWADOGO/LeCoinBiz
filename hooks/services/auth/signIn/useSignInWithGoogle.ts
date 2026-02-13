@@ -14,6 +14,8 @@ export const useSignInWithGoogle = () => {
 
   const signInWithGoogle = async () => {
     try {
+      await GoogleSignin.signOut();
+
       let idToken;
 
       // Check if your device supports Google Play
