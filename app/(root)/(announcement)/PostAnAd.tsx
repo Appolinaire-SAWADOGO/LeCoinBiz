@@ -32,10 +32,8 @@ export default function PostAnAd() {
 
   const scrollViewRef = useRef<KeyboardAwareScrollView>(null);
 
-  // Changez le type de refs pour utiliser des positions Y
   const fieldPositions = useRef<{ [key: string]: number }>({});
 
-  // Refs pour chaque champ
   const fieldRefs = useRef<{ [key: string]: View | null }>({
     title: null,
     category: null,
@@ -91,7 +89,6 @@ export default function PostAnAd() {
 
   const category = watch("category");
 
-  // Scroll vers la première erreur - VERSION CORRIGÉE
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
       const firstErrorField = Object.keys(

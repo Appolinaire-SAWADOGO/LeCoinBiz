@@ -1,3 +1,4 @@
+import { APP_VERION } from "@/constants";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import React from "react";
 import { View } from "react-native";
@@ -14,7 +15,7 @@ export default function SettingAppVersionSection() {
         color={designSystem.colors.subText}
         style={{ alignSelf: "center" }}
       >
-        Version 1.0.0
+        Version {APP_VERION}
       </AppText>
     </View>
   );

@@ -1,6 +1,7 @@
 import Container from "@/components/Container";
 import AppText from "@/components/custom/AppText";
 import PageHeader from "@/components/PageHeader";
+import { APP_VERION } from "@/constants";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import {
   Linking,
@@ -47,7 +48,7 @@ export default function About() {
         </TouchableOpacity>
 
         <AppText fontSize={12} color="#999" style={{ marginTop: 20 }}>
-          Version 1.0.2
+          Version {APP_VERION}
         </AppText>
       </ScrollView>
     </Container>

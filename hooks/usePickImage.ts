@@ -7,7 +7,7 @@ export const usePickImage = () => {
 
   const pickImage = async (
     callBack: (img: string) => void,
-    maxSizeInMB = 2
+    maxSizeInMB = 2,
   ) => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -19,7 +19,6 @@ export const usePickImage = () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsEditing: true,
-      aspect: [4, 3],
       quality: 1,
     });
 
@@ -29,7 +28,7 @@ export const usePickImage = () => {
       const fileInfo = await FileSystem.getInfoAsync(uri);
       if (!fileInfo.exists || !fileInfo.size) {
         open(
-          "Impossible de vérifier la taille de l'image. Veuillez réessayer."
+          "Impossible de vérifier la taille de l'image. Veuillez réessayer.",
         );
         return;
       }
@@ -39,8 +38,8 @@ export const usePickImage = () => {
       if (sizeInMB > maxSizeInMB) {
         open(
           `L'image sélectionnée est trop volumineuse. La taille maximale autorisée est de ${maxSizeInMB} MB. Votre fichier fait ${sizeInMB.toFixed(
-            2
-          )} MB.`
+            2,
+          )} MB.`,
         );
         return;
       }

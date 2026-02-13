@@ -35,23 +35,29 @@ export default function Home() {
     setGoBackIsModalOpen(true);
   });
 
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: ["home-ads"],
-      queryFn: (context) => getHomeAds({ pageParam: context.pageParam }),
-      initialPageParam: null as any,
-      getNextPageParam: (lastPage) => {
-        return lastPage.hasMore ? lastPage.lastDoc : undefined;
-      },
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetching,
+  } = useInfiniteQuery({
+    queryKey: ["home-ads"],
+    queryFn: (context) => getHomeAds({ pageParam: context.pageParam }),
+    initialPageParam: null as any,
+    getNextPageParam: (lastPage) => {
+      return lastPage.hasMore ? lastPage.lastDoc : undefined;
+    },
 
-      staleTime: Infinity, // ✅ Les données ne deviennent JAMAIS stale
-      gcTime: Infinity, // ✅ Les données ne sont JAMAIS supprimées du cache
+    staleTime: Infinity, // ✅ Les données ne deviennent JAMAIS stale
+    gcTime: Infinity, // ✅ Les données ne sont JAMAIS supprimées du cache
 
-      refetchOnWindowFocus: false, // ✅ Pas de refetch au focus
-      refetchOnMount: false, // ✅ Pas de refetch au montage
-      refetchOnReconnect: false, // ✅ Pas de refetch lors de la reconnexion
-      retry: 2,
-    });
+    refetchOnWindowFocus: false, // ✅ Pas de refetch au focus
+    refetchOnMount: false, // ✅ Pas de refetch au montage
+    refetchOnReconnect: false, // ✅ Pas de refetch lors de la reconnexion
+    retry: 2,
+  });
 
   const allAds = useMemo(() => {
     if (!data?.pages) return [];
@@ -105,11 +111,11 @@ export default function Home() {
           <Announcements
             refreshControl={
               <RefreshControl
-                refreshing={refreshing || initialLoading}
+                refreshing={refreshing || isFetching || initialLoading}
                 onRefresh={onRefresh}
                 colors={[designSystem.colors.primary]}
                 tintColor={designSystem.colors.primary}
-                progressViewOffset={290}
+                progressViewOffset={280}
               />
             }
             values={allAds}

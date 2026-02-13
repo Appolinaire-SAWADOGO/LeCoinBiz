@@ -8,6 +8,7 @@ import AuthVerifyEmailModal from "@/components/modals/AuthVerifyEmailModal";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
 import { useGetAdsByUserId } from "@/hooks/services/ads/useGetAdsByUserId";
+import { useGetHomeAds } from "@/hooks/services/ads/useGetHomeAds";
 import { useGetUserAdsCount } from "@/hooks/services/ads/useGetUserAdsCount";
 import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useGetFavoriteAdsByUserId } from "@/hooks/services/favorites/useGetFavoritesAdsByUserId";
@@ -20,9 +21,12 @@ import {
   subscribeToGeneralTopic,
   subscribeToUserTopic,
 } from "@/utils/notifications";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import messaging from "@react-native-firebase/messaging";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
+import { QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
@@ -36,7 +40,17 @@ import { enableFreeze } from "react-native-screens";
 
 enableFreeze(true);
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      gcTime: 1000 * 60 * 60 * 24,
+    },
+  },
+});
+
+const asyncStoragePersister = createAsyncStoragePersister({
+  storage: AsyncStorage,
+});
 
 export default function RootLayout() {
   const insets = useSafeAreaInsets();
@@ -49,6 +63,7 @@ export default function RootLayout() {
   const { getUserAdsCount } = useGetUserAdsCount();
   const { getAdsByUserId } = useGetAdsByUserId();
   const { getNotifications } = useGetNotifications();
+  const { getHomeAds } = useGetHomeAds();
 
   const { setIsAppNotificationClosed, setIsAppNotificationBackground } =
     useAppNotificationStore();
@@ -104,6 +119,20 @@ export default function RootLayout() {
     })();
   }, [currentUser?.uid]);
 
+  useEffect(() => {
+    (async () => {
+      await queryClient.prefetchInfiniteQuery({
+        queryKey: ["home-ads"],
+        queryFn: (context) => getHomeAds({ pageParam: context.pageParam }),
+        initialPageParam: null as any,
+        getNextPageParam: (lastPage) => {
+          return lastPage?.hasMore ? lastPage.lastDoc : undefined;
+        },
+        pages: 1,
+      });
+    })();
+  }, []);
+
   // useEffect(() => {
   //   initNetworkListener.initNetwokListener();
   // }, [initNetworkListener]);
@@ -111,7 +140,10 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister: asyncStoragePersister }}
+    >
       <GluestackUIProvider mode="light">
         <SafeAreaProvider>
           <View style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -144,6 +176,6 @@ export default function RootLayout() {
           </View>
         </SafeAreaProvider>
       </GluestackUIProvider>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }

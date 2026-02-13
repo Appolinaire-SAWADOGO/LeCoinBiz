@@ -86,7 +86,7 @@ export const useSignUpWithEmail = () => {
       closeAuthModal();
       if (!userCredential.user.emailVerified) openVerifyEmailModal();
 
-      showToast("success", "Connexion réussie !", 100);
+      showToast("success", "Inscription réussie !", 100);
     } catch (error: any) {
       switch (error.code) {
         case "auth/email-already-in-use":

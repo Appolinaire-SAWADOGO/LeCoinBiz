@@ -64,6 +64,8 @@ export default function AuthVerifyEmailModal() {
     setIsChecking(true);
 
     await currentUser?.reload();
+    await currentUser?.getIdToken(true);
+
     authEvents.emit("profile_updated");
 
     setEmailVerified(currentUser?.emailVerified || false);
