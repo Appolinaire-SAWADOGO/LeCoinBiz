@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "641604581560-hopn5ufsgprgld4ohqcns3jej54n93kr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.appolinaire_sdg.LeCoinBiz",
+            "certificate_hash": "7387dab02e1e79cda4571b41874f4633d0d1748e"
+          }
+        },
+        {
           "client_id": "641604581560-jis82d4j05js8hdhiftcr8718pf24gfi.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -21,6 +29,42 @@
             "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
+        {
+          "client_id": "641604581560-ege8p5dejjrpq5327staqvr8te49rr1p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaQXPqb7iZVBM1LN2MwV7Mig6ihOLuz9g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "641604581560-ege8p5dejjrpq5327staqvr8te49rr1p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "641604581560-j6a65qvg8nnuausthd69ks4itlvgrtf5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.appolinaire-sdg.LeCoinBiz"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:641604581560:android:7157e35122076419119c4d",
+        "android_client_info": {
+          "package_name": "com.lecoinbiz.admin"
+        }
+      },
+      "oauth_client": [
         {
           "client_id": "641604581560-ege8p5dejjrpq5327staqvr8te49rr1p.apps.googleusercontent.com",
           "client_type": 3
