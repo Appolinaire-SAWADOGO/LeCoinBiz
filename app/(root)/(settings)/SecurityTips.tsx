@@ -30,22 +30,22 @@ export default function SecurityTips() {
         </AppText>
 
         <AppText style={styles.text}>
-          1. 🤝 Privilégiez les rencontres en personne, dans un lieu public et
+          1. Privilégiez les rencontres en personne, dans un lieu public et
           sécurisé.
         </AppText>
         <AppText style={styles.text}>
-          2. 💳 N’envoyez jamais d’argent avant d’avoir vu le produit.
+          2. N’envoyez jamais d’argent avant d’avoir vu le produit.
         </AppText>
         <AppText style={styles.text}>
-          3. 🕵️‍♂️ Vérifiez l’identité du vendeur ou de l’acheteur avant de
-          finaliser la transaction.
+          3. Vérifiez l’identité du vendeur ou de l’acheteur avant de finaliser
+          la transaction.
         </AppText>
         <AppText style={styles.text}>
-          4. 🚨 Signalez tout comportement suspect ou annonce douteuse.
+          4. Signalez tout comportement suspect ou annonce douteuse.
         </AppText>
         <AppText style={styles.text}>
-          5. 🔒 Ne communiquez pas d’informations sensibles (code bancaire,
-          pièce d’identité…).
+          5. Ne communiquez pas d’informations sensibles (code bancaire, pièce
+          d’identité…).
         </AppText>
 
         <AppText style={[styles.text, { marginTop: 20 }]}>

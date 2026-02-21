@@ -68,8 +68,7 @@ export const getHomeAds = onCall(
         let otherCitiesQuery = db
           .collection("Ads")
           .where("status", "==", "ACTIVATED")
-          .where("city", "!=", userCity)
-          .orderBy("city")
+          .where("city", "not-in", [userCity])
           .orderBy("createdAt", "desc")
           .limit(remainingCount);
 

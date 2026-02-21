@@ -15,6 +15,8 @@ import { useActivateAd } from "@/hooks/services/ads/useActivateAd";
 import { useDeleteAd } from "@/hooks/services/ads/useDeleteAd";
 import { useDisableAd } from "@/hooks/services/ads/useDisableAd";
 import { AdStatusType, AnnouncementType } from "@/types";
+import AppText from "../custom/AppText";
+import AppCenterModal from "../modals/AppCenterModal";
 
 export default function ProfileDelOrEdAnnouncement({
   status,
@@ -36,6 +38,14 @@ export default function ProfileDelOrEdAnnouncement({
   const { disableAd } = useDisableAd();
   const { activateAd } = useActivateAd();
   const { deleteAd } = useDeleteAd();
+
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const pendingAction = React.useRef<(() => void) | null>(null);
+
+  const handleActionWithWarning = (action: () => void) => {
+    pendingAction.current = action;
+    setIsModalOpen(true);
+  };
 
   const actions = [
     {
@@ -77,8 +87,11 @@ export default function ProfileDelOrEdAnnouncement({
             label: "Supprimer",
             value: "delete",
             icon: <Trash size={14} color="#dc3545" />,
-            onPress: async () =>
-              await deleteAd(adId, ad.userId, ad.images, status, "NORMAL"),
+            onPress: () =>
+              handleActionWithWarning(
+                async () =>
+                  await deleteAd(adId, ad.userId, ad.images, status, "NORMAL"),
+              ),
           },
         ]
       : []),
@@ -94,38 +107,74 @@ export default function ProfileDelOrEdAnnouncement({
   };
 
   return (
-    <View style={styles.wrapper}>
-      {/* Bouton menu */}
-      <TouchableOpacity style={styles.menuButton} onPress={handleToggle}>
-        <EllipsisVertical size={16} color={designSystem.colors.bigText} />
-      </TouchableOpacity>
+    <>
+      {/* Alert modal  */}
+      <AppCenterModal
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
+        title="Alerte"
+        titleSize="lg"
+        xSize="xl"
+        submitText="Ok"
+        footerStyle={{ justifyContent: "center" }}
+        onSubmit={async () => {
+          setIsModalOpen(false);
 
-      {/* Dropdown custom */}
-      <AppDropDownPicker
-        open={isOpen}
-        value={null}
-        items={mappedItems}
-        setOpen={(open) => setOpenAdId?.(open ? adId : null)}
-        setValue={() => {}}
-        withSearch={false}
-        showTickIcon={false}
-        listMode="SCROLLVIEW"
-        style={{ display: "none" }}
-        dropDownContainerStyle={{
-          width: 100,
-          borderRadius: 8,
-          borderColor: designSystem.colors.inputBorder,
-          position: "absolute",
-          top: 50,
-          right: 12,
+          if (pendingAction.current) {
+            pendingAction.current();
+            pendingAction.current = null;
+          }
         }}
-        onSelectItem={(item) => {
-          const found = actions.find((a) => a.value === item.value);
-          if (found) found.onPress();
-          setOpenAdId?.(null);
-        }}
-      />
-    </View>
+      >
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            paddingTop: 10,
+          }}
+        >
+          <AppText style={{ fontSize: 16, lineHeight: 22, color: "#333" }}>
+            Voulez-vous vraiment supprimer cette annonce ?
+          </AppText>
+        </View>
+      </AppCenterModal>
+
+      <View style={styles.wrapper}>
+        {/* Bouton menu */}
+        <TouchableOpacity style={styles.menuButton} onPress={handleToggle}>
+          <EllipsisVertical size={16} color={designSystem.colors.bigText} />
+        </TouchableOpacity>
+
+        {/* Dropdown custom */}
+        <AppDropDownPicker
+          open={isOpen}
+          value={null}
+          items={mappedItems}
+          setOpen={(open) => setOpenAdId?.(open ? adId : null)}
+          setValue={() => {}}
+          withSearch={false}
+          showTickIcon={false}
+          listMode="SCROLLVIEW"
+          style={{ display: "none" }}
+          dropDownContainerStyle={{
+            width: 100,
+            borderRadius: 8,
+            borderColor: designSystem.colors.inputBorder,
+            position: "absolute",
+            top: 50,
+            right: 12,
+          }}
+          onSelectItem={(item) => {
+            const found = actions.find((a) => a.value === item.value);
+            if (found) found.onPress();
+            setOpenAdId?.(null);
+          }}
+        />
+      </View>
+    </>
   );
 }
 

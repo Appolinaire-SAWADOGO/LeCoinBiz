@@ -30,25 +30,25 @@ export default function PostingRules() {
         </AppText>
 
         <AppText style={styles.text}>
-          1. 📌 L’annonce doit être claire, précise et liée à un produit ou
-          service réel.
+          1. L’annonce doit être claire, précise et liée à un produit ou service
+          réel.
         </AppText>
         <AppText style={styles.text}>
-          2. 🚫 Il est interdit de publier des contenus offensants, illégaux ou
+          2. Il est interdit de publier des contenus offensants, illégaux ou
           violant les droits d’autrui.
         </AppText>
         <AppText style={styles.text}>
-          3. 📷 Ajoutez des photos fidèles et non floutées du produit (pas
-          d’images génériques ou trompeuses).
+          3. Ajoutez des photos fidèles et non floutées du produit (pas d’images
+          génériques ou trompeuses).
         </AppText>
         <AppText style={styles.text}>
-          4. 💵 Le prix indiqué doit être cohérent avec le produit proposé.
+          4. Le prix indiqué doit être cohérent avec le produit proposé.
         </AppText>
         <AppText style={styles.text}>
-          5. 🔁 Ne publiez pas la même annonce plusieurs fois (pas de doublons).
+          5. Ne publiez pas la même annonce plusieurs fois (pas de doublons).
         </AppText>
         <AppText style={styles.text}>
-          6. 🧑 Les annonces doivent être postées uniquement dans la bonne
+          6. Les annonces doivent être postées uniquement dans la bonne
           catégorie et ville.
         </AppText>
 

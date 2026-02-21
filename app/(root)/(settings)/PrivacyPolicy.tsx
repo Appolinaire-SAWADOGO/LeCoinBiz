@@ -39,34 +39,34 @@ export default function PrivacyPolicy() {
         </AppText>
 
         <AppText style={styles.text}>
-          1. 📱 Données collectées : nom, adresse e-mail et numéro de téléphone
+          1. Données collectées : nom, adresse e-mail et numéro de téléphone
           (lors de l’inscription ou de la création d’une annonce).
         </AppText>
 
         <AppText style={styles.text}>
-          2. 🔒 Utilisation : ces données sont utilisées uniquement pour le bon
+          2. Utilisation : ces données sont utilisées uniquement pour le bon
           fonctionnement de l’application (publication d’annonces, contact,
           messagerie).
         </AppText>
 
         <AppText style={styles.text}>
-          3. ❌ Partage : vos données personnelles ne sont jamais vendues et ne
+          3. Partage : vos données personnelles ne sont jamais vendues et ne
           sont pas partagées avec des tiers sans votre consentement, sauf
           obligation légale ou services techniques nécessaires.
         </AppText>
 
         <AppText style={styles.text}>
-          4. 🔐 Sécurité : nous mettons en place des mesures techniques et
+          4. Sécurité : nous mettons en place des mesures techniques et
           organisationnelles afin de garantir la sécurité de vos informations.
         </AppText>
 
         <AppText style={styles.text}>
-          5. ⚙️ Gestion des données : vous pouvez à tout moment modifier ou
+          5. Gestion des données : vous pouvez à tout moment modifier ou
           supprimer vos données depuis votre profil dans l’application.
         </AppText>
 
         <AppText style={styles.text}>
-          6. 🗑️ Suppression du compte : vous pouvez supprimer complètement votre
+          6. Suppression du compte : vous pouvez supprimer complètement votre
           compte et vos données directement depuis les paramètres de
           l’application.
         </AppText>

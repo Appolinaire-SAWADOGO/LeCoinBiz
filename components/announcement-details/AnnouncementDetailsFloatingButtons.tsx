@@ -72,6 +72,14 @@ Merci beaucoup et bonne journée !
 
   const pendingAction = React.useRef<(() => void) | null>(null);
 
+  const [isDeleteAdModalOpen, setIsDeleteAdModalOpen] = React.useState(false);
+  const deleteAdPendingAction = React.useRef<(() => void) | null>(null);
+
+  const handleDeleteAdWithWarning = async (action: () => void) => {
+    deleteAdPendingAction.current = action;
+    setIsDeleteAdModalOpen(true);
+  };
+
   const handleActionWithWarning = async (action: () => void) => {
     try {
       const value = await AsyncStorage.getItem(
@@ -198,6 +206,40 @@ Merci beaucoup et bonne journée !
         </HStack>
       </AppCenterModal>
 
+      {/* delete ad Alert modal  */}
+      <AppCenterModal
+        isOpen={isDeleteAdModalOpen}
+        setIsOpen={setIsDeleteAdModalOpen}
+        onClose={() => {
+          setIsDeleteAdModalOpen(false);
+        }}
+        title="Alerte"
+        titleSize="lg"
+        xSize="xl"
+        submitText="Ok"
+        footerStyle={{ justifyContent: "center" }}
+        onSubmit={async () => {
+          setIsDeleteAdModalOpen(false);
+
+          if (deleteAdPendingAction.current) {
+            deleteAdPendingAction.current();
+            deleteAdPendingAction.current = null;
+          }
+        }}
+      >
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            paddingTop: 10,
+          }}
+        >
+          <AppText style={{ fontSize: 16, lineHeight: 22, color: "#333" }}>
+            Voulez-vous vraiment supprimer cette annonce ?
+          </AppText>
+        </View>
+      </AppCenterModal>
+
       <View
         style={[styles.footer, { bottom: footerHeight - 25 }]}
         onLayout={(e) => {
@@ -253,13 +295,16 @@ Merci beaucoup et bonne journée !
             {status !== "ACTIVATED" && (
               <AnnouncementDetailsFloatingButtonsCard
                 useCase="delete"
-                onPress={async () =>
-                  await deleteAd(
-                    adId,
-                    ad.userId,
-                    ad.images,
-                    ad.status,
-                    "AD_DETAILS",
+                onPress={() =>
+                  handleDeleteAdWithWarning(
+                    async () =>
+                      await deleteAd(
+                        adId,
+                        ad.userId,
+                        ad.images,
+                        ad.status,
+                        "AD_DETAILS",
+                      ),
                   )
                 }
               />
