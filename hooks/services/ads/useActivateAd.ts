@@ -7,7 +7,7 @@ import {
   removeAdFromInfiniteList,
   showToast,
 } from "@/utils";
-import functions from "@react-native-firebase/functions";
+import { firebasyeFunctions } from "@/utils/firebase";
 import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 
@@ -31,7 +31,7 @@ export const useActivateAd = () => {
     showToast("loading", "Traitement en cours.");
 
     try {
-      const activateAdFunction = functions().httpsCallable("activateAd");
+      const activateAdFunction = firebasyeFunctions.httpsCallable("activateAd");
       await activateAdFunction({ adId });
 
       const disabledAd = getAdToInfiniteList(

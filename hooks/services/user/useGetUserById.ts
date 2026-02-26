@@ -1,12 +1,12 @@
 import { UserType } from "@/types";
-import functions from "@react-native-firebase/functions";
+import { firebasyeFunctions } from "@/utils/firebase";
 
 export const useGetUserById = () => {
   const getUserById = async (id: string) => {
     try {
       if (!id) return;
 
-      const getUserCallable = functions().httpsCallable<
+      const getUserCallable = firebasyeFunctions.httpsCallable<
         { id: string },
         UserType
       >("getUserById");
@@ -15,10 +15,8 @@ export const useGetUserById = () => {
 
       return response.data;
     } catch (error) {
-      console.error(
-        "Erreur lors de la récupération de l'utilisateur et de ses annonces :",
-        error,
-      );
+      console.error("Erreur lors de la récupération de l'utilisateur :", error);
+      return;
     }
   };
 

@@ -12,7 +12,7 @@ interface ReportAdParams {
 }
 
 export const reportAd = onCall(
-  { consumeAppCheckToken: false },
+  { consumeAppCheckToken: false, region: "africa-south1" },
   async (request) => {
     try {
       const { userId, adId, adUserId } = request.data as ReportAdParams;

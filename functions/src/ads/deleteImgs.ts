@@ -4,7 +4,7 @@ import { HttpsError, onCall } from "firebase-functions/v2/https";
 admin.initializeApp();
 
 export const deleteImgs = onCall(
-  { consumeAppCheckToken: false },
+  { consumeAppCheckToken: false, region: "africa-south1" },
   async (request) => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "Non authentifié");

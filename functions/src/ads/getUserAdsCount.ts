@@ -5,7 +5,7 @@ admin.initializeApp();
 const db = admin.firestore();
 
 export const getUserAdsCount = onCall(
-  { consumeAppCheckToken: false },
+  { consumeAppCheckToken: false, region: "africa-south1" },
   async (request) => {
     try {
       const userId: string = request.data?.userId;

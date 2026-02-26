@@ -1,4 +1,4 @@
-import functions from "@react-native-firebase/functions";
+import { firebasyeFunctions } from "@/utils/firebase";
 import { useCurrentUser } from "../auth/signIn/useCurrentUser";
 
 export const useCheckAdFavorite = () => {
@@ -10,7 +10,7 @@ export const useCheckAdFavorite = () => {
     if (!adId) return false;
 
     try {
-      const checkFavoriteFunction = functions().httpsCallable(
+      const checkFavoriteFunction = firebasyeFunctions.httpsCallable(
         "ifAdIsAddedToFavorites",
       );
       const result = await checkFavoriteFunction({ adId });

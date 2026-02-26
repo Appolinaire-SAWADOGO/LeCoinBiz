@@ -1,5 +1,5 @@
 import { AdStatusType } from "@/types";
-import functions from "@react-native-firebase/functions";
+import { firebasyeFunctions } from "@/utils/firebase";
 
 type GetUserAdsCountResult = { count: number };
 
@@ -9,7 +9,7 @@ export const useGetUserAdsCount = () => {
     status: AdStatusType = "ACTIVATED",
   ) => {
     try {
-      const getUserAdsCountCallable = functions().httpsCallable<
+      const getUserAdsCountCallable = firebasyeFunctions.httpsCallable<
         { userId: string; status?: AdStatusType },
         GetUserAdsCountResult
       >("getUserAdsCount");

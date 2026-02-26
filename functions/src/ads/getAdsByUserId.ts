@@ -5,7 +5,7 @@ const db = admin.firestore();
 const PAGE_SIZE = 10;
 
 export const getAdsByUserId = onCall(
-  { consumeAppCheckToken: false },
+  { consumeAppCheckToken: false, region: "africa-south1" },
   async (request) => {
     const { userId, status = "ACTIVATED", lastCreatedAt } = request.data;
 

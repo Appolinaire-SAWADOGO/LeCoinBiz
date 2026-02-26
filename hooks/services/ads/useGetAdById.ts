@@ -1,10 +1,10 @@
 import { AnnouncementType } from "@/types";
-import functions from "@react-native-firebase/functions";
+import { firebasyeFunctions } from "@/utils/firebase";
 
 export const useGetAdById = () => {
   const getAdById = async (adId: string): Promise<AnnouncementType | null> => {
     try {
-      const getAdFn = functions().httpsCallable<
+      const getAdFn = firebasyeFunctions.httpsCallable<
         { adId: string },
         { ad: AnnouncementType | null }
       >("getAdById");
@@ -13,7 +13,10 @@ export const useGetAdById = () => {
 
       return result.data.ad;
     } catch (error) {
-      console.error("Erreur de recuperation d'annonce par id [getAdById] :", error);
+      console.error(
+        "Erreur de recuperation d'annonce par id [getAdById] :",
+        error,
+      );
       return null;
     }
   };

@@ -9,7 +9,7 @@ interface CheckFavoriteRequest {
 }
 
 export const ifAdIsAddedToFavorites = onCall(
-  { consumeAppCheckToken: false },
+  { consumeAppCheckToken: false, region: "africa-south1" },
   async (request) => {
     const { adId } = request.data as CheckFavoriteRequest;
 

@@ -1,7 +1,7 @@
 import { filterNotificationsQueryData, showToast } from "@/utils";
+import { firebasyeFunctions } from "@/utils/firebase";
 import { unsubscribeFromUserTopic } from "@/utils/notifications";
 import { getAuth } from "@react-native-firebase/auth";
-import functions from "@react-native-firebase/functions";
 import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 
@@ -28,7 +28,7 @@ export const useDeleteAccount = () => {
       await unsubscribeFromUserTopic(userId);
       filterNotificationsQueryData(queryClient, userId);
 
-      const deleteAccountCallable = functions().httpsCallable<
+      const deleteAccountCallable = firebasyeFunctions.httpsCallable<
         { userId: string },
         { message: "success" }
       >("deleteAccount");

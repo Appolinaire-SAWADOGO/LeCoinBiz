@@ -1,6 +1,6 @@
 import { modifyAdToQueryData, showToast } from "@/utils";
 import { authEvents } from "@/utils/EventEmitter";
-import functions from "@react-native-firebase/functions";
+import { firebasyeFunctions } from "@/utils/firebase";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import Toast from "react-native-toast-message";
@@ -20,7 +20,7 @@ export const useEditProfile = () => {
 
   const callUpdateProfile = async (data: Record<string, any>) => {
     try {
-      const updateProfile = functions().httpsCallable("editUserProfile");
+      const updateProfile = firebasyeFunctions.httpsCallable("editUserProfile");
       await updateProfile(data);
     } catch (error) {
       console.error(

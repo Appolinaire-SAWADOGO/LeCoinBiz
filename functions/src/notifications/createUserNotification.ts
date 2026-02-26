@@ -6,7 +6,7 @@ admin.initializeApp();
 const db = admin.firestore();
 
 export const createUserNotification = onCall(
-  { consumeAppCheckToken: false },
+  { consumeAppCheckToken: false, region: "africa-south1" },
   async (request) => {
     try {
       const { title, body, userId } = request.data;

@@ -11,6 +11,7 @@ export const getFilterAds = onCall(
   {
     secrets: [algoliaAppId, algoliaApiKey],
     consumeAppCheckToken: false,
+    region: "africa-south1",
   },
   async (request) => {
     const { page = 0, filtersStatesStore } = request.data;

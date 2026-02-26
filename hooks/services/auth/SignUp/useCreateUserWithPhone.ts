@@ -1,4 +1,4 @@
-import functions from "@react-native-firebase/functions";
+import { firebasyeFunctions } from "@/utils/firebase";
 import React from "react";
 
 export const useCreateUserWithPhone = (phoneNumber: string) => {
@@ -11,7 +11,7 @@ export const useCreateUserWithPhone = (phoneNumber: string) => {
     try {
       setIsLoading(true);
 
-      const createUserCallable = functions().httpsCallable<
+      const createUserCallable = firebasyeFunctions.httpsCallable<
         { uid: string; phoneNumber: string },
         { success: boolean }
       >("createUserWithPhone");

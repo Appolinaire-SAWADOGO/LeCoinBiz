@@ -1,4 +1,4 @@
-import functions from "@react-native-firebase/functions";
+import { firebasyeFunctions } from "@/utils/firebase";
 
 export const useCreateUserWithEmail = () => {
   const createUserWithEmail = async (
@@ -9,7 +9,7 @@ export const useCreateUserWithEmail = () => {
     if (!uuid || !email || !userName) return;
 
     try {
-      const createUserCallable = functions().httpsCallable<
+      const createUserCallable = firebasyeFunctions.httpsCallable<
         { uid: string; userName: string; email: string },
         { message: "success" }
       >("createUserWithEmail");

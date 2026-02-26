@@ -6,7 +6,7 @@ admin.initializeApp();
 const db = admin.firestore();
 
 export const adminActivateAd = onCall(
-  { consumeAppCheckToken: false },
+  { consumeAppCheckToken: false, region: "africa-south1" },
   async (request) => {
     const { adId, adTitle, AdUserId } = request.data;
 

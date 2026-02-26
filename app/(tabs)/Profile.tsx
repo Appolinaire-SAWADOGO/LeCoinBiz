@@ -230,7 +230,8 @@ export default function Profile() {
   const adsIsLoading =
     activatedAdsIsLoading || disabledAdsIsLoading || pendingAdsIsLoading;
 
-  const isLoading = userIsLoading || adsCountIsLoading || adsIsLoading;
+  const isLoading =
+    userIsLoading || adsCountIsLoading || adsIsLoading || !userData;
 
   const ads = useMemo(() => {
     if (contentHeadSelected === 0) return allActivatedAds;

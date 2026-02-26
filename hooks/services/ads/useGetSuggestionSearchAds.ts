@@ -1,4 +1,4 @@
-import functions from "@react-native-firebase/functions";
+import { firebasyeFunctions } from "@/utils/firebase";
 
 interface SuggestionSearchParams {
   search: string;
@@ -13,7 +13,7 @@ export const useGetSuggestionSearchAds = () => {
     if (!search) return [];
 
     try {
-      const getSuggestionSearchAdsCallable = functions().httpsCallable<
+      const getSuggestionSearchAdsCallable = firebasyeFunctions.httpsCallable<
         SuggestionSearchParams,
         SuggestionSearchResponse
       >("getSuggestionSearchAds");

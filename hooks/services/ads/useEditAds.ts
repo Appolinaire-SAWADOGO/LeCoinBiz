@@ -1,7 +1,13 @@
 import { AdStatusType, AnnouncementType } from "@/types";
-import { addAdToInfiniteList, decrementCount, incrementCount, removeAdFromInfiniteList, showToast } from "@/utils";
+import {
+  addAdToInfiniteList,
+  decrementCount,
+  incrementCount,
+  removeAdFromInfiniteList,
+  showToast,
+} from "@/utils";
+import { firebasyeFunctions } from "@/utils/firebase";
 import { PostAnAddSchema } from "@/zod/schema/postAnAd.schema";
-import functions from "@react-native-firebase/functions";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { z } from "zod";
@@ -21,8 +27,6 @@ export const useEditAd = () => {
     from: "NORMAL" | "AD_DETAILS",
   ) => {
     if (!data || !adId) return;
-
-    showToast("loading", "Traitement en cours.");
 
     try {
       // Identifier images locales
@@ -84,7 +88,7 @@ export const useEditAd = () => {
         return;
       }
 
-      const editAdFn = functions().httpsCallable("editAd");
+      const editAdFn = firebasyeFunctions.httpsCallable("editAd");
       await editAdFn({
         adId,
         updates,
@@ -95,36 +99,36 @@ export const useEditAd = () => {
         removeAdFromInfiniteList(
           ["user-activated-ads", preData.userId],
           adId,
-          queryClient
+          queryClient,
         );
 
-        decrementCount(["user-activated-ads-count", preData.userId], queryClient);
-      }
-
-      else if (adStatus === "DISABLED") {
+        decrementCount(
+          ["user-activated-ads-count", preData.userId],
+          queryClient,
+        );
+      } else if (adStatus === "DISABLED") {
         removeAdFromInfiniteList(
           ["user-disabled-ads", preData.userId],
           adId,
-          queryClient
+          queryClient,
         );
 
-        decrementCount(["user-disabled-ads-count", preData.userId], queryClient);
+        decrementCount(
+          ["user-disabled-ads-count", preData.userId],
+          queryClient,
+        );
       }
 
       if (adStatus !== "PENDING") {
         addAdToInfiniteList(
           ["user-pending-ads", preData.userId],
-          {...preData, ...data , status: "PENDING"}, 
-          queryClient
+          { ...preData, ...data, status: "PENDING" },
+          queryClient,
         );
 
-        incrementCount(["user-pending-ads-count", preData.userId] , queryClient);
+        incrementCount(["user-pending-ads-count", preData.userId], queryClient);
 
-        removeAdFromInfiniteList(
-          ["home-ads"],
-          adId,
-          queryClient
-        );
+        removeAdFromInfiniteList(["home-ads"], adId, queryClient);
       }
 
       showToast("success", "Annonce modifiée et envoyée pour validation.");

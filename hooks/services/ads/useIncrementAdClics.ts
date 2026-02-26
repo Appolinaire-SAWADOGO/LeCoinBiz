@@ -1,4 +1,4 @@
-import functions from "@react-native-firebase/functions";
+import { firebasyeFunctions } from "@/utils/firebase";
 import { useCurrentUser } from "../auth/signIn/useCurrentUser";
 
 export const useIncrementAdClics = () => {
@@ -15,7 +15,7 @@ export const useIncrementAdClics = () => {
 
     try {
       const incrementAdClicsFunction =
-        functions().httpsCallable("incrementAdClics");
+        firebasyeFunctions.httpsCallable("incrementAdClics");
       await incrementAdClicsFunction({ adId, from });
     } catch (error) {
       console.error("Erreur l'ors de l'incrementation de l'annonce :", error);

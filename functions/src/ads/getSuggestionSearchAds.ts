@@ -9,6 +9,7 @@ export const getSuggestionSearchAds = onCall(
   {
     secrets: [algoliaAppId, algoliaApiKey],
     consumeAppCheckToken: false,
+    region: "africa-south1",
   },
   async (request) => {
     const { search } = request.data;

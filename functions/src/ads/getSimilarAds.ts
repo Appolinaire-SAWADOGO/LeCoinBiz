@@ -20,6 +20,7 @@ export const getSimilarAds = onCall(
   {
     secrets: [algoliaAppId, algoliaApiKey],
     consumeAppCheckToken: false,
+    region: "africa-south1",
   },
   async (request) => {
     const {

@@ -10,7 +10,7 @@ interface CreateUserWithPhoneParams {
 }
 
 export const createUserWithPhone = onCall(
-  { consumeAppCheckToken: false },
+  { consumeAppCheckToken: false, region: "africa-south1" },
   async (request) => {
     const { uid, phoneNumber } = request.data as CreateUserWithPhoneParams;
 

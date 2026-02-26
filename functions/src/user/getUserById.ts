@@ -5,7 +5,7 @@ admin.initializeApp();
 const db = admin.firestore();
 
 export const getUserById = onCall(
-  { consumeAppCheckToken: false },
+  { consumeAppCheckToken: false, region: "africa-south1" },
   async (request) => {
     try {
       const { id } = request.data as { id: string };

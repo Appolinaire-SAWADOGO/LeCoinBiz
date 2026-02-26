@@ -1,6 +1,6 @@
 import { SetFilterType } from "@/store/useFilterStatesStore";
 import { AnnouncementType } from "@/types";
-import functions from "@react-native-firebase/functions";
+import { firebasyeFunctions } from "@/utils/firebase";
 
 export const useGetFilterAds = () => {
   const getFilterAds = async ({
@@ -16,7 +16,7 @@ export const useGetFilterAds = () => {
     totalHits: number;
   }> => {
     try {
-      const getFilterAdsFn = functions().httpsCallable<
+      const getFilterAdsFn = firebasyeFunctions.httpsCallable<
         {
           page: number;
           filtersStatesStore: SetFilterType;

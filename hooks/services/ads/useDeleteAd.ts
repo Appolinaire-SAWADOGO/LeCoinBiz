@@ -1,5 +1,5 @@
 import { decrementCount, removeAdFromInfiniteList, showToast } from "@/utils";
-import functions from "@react-native-firebase/functions";
+import { firebasyeFunctions } from "@/utils/firebase";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
@@ -25,7 +25,7 @@ export const useDeleteAd = () => {
     showToast("loading", "Traitement en cours.");
 
     try {
-      const deleteAdFunction = functions().httpsCallable("deleteAd");
+      const deleteAdFunction = firebasyeFunctions.httpsCallable("deleteAd");
       const result = await deleteAdFunction({ adId, adStatus });
       const { success, adStatus: status } = result.data as {
         success: boolean;

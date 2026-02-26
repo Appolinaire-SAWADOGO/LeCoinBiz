@@ -1,5 +1,5 @@
 import { AdStatusType, AnnouncementType } from "@/types";
-import functions from "@react-native-firebase/functions";
+import { firebasyeFunctions } from "@/utils/firebase";
 
 export const useGetAdsByUserId = () => {
   const getAdsByUserId = async (
@@ -12,7 +12,7 @@ export const useGetAdsByUserId = () => {
     hasMore: boolean;
   }> => {
     try {
-      const getAdsFn = functions().httpsCallable<
+      const getAdsFn = firebasyeFunctions.httpsCallable<
         {
           userId: string;
           status: AdStatusType;

@@ -9,7 +9,7 @@ const db = admin.firestore();
 const PAGE_SIZE = 10;
 
 export const getHomeAds = onCall(
-  { consumeAppCheckToken: false },
+  { consumeAppCheckToken: false, region: "africa-south1" },
   async (request) => {
     try {
       const pageParam = request.data?.pageParam || null;
@@ -68,7 +68,7 @@ export const getHomeAds = onCall(
         let otherCitiesQuery = db
           .collection("Ads")
           .where("status", "==", "ACTIVATED")
-          .where("city", "not-in", [userCity])
+          .where("city", "!=", userCity)
           .orderBy("createdAt", "desc")
           .limit(remainingCount);
 

@@ -11,7 +11,7 @@ interface CreateUserParams {
 }
 
 export const createUserWithEmail = onCall(
-  { consumeAppCheckToken: false },
+  { consumeAppCheckToken: false, region: "africa-south1" },
   async (request) => {
     const { uid, userName, email } = request.data as CreateUserParams;
 

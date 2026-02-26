@@ -1,5 +1,5 @@
 import { showToast } from "@/utils";
-import functions from "@react-native-firebase/functions";
+import { firebasyeFunctions } from "@/utils/firebase";
 import Toast from "react-native-toast-message";
 import { useCurrentUser } from "../auth/signIn/useCurrentUser";
 
@@ -20,7 +20,7 @@ export const useReportAd = () => {
     showToast("loading", "Traitement en cours.");
 
     try {
-      const reportAdCallable = functions().httpsCallable<
+      const reportAdCallable = firebasyeFunctions.httpsCallable<
         { userId: string; adId: string; adUserId: string },
         { message: "already_exists" | "created" }
       >("reportAd");

@@ -6,7 +6,7 @@ admin.initializeApp();
 const db = admin.firestore();
 
 export const incrementAdClics = onCall(
-  { consumeAppCheckToken: false },
+  { consumeAppCheckToken: false, region: "africa-south1" },
   async (request) => {
     const { adId, adUserId, from } = request.data;
 

@@ -1,5 +1,5 @@
 import { AnnouncementType } from "@/types";
-import functions from "@react-native-firebase/functions";
+import { firebasyeFunctions } from "@/utils/firebase";
 import { useCurrentUser } from "../auth/signIn/useCurrentUser";
 
 type PageParam = { path: string } | null | undefined;
@@ -20,7 +20,7 @@ export const useGetFavoriteAdsByUserId = () => {
         return { ads: [], lastDoc: null, hasMore: false };
       }
 
-      const getFavoritesCallable = functions().httpsCallable<
+      const getFavoritesCallable = firebasyeFunctions.httpsCallable<
         { pageParam?: PageParam },
         GetFavoritesResult
       >("getFavoriteAdsByUserId");
