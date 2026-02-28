@@ -20,6 +20,7 @@ export default function ProfileTitleSection({ user }: { user: UserType }) {
       <AppText font="Bold" color={designSystem.colors.bigText} fontSize={28}>
         Profile
       </AppText>
+      
       <TouchableOpacity
         onPress={() =>
           router.navigate({
