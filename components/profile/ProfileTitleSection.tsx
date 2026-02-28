@@ -5,7 +5,13 @@ import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import AppText from "../custom/AppText";
 
-export default function ProfileTitleSection({ user }: { user: UserType }) {
+export default function ProfileTitleSection({
+  user,
+  isLoading,
+}: {
+  user?: UserType;
+  isLoading: boolean;
+}) {
   const { designSystem } = useAppTheme();
 
   return (
@@ -20,24 +26,26 @@ export default function ProfileTitleSection({ user }: { user: UserType }) {
       <AppText font="Bold" color={designSystem.colors.bigText} fontSize={28}>
         Profile
       </AppText>
-      
-      <TouchableOpacity
-        onPress={() =>
-          router.navigate({
-            pathname: "/(root)/EditProfile",
-            params: { user: encodeURIComponent(JSON.stringify(user)) },
-          })
-        }
-        style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
-      >
-        <AppText
-          fontSize={15}
-          font="Medium"
-          color={designSystem.colors.subText}
+
+      {!isLoading && (
+        <TouchableOpacity
+          onPress={() =>
+            router.navigate({
+              pathname: "/(root)/EditProfile",
+              params: { user: encodeURIComponent(JSON.stringify(user)) },
+            })
+          }
+          style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
         >
-          Modifier
-        </AppText>
-      </TouchableOpacity>
+          <AppText
+            fontSize={15}
+            font="Medium"
+            color={designSystem.colors.subText}
+          >
+            Modifier
+          </AppText>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

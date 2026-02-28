@@ -1,7 +1,6 @@
 import Announcements from "@/components/announcement/Announcements";
 import NoData from "@/components/announcement/NoData";
 import Container from "@/components/Container";
-import AppFullScreenLoader from "@/components/custom/AppFullScreenLoader";
 import MerchantInfoSection from "@/components/Merchand/MerchantInfoSection";
 import ProfileContentHead from "@/components/profile/ProfileContentHead";
 import ProfileTitleSection from "@/components/profile/ProfileTitleSection";
@@ -10,7 +9,7 @@ import { useGetUserAdsCount } from "@/hooks/services/ads/useGetUserAdsCount";
 import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useGetUserById } from "@/hooks/services/user/useGetUserById";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { AdStatusType, UserType } from "@/types";
+import { UserType } from "@/types";
 import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 import {
   useInfiniteQuery,
@@ -18,7 +17,12 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import React, { useCallback, useMemo, useState } from "react";
-import { RefreshControl, StyleSheet } from "react-native";
+import {
+  ActivityIndicator,
+  RefreshControl,
+  StyleSheet,
+  View,
+} from "react-native";
 
 export default function Profile() {
   const { designSystem } = useAppTheme();
@@ -227,11 +231,8 @@ export default function Profile() {
     desabledAdsCountIsLoading ||
     pendingAdsCountIsLoading;
 
-  const adsIsLoading =
-    activatedAdsIsLoading || disabledAdsIsLoading || pendingAdsIsLoading;
-
   const isLoading =
-    userIsLoading || adsCountIsLoading || adsIsLoading || !userData;
+    userIsLoading || adsCountIsLoading || activatedAdsIsLoading || !userData;
 
   const ads = useMemo(() => {
     if (contentHeadSelected === 0) return allActivatedAds;
@@ -321,39 +322,35 @@ export default function Profile() {
     setRefreshing(false);
   }, [queryClient, userId]);
 
-  const adsStatus: AdStatusType = useMemo(() => {
-    if (contentHeadSelected === 0) return "ACTIVATED";
-    if (contentHeadSelected === 1) return "DISABLED";
-    if (contentHeadSelected === 2) return "PENDING";
-
-    return "ACTIVATED";
-  }, [contentHeadSelected]);
-
   return (
     <Container withBottom={false} style={styles.container}>
-      {isLoading && <AppFullScreenLoader />}
-
-      {!isLoading && (
-        <Announcements
-          values={ads}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={[designSystem.colors.primary]}
-              tintColor={designSystem.colors.primary}
+      <Announcements
+        values={isLoading ? [] : ads}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing || isLoading}
+            onRefresh={onRefresh}
+            colors={[designSystem.colors.primary]}
+            tintColor={designSystem.colors.primary}
+          />
+        }
+        ListHeaderComponent={
+          <>
+            <ProfileTitleSection
+              user={userData as UserType}
+              isLoading={isLoading}
             />
-          }
-          ListHeaderComponent={
-            <>
-              <ProfileTitleSection user={userData as UserType} />
 
-              {/* info section */}
+            {/* info section */}
+            {!isLoading && (
               <MerchantInfoSection
                 data={userData as UserType}
                 adsCount={activatedAdsCount! as number}
               />
-              {/* profile content head */}
+            )}
+
+            {/* profile content head */}
+            {!isLoading && (
               <ProfileContentHead
                 useCase={"profile"}
                 contentHeadSelected={contentHeadSelected}
@@ -362,13 +359,13 @@ export default function Profile() {
                 desabledAdsCount={desabledAdsCount as number}
                 pendingAdsCount={pendingAdsCount as number}
               />
-            </>
-          }
-          announcementCardUseCase="ProfilePage"
-          onEndReached={handleLoadMore}
-          isLoadingMore={isFetchingNextPage}
-        />
-      )}
+            )}
+          </>
+        }
+        announcementCardUseCase="ProfilePage"
+        onEndReached={handleLoadMore}
+        isLoadingMore={isFetchingNextPage}
+      />
 
       {!isLoading &&
         !selectedAdsIsLoading &&
@@ -378,6 +375,32 @@ export default function Profile() {
             style={{ paddingTop: "100%" }}
             text="Aucune annonce disponible."
           />
+        )}
+
+      {!isLoading &&
+        ((contentHeadSelected === 1 &&
+          (disabledAdsIsLoading || desabledAdsCountIsLoading)) ||
+          (contentHeadSelected === 2 &&
+            (pendingAdsIsLoading || pendingAdsCountIsLoading))) && (
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              paddingTop: "100%",
+              paddingHorizontal: 20,
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <ActivityIndicator
+              size="large"
+              color={designSystem.colors.primary}
+            />
+          </View>
         )}
     </Container>
   );
