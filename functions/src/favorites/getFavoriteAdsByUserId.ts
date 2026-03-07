@@ -11,7 +11,7 @@ interface PageParam {
 }
 
 export const getFavoriteAdsByUserId = onCall(
-  { consumeAppCheckToken: false, region: "africa-south1" },
+  { consumeAppCheckToken: false, region: "europe-southwest1" },
   async (request) => {
     try {
       const userId = request.auth?.uid;

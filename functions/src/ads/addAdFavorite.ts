@@ -10,7 +10,7 @@ interface AddFavoriteRequest {
 }
 
 export const addAdFavorite = onCall(
-  { consumeAppCheckToken: false, region: "africa-south1" },
+  { consumeAppCheckToken: false, region: "europe-southwest1" },
   async (request) => {
     const { adId } = request.data as AddFavoriteRequest;
 

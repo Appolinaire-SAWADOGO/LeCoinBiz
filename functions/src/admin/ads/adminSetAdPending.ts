@@ -6,7 +6,7 @@ admin.initializeApp();
 const db = admin.firestore();
 
 export const adminSetAdPending = onCall(
-  { consumeAppCheckToken: false, region: "africa-south1" },
+  { consumeAppCheckToken: false, region: "europe-southwest1" },
   async (request) => {
     const { adId, AdTitle, AdUserId } = request.data;
 

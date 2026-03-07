@@ -9,7 +9,7 @@ const db = getFirestore();
 const auth = getAuth();
 
 export const editUserProfile = onCall(
-  { consumeAppCheckToken: false, region: "africa-south1" },
+  { consumeAppCheckToken: false, region: "europe-southwest1" },
   async (request) => {
     const uid = request.auth?.uid;
 

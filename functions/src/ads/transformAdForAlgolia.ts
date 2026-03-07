@@ -1,7 +1,7 @@
 import { onDocumentWritten } from "firebase-functions/v2/firestore";
 
 export const transformAdForAlgolia = onDocumentWritten(
-  "Ads/{adId}",
+  { document: "Ads/{adId}", region: "europe-southwest1" },
   (event) => {
     type AdStatusType = "ACTIVATED" | "PENDING" | "DISABLED";
 
@@ -71,21 +71,3 @@ export const transformAdForAlgolia = onDocumentWritten(
     };
   },
 );
-
-// Create InstantSearch application
-// Use create-instantsearch-app to create an example search experience with your data
-
-// npx create-instantsearch-app@latest instantsearch-app \
-//     --name 'instantsearch-app' \
-//     --template 'InstantSearch.js' \
-//     --app-id 'YB56OO54E2' \
-//     --api-key 'd9ae7c052fd60fa5a20695d069e489c2' \
-//     --index-name 'Ads' \
-//     --attributes-to-display 'title,description,category' \
-//     --no-interactive \
-//     --image-attribute 'images'
-
-// Start your local application
-// Once your InstantSearch application is done downloading, navigate to the application and run the following command to start it up.
-
-// npm start

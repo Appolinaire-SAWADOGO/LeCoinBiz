@@ -6,7 +6,7 @@ const db = admin.firestore();
 const auth = admin.auth();
 
 export const deleteAccount = onCall(
-  { consumeAppCheckToken: false, region: "africa-south1" },
+  { consumeAppCheckToken: false, region: "europe-southwest1" },
   async (request) => {
     try {
       const userId = request.data?.userId;

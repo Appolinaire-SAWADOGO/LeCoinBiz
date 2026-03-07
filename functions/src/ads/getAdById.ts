@@ -8,7 +8,7 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 export const getAdById = onCall(
-  { consumeAppCheckToken: false, region: "africa-south1" },
+  { consumeAppCheckToken: false, region: "europe-southwest1" },
   async (request) => {
     const { adId } = request.data;
 

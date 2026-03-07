@@ -9,7 +9,7 @@ const db = admin.firestore();
 const PAGE_SIZE = 10;
 
 export const getHomeAds = onCall(
-  { consumeAppCheckToken: false, region: "africa-south1" },
+  { consumeAppCheckToken: false, region: "europe-southwest1" },
   async (request) => {
     try {
       const pageParam = request.data?.pageParam || null;

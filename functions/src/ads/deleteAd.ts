@@ -2,7 +2,7 @@ import admin from "firebase-admin";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 
 export const deleteAd = onCall(
-  { consumeAppCheckToken: false, region: "africa-south1" },
+  { consumeAppCheckToken: false, region: "europe-southwest1" },
   async (request) => {
     const { auth, data } = request;
 

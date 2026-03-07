@@ -5,7 +5,7 @@ const db = admin.firestore();
 const bucket = admin.storage().bucket();
 
 export const editAd = onCall(
-  { consumeAppCheckToken: false, region: "africa-south1" },
+  { consumeAppCheckToken: false, region: "europe-southwest1" },
   async (request) => {
     const { adId, updates, deletedImages } = request.data;
     const userId = request.auth?.uid;

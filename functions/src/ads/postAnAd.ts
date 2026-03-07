@@ -9,7 +9,7 @@ const db = admin.firestore();
 type FirebaseProviderId = "password" | "phone" | "google.com";
 
 export const postAnAdd = onCall(
-  { consumeAppCheckToken: false, region: "africa-south1" },
+  { consumeAppCheckToken: false, region: "europe-southwest1" },
   async (request) => {
     try {
       const auth = request.auth;

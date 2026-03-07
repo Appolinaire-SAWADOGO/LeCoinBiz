@@ -5,7 +5,7 @@ admin.initializeApp();
 const db = admin.firestore();
 
 export const adminGetReportAds = onCall(
-  { consumeAppCheckToken: false, region: "africa-south1" },
+  { consumeAppCheckToken: false, region: "europe-southwest1" },
   async (request) => {
     try {
       const reportsSnapshot = await db
