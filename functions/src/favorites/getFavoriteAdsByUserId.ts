@@ -15,7 +15,15 @@ export const getFavoriteAdsByUserId = onCall(
   async (request) => {
     try {
       const userId = request.auth?.uid;
-      const pageParam = request.data?.pageParam as PageParam | null;
+
+      const pageParamRaw = request.data?.pageParam;
+
+      const pageParam: PageParam | null =
+        pageParamRaw &&
+        typeof pageParamRaw.path === "string" &&
+        pageParamRaw.path.trim() !== ""
+          ? pageParamRaw
+          : null;
 
       if (!userId) {
         throw new HttpsError("unauthenticated", "Utilisateur non authentifié");
@@ -28,6 +36,13 @@ export const getFavoriteAdsByUserId = onCall(
         .limit(PAGE_SIZE);
 
       if (pageParam) {
+        if (!pageParam.path || pageParam.path.trim() === "") {
+          throw new HttpsError(
+            "invalid-argument",
+            "pageParam.path est invalide",
+          );
+        }
+
         const lastFavDoc = await db.doc(pageParam.path).get();
         if (!lastFavDoc.exists) {
           throw new HttpsError(

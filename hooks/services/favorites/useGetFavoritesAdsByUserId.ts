@@ -15,11 +15,13 @@ export const useGetFavoriteAdsByUserId = () => {
   const userId = currentUser?.uid;
 
   const getFavoritesAdsByUserId = async (pageParam: PageParam) => {
-    try {
-      if (!userId) {
-        return { ads: [], lastDoc: null, hasMore: false };
-      }
+    console.log("pageParam :", pageParam);
 
+    if (!userId) {
+      return { ads: [], lastDoc: null, hasMore: false };
+    }
+
+    try {
       const getFavoritesCallable = firebasyeFunctions.httpsCallable<
         { pageParam?: PageParam },
         GetFavoritesResult

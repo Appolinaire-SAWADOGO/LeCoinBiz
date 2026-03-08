@@ -43,6 +43,14 @@ export default function Profile() {
     queryKey: ["user", userId, "profile"],
     queryFn: () => getUserById(userId as string),
     enabled: !!userId,
+
+    staleTime: Infinity, // ✅ Les données ne deviennent JAMAIS stale
+    gcTime: Infinity, // ✅ Les données ne sont JAMAIS supprimées du cache
+
+    refetchOnWindowFocus: false, // ✅ Pas de refetch au focus
+    refetchOnMount: false, // ✅ Pas de refetch au montage
+    refetchOnReconnect: false, // ✅ Pas de refetch lors de la reconnexion
+    retry: 2,
   });
 
   // user activated ads count

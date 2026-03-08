@@ -115,6 +115,7 @@ export default function RootLayout() {
         getUserAdsCount,
         getAdsByUserId,
         getNotifications,
+        currentUser?.uid,
       );
     })();
   }, [currentUser?.uid]);

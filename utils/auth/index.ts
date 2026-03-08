@@ -1,5 +1,5 @@
 import { RESERVED_USERNAMES } from "@/constants";
-import { FirebaseAuthTypes, getAuth } from "@react-native-firebase/auth";
+import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { QueryClient } from "@tanstack/react-query";
 
 export const getCurrentUserAuthMethod = (
@@ -37,10 +37,9 @@ export const initialPrefetchQuery = async (
   getUserById: any,
   getUserAdsCount: any,
   getAdsByUserId: any,
-  getNotifications?: any,
+  getNotifications: any,
+  userId?: string,
 ) => {
-  const userId = getAuth()?.currentUser?.uid;
-
   try {
     await queryClient.prefetchQuery({
       queryKey: ["notifications", userId],
