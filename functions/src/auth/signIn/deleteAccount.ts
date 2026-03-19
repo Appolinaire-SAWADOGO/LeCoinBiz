@@ -1,7 +1,6 @@
 import * as admin from "firebase-admin";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 
-admin.initializeApp();
 const db = admin.firestore();
 const auth = admin.auth();
 
@@ -40,3 +39,4 @@ export const deleteAccount = onCall(
     }
   },
 );
+

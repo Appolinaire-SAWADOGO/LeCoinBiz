@@ -16,6 +16,7 @@ export const useDeleteAd = () => {
     images: string[],
     adStatus: "PENDING" | "DISABLED" | "ACTIVATED",
     from: "NORMAL" | "AD_DETAILS",
+    video?: string, // ← NOUVEAU
   ) => {
     if (!adId) {
       showToast("error", "Annonce introuvable.");
@@ -33,7 +34,8 @@ export const useDeleteAd = () => {
       };
 
       if (success) {
-        await deleteImgs(images);
+        const filesToDelete = video ? [...images, video] : images;
+        await deleteImgs(filesToDelete);
 
         if (status === "DISABLED") {
           decrementCount(["user-disabled-ads-count", userId], queryClient);

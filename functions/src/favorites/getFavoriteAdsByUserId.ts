@@ -1,7 +1,6 @@
 import * as admin from "firebase-admin";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 
-admin.initializeApp();
 const db = admin.firestore();
 
 const PAGE_SIZE = 10;
@@ -86,3 +85,4 @@ export const getFavoriteAdsByUserId = onCall(
     }
   },
 );
+

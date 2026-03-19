@@ -45,7 +45,12 @@ export default function PostAnAdSection({
     <View style={{ gap: 8 }}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         <AppText font="Medium">{label}</AppText>
-        {optional && <AppText color={"#444"}>(facultatif)</AppText>}
+        <AppText
+          style={{ fontSize: 12, fontStyle: "italic" }}
+          color={optional ? "#8a8d92" : "#E74C3C"}
+        >
+          {optional ? "optionnel" : "requis"}
+        </AppText>
       </View>
       {!children ? (
         <AppInput

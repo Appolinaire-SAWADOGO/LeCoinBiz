@@ -1,7 +1,6 @@
 import * as admin from "firebase-admin";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 
-admin.initializeApp();
 const db = admin.firestore();
 
 interface CheckFavoriteRequest {
@@ -37,3 +36,4 @@ export const ifAdIsAddedToFavorites = onCall(
     }
   },
 );
+

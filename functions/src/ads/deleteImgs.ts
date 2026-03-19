@@ -1,7 +1,6 @@
 import * as admin from "firebase-admin";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 
-admin.initializeApp();
 
 export const deleteImgs = onCall(
   { consumeAppCheckToken: false, region: "europe-southwest1" },
@@ -38,3 +37,4 @@ export const deleteImgs = onCall(
     }
   },
 );
+

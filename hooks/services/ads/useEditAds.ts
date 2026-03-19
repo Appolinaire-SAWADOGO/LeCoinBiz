@@ -60,20 +60,11 @@ export const useEditAd = () => {
       if (data.description !== preData.description)
         updates.description = data.description;
       if (data.price !== preData.price) updates.price = data.price;
-      if (data.category !== preData.category) updates.category = data.category;
-      if (data.subCategory !== preData.subCategory)
-        updates.subCategory = data.subCategory;
       if (data.city !== preData.city) updates.city = data.city;
       if (data.phoneNumber !== preData.phoneNumber)
         updates.phoneNumber = data.phoneNumber;
       if (data.whatsappNumber !== preData.whatsappNumber)
         updates.whatsappNumber = data.whatsappNumber;
-
-      if (
-        JSON.stringify(data.conditions) !== JSON.stringify(preData.conditions)
-      ) {
-        updates.conditions = data.conditions;
-      }
 
       if (JSON.stringify(data.options) !== JSON.stringify(preData.options)) {
         updates.options = data.options;

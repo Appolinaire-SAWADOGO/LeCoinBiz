@@ -90,7 +90,14 @@ export default function ProfileDelOrEdAnnouncement({
             onPress: () =>
               handleActionWithWarning(
                 async () =>
-                  await deleteAd(adId, ad.userId, ad.images, status, "NORMAL"),
+                  await deleteAd(
+                    adId,
+                    ad.userId,
+                    ad.images,
+                    status,
+                    "NORMAL",
+                    ad.video,
+                  ),
               ),
           },
         ]

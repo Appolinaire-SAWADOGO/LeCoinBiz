@@ -7,6 +7,7 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
+import * as admin from "firebase-admin";
 import { setGlobalOptions } from "firebase-functions";
 
 // Start writing functions
@@ -22,6 +23,9 @@ import { setGlobalOptions } from "firebase-functions";
 // functions should each use functions.runWith({ maxInstances: 10 }) instead.
 // In the v1 API, each function can only serve one request per container, so
 // this will be the maximum concurrent request count.
+
+admin.initializeApp();
+
 setGlobalOptions({ maxInstances: 10 });
 
 // export const helloWorld = onRequest((request, response) => {
@@ -45,7 +49,7 @@ export { getSimilarAds } from "./ads/getSimilarAds";
 export { getSuggestionSearchAds } from "./ads/getSuggestionSearchAds";
 export { getUserAdsCount } from "./ads/getUserAdsCount";
 export { incrementAdClics } from "./ads/incrementAdClics";
-export { postAnAdd } from "./ads/postAnAd";
+export { postAnAd } from "./ads/postAnAd";
 export { reportAd } from "./ads/reportAd";
 export { transformAdForAlgolia } from "./ads/transformAdForAlgolia";
 

@@ -1,6 +1,6 @@
 import FreeDeliveryImage from "@/assets/images/filter-options/FreeDelevery.png";
 import NeufImage from "@/assets/images/filter-options/Neuf.png";
-import { categoryIcon, subCategoryIcon } from "@/constants/categories";
+import { categoryIcon } from "@/constants/categories";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AnnouncementType } from "@/types";
 import { getTimeSinceCreated } from "@/utils";
@@ -19,11 +19,11 @@ export default function AnnouncementDetailsInfoSection({
   const { designSystem } = useAppTheme();
 
   const isNew = currentAnnouncement.options.some(
-    (option) => option.label === "Neuf" && option.active
+    (option) => option.label === "Neuf" && option.active,
   );
 
   const isFreeDelivery = currentAnnouncement.options.some(
-    (option) => option.label === "Livraison Gratuite" && option.active
+    (option) => option.label === "Livraison Gratuite" && option.active,
   );
 
   return (
@@ -48,9 +48,7 @@ export default function AnnouncementDetailsInfoSection({
           <View style={styles.tagWrapper}>
             <View style={styles.tag}>
               <Image style={styles.tagImage} source={FreeDeliveryImage} />
-              <AppText color={designSystem.colors.subText}>
-                Livraison gratuite
-              </AppText>
+              <AppText>Livraison gratuite</AppText>
             </View>
           </View>
         )}
@@ -59,46 +57,37 @@ export default function AnnouncementDetailsInfoSection({
           <View style={styles.tagWrapper}>
             <View style={styles.tag}>
               <Image style={styles.tagImage} source={NeufImage} />
-              <AppText color={designSystem.colors.subText}>Neuf</AppText>
+              <AppText>Neuf</AppText>
             </View>
           </View>
         )}
       </View>
 
-      {/* catégorie et sous-catégorie */}
-      <View style={styles.categoryAndSubCategoryRow}>
-        <View style={styles.categoryAndSubCategoryStyle}>
+      {/* categorie et sous categorie */}
+      {currentAnnouncement.category && (
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 8,
+            marginTop: 12,
+          }}
+        >
           <Image
             source={categoryIcon(currentAnnouncement.category)}
-            style={{ width: 17, height: 17 }}
+            style={{ width: 14, height: 14 }}
             resizeMode="contain"
           />
-          <AppText color={designSystem.colors.subText}>
-            {currentAnnouncement.category},
+          <AppText numberOfLines={1} style={{ flexShrink: 1 }}>
+            {currentAnnouncement.category} › {currentAnnouncement.subCategory}
           </AppText>
         </View>
-
-        <View style={styles.categoryAndSubCategoryStyle}>
-          <View style={styles.categoryAndSubCategoryStyle}>
-            <Image
-              source={subCategoryIcon(currentAnnouncement.subCategory)}
-              style={{ width: 17, height: 17 }}
-              resizeMode="contain"
-            />
-            <AppText color={designSystem.colors.subText}>
-              {currentAnnouncement.subCategory}
-            </AppText>
-          </View>
-        </View>
-      </View>
+      )}
 
       {/* location */}
       <View style={styles.location}>
-        <MapPin size={16} color={designSystem.colors.subText} />
-        <AppText
-          style={styles.locationText}
-          color={designSystem.colors.subText}
-        >
+        <MapPin size={16} />
+        <AppText style={styles.locationText}>
           {currentAnnouncement.city}
         </AppText>
       </View>
@@ -113,10 +102,8 @@ export default function AnnouncementDetailsInfoSection({
             marginTop: 12,
           }}
         >
-          <Clock4 width={16} height={16} color={designSystem.colors.subText} />
-          <AppText color={designSystem.colors.subText}>
-            {currentAnnouncement.stats.clicks} Clicks
-          </AppText>
+          <Clock4 width={16} height={16} />
+          <AppText>{currentAnnouncement.stats.clicks} Clicks</AppText>
         </View>
       )}
 
@@ -129,10 +116,8 @@ export default function AnnouncementDetailsInfoSection({
           marginTop: 12,
         }}
       >
-        <Clock4 width={16} height={16} color={designSystem.colors.subText} />
-        <AppText color={designSystem.colors.subText}>
-          {getTimeSinceCreated(currentAnnouncement.createdAt)}
-        </AppText>
+        <Clock4 width={16} height={16} />
+        <AppText>{getTimeSinceCreated(currentAnnouncement.createdAt)}</AppText>
       </View>
 
       {/* Description */}
@@ -150,41 +135,6 @@ export default function AnnouncementDetailsInfoSection({
         >
           {currentAnnouncement.description || "Aucune description fournie."}
         </AppText>
-      </View>
-
-      {/* condition */}
-      <View
-        style={[
-          styles.conditionContainer,
-          { paddingBottom: from === "ProfilePage" ? 20 : 0 },
-        ]}
-      >
-        <AppText
-          font="Medium"
-          color={designSystem.colors.bigText}
-          style={styles.conditionTitle}
-        >
-          Condition :
-        </AppText>
-
-        <View style={styles.conditionList}>
-          {currentAnnouncement.conditions.map((condition, index) => (
-            <View key={index} style={styles.conditionItem}>
-              <View
-                style={[
-                  styles.conditionBullet,
-                  { backgroundColor: designSystem.colors.subText },
-                ]}
-              />
-              <AppText
-                style={styles.conditionText}
-                color={designSystem.colors.subText}
-              >
-                {condition}
-              </AppText>
-            </View>
-          ))}
-        </View>
       </View>
     </>
   );
@@ -235,8 +185,8 @@ const styles = StyleSheet.create({
   },
 
   tagImage: {
-    width: 18,
-    height: 18,
+    width: 17,
+    height: 17,
   },
 
   categoryAndSubCategoryRow: {

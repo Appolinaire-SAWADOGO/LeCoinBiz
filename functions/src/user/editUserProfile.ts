@@ -3,7 +3,6 @@ import { getAuth } from "firebase-admin/auth";
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 
-admin.initializeApp();
 
 const db = getFirestore();
 const auth = getAuth();
@@ -61,3 +60,4 @@ export const editUserProfile = onCall(
     }
   },
 );
+

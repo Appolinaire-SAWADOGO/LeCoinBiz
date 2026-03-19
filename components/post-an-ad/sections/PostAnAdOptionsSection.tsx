@@ -21,7 +21,7 @@ export default function PostAnAdOptionsSection({
         label: "Neuf",
         active: false,
       },
-    ]
+    ],
   );
 
   React.useEffect(() => {
@@ -29,7 +29,7 @@ export default function PostAnAdOptionsSection({
   }, [onChange, options]);
 
   return (
-    <PostAnAdSection label="Options">
+    <PostAnAdSection label="Options" optional>
       <AppAdOptionsPicker
         items={AD_OPTIONS}
         options={options}

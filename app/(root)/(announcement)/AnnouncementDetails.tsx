@@ -28,6 +28,8 @@ export default function AnnouncementDetails() {
 
   const initialAd: AnnouncementType = JSON.parse(initialRslt as string);
 
+  // console.log(JSON.stringify(initialAd, null, 2));
+
   const currentUser = useCurrentUser();
   const currentUserAuthMethod = getCurrentUserAuthMethod(currentUser);
 
@@ -84,6 +86,7 @@ export default function AnnouncementDetails() {
               {/* Galerie d'images */}
               <AnnouncementDetailsImagesSection
                 images={ad?.images as string[]}
+                video={ad?.video} // ← AJOUTE cette ligne
               />
 
               {/* Section principale */}

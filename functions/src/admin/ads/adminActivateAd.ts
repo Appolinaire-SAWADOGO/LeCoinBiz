@@ -2,7 +2,6 @@ import * as admin from "firebase-admin";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 import { v4 as uuidv4 } from "uuid";
 
-admin.initializeApp();
 const db = admin.firestore();
 
 export const adminActivateAd = onCall(
@@ -46,3 +45,4 @@ export const adminActivateAd = onCall(
     }
   },
 );
+

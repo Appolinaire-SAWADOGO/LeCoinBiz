@@ -17,10 +17,14 @@ type FormData = z.infer<typeof PostAnAddSchema>;
 
 export const usePostAnAd = () => {
   const queryClient = useQueryClient();
-  const { uploadImgs } = useUploadImgs();
+  const { uploadImgs, uploadVideo } = useUploadImgs();
   const currentUser = useCurrentUser();
 
-  const postAnAdd = async (data: FormData, resetForm: ResetFormType) => {
+  const postAnAdd = async (
+    data: FormData,
+    resetForm: ResetFormType,
+    onSuccess?: () => void,
+  ) => {
     if (!currentUser) {
       showToast("error", "Connectez-vous pour publier une annonce.");
       return null;
@@ -42,30 +46,43 @@ export const usePostAnAd = () => {
       return null;
     }
 
+    // ← NOUVEAU : upload vidéo si présente
+    let videoUrl: string | undefined = undefined;
+
+    if (data.video) {
+      const uploaded = await uploadVideo(data.video);
+      if (!uploaded) return null;
+      videoUrl = uploaded;
+    }
+
     try {
       const postAnAdCallable = firebasyeFunctions.httpsCallable<
         {
           data: FormData;
         },
         { docId: string; createdAt: Timestamp; updatedAt: Timestamp }
-      >("postAnAdd");
+      >("postAnAd");
 
       const response = await postAnAdCallable({
         data: {
           ...data,
           images: uploadResult,
+          video: videoUrl, // ← NOUVEAU
         },
       });
 
-      incrementCount(["user-pending-ads-count", currentUser.uid], queryClient);
+      incrementCount(
+        ["user-activated-ads-count", currentUser.uid],
+        queryClient,
+      );
       addAdToInfiniteList(
-        ["user-pending-ads", currentUser.uid],
+        ["user-activated-ads", currentUser.uid],
         {
           ...data,
           id: response.data.docId,
           userId: currentUser.uid,
           images: uploadResult,
-          status: "PENDING",
+          status: "ACTIVATED",
           stats: {
             views: 0,
             clicks: 0,
@@ -77,10 +94,12 @@ export const usePostAnAd = () => {
         queryClient,
       );
 
-      showToast(
-        "success",
-        "Votre annonce a été ajoutée avec succès et est en attente de validation.",
-      );
+      resetForm();
+
+      onSuccess?.();
+
+      showToast("success", "Annonce ajoutée.");
+
       return response.data.docId;
     } catch (error) {
       console.error(

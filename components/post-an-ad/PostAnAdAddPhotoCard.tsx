@@ -47,8 +47,8 @@ export default function PostAnAdAddPhotoCard({
           styles.addImage,
           {
             backgroundColor: !isPickerDisabled
-              ? designSystem.colors.primary
-              : "rgba(0, 0, 0, 0.7)",
+              ? designSystem.colors.smallText
+              : "rgba(0, 0, 0, 0.5)",
           },
         ]}
       >
@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderRadius: 4,
+    borderStyle: "dashed",
   },
   addImage: {
     width: 32,

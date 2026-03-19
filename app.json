@@ -2,7 +2,7 @@
   "expo": {
     "name": "LeCoinBiz",
     "slug": "LeCoinBiz",
-    "version": "1.0.10",
+    "version": "1.0.11",
     "orientation": "portrait",
     "icon": "./assets/images/icons/icon.png",
     "scheme": "LeCoinBiz",
@@ -35,7 +35,8 @@
         "xxxhdpi": "./assets/images/icons/splash-icon.png"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.appolinaire_sdg.LeCoinBiz"
+      "package": "com.appolinaire_sdg.LeCoinBiz",
+      "orientation": "portrait"
     },
     "web": {
       "bundler": "metro",
@@ -70,7 +71,8 @@
             "backgroundColor": "#641BB4"
           }
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
@@ -84,12 +86,3 @@
     }
   }
 }
-
-// Pour des corrections de bugs :
-// 1.0.0 → 1.0.1 → 1.0.2 (incrémenter le dernier chiffre)
-
-// Pour de nouvelles fonctionnalités :
-// 1.0.0 → 1.1.0 → 1.2.0 (incrémenter le chiffre du milieu)
-
-// Pour des changements majeurs :
-// 1.0.0 → 2.0.0 (incrémenter le premier chiffre)

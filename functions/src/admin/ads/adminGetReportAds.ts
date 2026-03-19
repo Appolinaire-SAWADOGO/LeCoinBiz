@@ -1,7 +1,6 @@
 import * as admin from "firebase-admin";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 
-admin.initializeApp();
 const db = admin.firestore();
 
 export const adminGetReportAds = onCall(
@@ -63,3 +62,4 @@ export const adminGetReportAds = onCall(
     }
   },
 );
+

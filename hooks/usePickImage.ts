@@ -1,6 +1,6 @@
 import { usePickerImageAlertModalStore } from "@/store/usePickerImageAlertModalStore";
 import * as FileSystem from "expo-file-system";
-import * as ImagePicker from "expo-image-picker";
+import ImageCropPicker from "react-native-image-crop-picker";
 
 export const usePickImage = () => {
   const { open, close } = usePickerImageAlertModalStore();
@@ -9,21 +9,17 @@ export const usePickImage = () => {
     callBack: (img: string) => void,
     maxSizeInMB = 2,
   ) => {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    try {
+      const image = await ImageCropPicker.openPicker({
+        mediaType: "photo",
+        cropping: true,
+        freeStyleCropEnabled: true,
+        cropperToolbarColor: "#000000",
+        cropperStatusBarColor: "#000000",
+        cropperToolbarWidgetColor: "#ffffff",
+      });
 
-    if (!permission.granted) {
-      open("Permission requise pour accéder à vos photos.");
-      return;
-    }
-
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      const uri = result.assets[0].uri;
+      const uri = image.path;
 
       const fileInfo = await FileSystem.getInfoAsync(uri);
       if (!fileInfo.exists || !fileInfo.size) {
@@ -37,16 +33,24 @@ export const usePickImage = () => {
 
       if (sizeInMB > maxSizeInMB) {
         open(
-          `L'image sélectionnée est trop volumineuse. La taille maximale autorisée est de ${maxSizeInMB} MB. Votre fichier fait ${sizeInMB.toFixed(
-            2,
-          )} MB.`,
+          `L'image sélectionnée est trop volumineuse. La taille maximale autorisée est de ${maxSizeInMB} MB. Votre fichier fait ${sizeInMB.toFixed(2)} MB.`,
         );
         return;
       }
 
       close();
-
       callBack(uri);
+    } catch (e: any) {
+      // L'utilisateur a annulé — on ne montre pas d'erreur
+      if (e?.code === "E_PICKER_CANCELLED") return;
+
+      // Permission refusée
+      if (e?.code === "E_NO_LIBRARY_PERMISSION") {
+        open("Permission requise pour accéder à vos photos.");
+        return;
+      }
+
+      open("Une erreur est survenue. Veuillez réessayer.");
     }
   };
 

@@ -4,19 +4,16 @@ import AppText from "@/components/custom/AppText";
 import AppMobileNumberInput from "@/components/custom/input/AppMobileNumberInput";
 import PageHeader from "@/components/PageHeader";
 import PostAnAdSection from "@/components/post-an-ad/PostAnAdSection";
-import PostAnAdCategorieSection from "@/components/post-an-ad/sections/PostAnAdCategorieSection";
 import PostAnAdCitySection from "@/components/post-an-ad/sections/PostAnAdCitySection";
-import PostAnAdConditionsSection from "@/components/post-an-ad/sections/PostAnAdConditionsSection";
 import PostAnAdOptionsSection from "@/components/post-an-ad/sections/PostAnAdOptionsSection";
 import PostAnAdPhotosSection from "@/components/post-an-ad/sections/PostAnAdPhotosSection";
-import PostAnAdSubCategorySection from "@/components/post-an-ad/sections/PostAnAdSubCategorySection";
 import { useEditAd } from "@/hooks/services/ads/useEditAds";
 import { usePostAnAd } from "@/hooks/services/ads/usePostAnAd";
 import { AnnouncementType } from "@/types";
 import { PostAnAddSchema } from "@/zod/schema/postAnAd.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { LayoutChangeEvent, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -54,6 +51,8 @@ export default function PostAnAd() {
       fieldPositions.current[fieldName] = event.nativeEvent.layout.y;
     };
 
+  const [formKey, setFormKey] = useState(0);
+
   const {
     control,
     handleSubmit,
@@ -65,11 +64,9 @@ export default function PostAnAd() {
     defaultValues: {
       title: parseAd ? parseAd.title : "",
       price: parseAd ? parseAd.price : undefined,
-      category: parseAd ? parseAd.category : "",
-      subCategory: parseAd ? parseAd.subCategory : "",
       description: parseAd ? parseAd.description : "",
-      conditions: parseAd ? parseAd.conditions : [],
       images: parseAd ? parseAd.images : [],
+      video: parseAd ? parseAd.video : undefined, // ← NOUVEAU
       options: parseAd
         ? parseAd.options
         : [
@@ -86,8 +83,6 @@ export default function PostAnAd() {
   const { editAd } = useEditAd();
 
   const insets = useSafeAreaInsets();
-
-  const category = watch("category");
 
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
@@ -109,15 +104,10 @@ export default function PostAnAd() {
     const ifAllExist =
       !!watch("title") &&
       !!watch("price") &&
-      !!watch("category") &&
-      !!watch("subCategory") &&
-      !!watch("description") &&
-      !!watch("conditions") &&
-      !!watch("images") &&
-      !!watch("options") &&
       !!watch("city") &&
       !!watch("phoneNumber") &&
-      !!watch("whatsappNumber");
+      !!watch("whatsappNumber") &&
+      watch("images")?.length > 0;
 
     if (!parseAd) return ifAllExist;
 
@@ -125,17 +115,8 @@ export default function PostAnAd() {
       ifAllExist &&
       (watch("title") !== parseAd.title ||
         watch("price") !== parseAd.price ||
-        JSON.stringify(watch("conditions")) !==
-          JSON.stringify(parseAd.conditions) ||
-        JSON.stringify(watch("category")) !==
-          JSON.stringify(parseAd.category) ||
-        JSON.stringify(watch("subCategory")) !==
-          JSON.stringify(parseAd.subCategory) ||
         watch("description") !== parseAd.description ||
-        JSON.stringify(watch("conditions")) !==
-          JSON.stringify(parseAd.conditions) ||
         JSON.stringify(watch("images")) !== JSON.stringify(parseAd.images) ||
-        JSON.stringify(watch("options")) !== JSON.stringify(parseAd.options) ||
         watch("city") !== parseAd.city ||
         watch("phoneNumber") !== parseAd.phoneNumber ||
         watch("whatsappNumber") !== parseAd.whatsappNumber)
@@ -151,6 +132,7 @@ export default function PostAnAd() {
       />
 
       <KeyboardAwareScrollView
+        key={formKey}
         ref={scrollViewRef}
         contentContainerStyle={{
           paddingHorizontal: 20,
@@ -189,55 +171,6 @@ export default function PostAnAd() {
             </View>
           )}
         />
-
-        {/*category*/}
-        <Controller
-          control={control}
-          name="category"
-          render={({ field: { onChange, value } }) => (
-            <View onLayout={handleLayout("category")}>
-              <PostAnAdCategorieSection
-                value={value}
-                onChangeText={onChange}
-                style={{
-                  borderColor: errors.category ? "red" : "#E5E5E5",
-                  padding: 10,
-                }}
-              />
-              {errors.category && (
-                <AppText style={{ color: "red", marginTop: 8 }}>
-                  {errors.category.message}
-                </AppText>
-              )}
-            </View>
-          )}
-        />
-
-        {/* sub category*/}
-        {category && (
-          <Controller
-            control={control}
-            name="subCategory"
-            render={({ field: { onChange, value } }) => (
-              <View onLayout={handleLayout("subCategory")}>
-                <PostAnAdSubCategorySection
-                  subCategory={value}
-                  setSubCategory={onChange}
-                  category={category}
-                  style={{
-                    borderColor: errors.subCategory ? "red" : "#E5E5E5",
-                    padding: 10,
-                  }}
-                />
-                {errors.subCategory && (
-                  <AppText style={{ color: "red", marginTop: 8 }}>
-                    {errors.subCategory.message}
-                  </AppText>
-                )}
-              </View>
-            )}
-          />
-        )}
 
         {/*price*/}
         <Controller
@@ -278,6 +211,7 @@ export default function PostAnAd() {
                 placeholder="Ecrivez la description de l'annonce"
                 onChangeText={onChange}
                 value={value?.toString()}
+                optional
                 style={{
                   borderColor: errors.description ? "red" : "#E5E5E5",
                   padding: 10,
@@ -296,25 +230,35 @@ export default function PostAnAd() {
           )}
         />
 
-        {/*images*/}
+        {/* images + vidéo */}
         <Controller
           control={control}
           name="images"
           render={({ field: { onChange, value } }) => (
-            <View onLayout={handleLayout("images")}>
-              <PostAnAdPhotosSection
-                value={value}
-                onChange={onChange}
-                style={{
-                  borderColor: errors.images ? "red" : "#E5E5E5",
-                }}
-              />
-              {errors.images && (
-                <AppText style={{ color: "red", marginTop: 10 }}>
-                  {errors.images.message}
-                </AppText>
+            <Controller
+              control={control}
+              name="video"
+              render={({
+                field: { onChange: onVideoChange, value: videoValue },
+              }) => (
+                <View onLayout={handleLayout("images")}>
+                  <PostAnAdPhotosSection
+                    value={value}
+                    onChange={onChange}
+                    video={videoValue}
+                    onVideoChange={onVideoChange}
+                    style={{
+                      borderColor: errors.images ? "red" : "#E5E5E5",
+                    }}
+                  />
+                  {errors.images && (
+                    <AppText style={{ color: "red", marginTop: 10 }}>
+                      {errors.images.message}
+                    </AppText>
+                  )}
+                </View>
               )}
-            </View>
+            />
           )}
         />
 
@@ -325,28 +269,6 @@ export default function PostAnAd() {
           render={({ field: { onChange, value } }) => (
             <View onLayout={handleLayout("options")}>
               <PostAnAdOptionsSection value={value} onChange={onChange} />
-            </View>
-          )}
-        />
-
-        {/*conditions*/}
-        <Controller
-          control={control}
-          name="conditions"
-          render={({ field: { onChange, value } }) => (
-            <View onLayout={handleLayout("conditions")}>
-              <PostAnAdConditionsSection
-                value={value}
-                onChange={onChange}
-                style={{
-                  borderColor: errors.conditions ? "red" : "#E5E5E5",
-                }}
-              />
-              {errors.conditions && (
-                <AppText style={{ color: "red", marginTop: 10 }}>
-                  {errors.conditions.message}
-                </AppText>
-              )}
             </View>
           )}
         />
@@ -441,7 +363,9 @@ export default function PostAnAd() {
                 from as "NORMAL" | "AD_DETAILS",
               );
             } else {
-              await postAnAdd(data, resetForm);
+              await postAnAdd(data, resetForm, () => {
+                setFormKey((prev) => prev + 1);
+              });
             }
           })}
           isLoading={isSubmitting}

@@ -24,13 +24,9 @@ export const useUploadImgs = () => {
       try {
         const extension = localUri.split(".").pop() || "jpg";
         const fileName = `ad_${uuidv4()}.${extension}`;
-
         const storageRef = storage().ref(`${type}/${user.uid}/${fileName}`);
-
         await storageRef.putFile(localUri);
-
         const downloadUrl = await storageRef.getDownloadURL();
-
         uploadedUrls.push(downloadUrl);
       } catch (error) {
         console.log("Erreur upload Firebase Storage:", error);
@@ -41,7 +37,26 @@ export const useUploadImgs = () => {
     return uploadedUrls;
   };
 
-  return {
-    uploadImgs,
+  // ← NOUVEAU
+  const uploadVideo = async (videoUri: string): Promise<string | null> => {
+    if (!user) {
+      showToast("error", "Utilisateur non connecté");
+      return null;
+    }
+
+    try {
+      const extension = videoUri.split(".").pop() || "mp4";
+      const fileName = `ad_video_${uuidv4()}.${extension}`;
+      const storageRef = storage().ref(`AdVideos/${user.uid}/${fileName}`);
+      await storageRef.putFile(videoUri);
+      const downloadUrl = await storageRef.getDownloadURL();
+      return downloadUrl;
+    } catch (error) {
+      console.log("Erreur upload vidéo Firebase Storage:", error);
+      showToast("error", "Erreur lors de l'upload de la vidéo.");
+      return null;
+    }
   };
+
+  return { uploadImgs, uploadVideo };
 };

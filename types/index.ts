@@ -12,7 +12,7 @@ export type AdStatusType = "ACTIVATED" | "PENDING" | "DISABLED";
 export type AnnouncementType = {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   price: number;
   category: string;
   subCategory: string;
@@ -20,12 +20,12 @@ export type AnnouncementType = {
   phoneNumber: string;
   whatsappNumber: string;
   userId: string;
-  conditions: string[];
   options: {
     label: string;
     active: boolean;
   }[];
   images: string[];
+  video?: string; // ← NOUVEAU
   stats: {
     clicks: number;
     favorites: number;
@@ -139,11 +139,9 @@ export type AuthModalStepType =
 export type ResetFormType = UseFormReset<{
   title: string;
   price: number;
-  category: string;
-  subCategory: string;
-  description: string;
-  conditions: string[];
+  description?: string; // ← optionnel
   images: string[];
+  video?: string; // ← optionnel
   options: {
     label: string;
     active: boolean;
@@ -151,4 +149,5 @@ export type ResetFormType = UseFormReset<{
   city: string;
   phoneNumber: string;
   whatsappNumber: string;
+  // ← supprime category, subCategory, conditions
 }>;

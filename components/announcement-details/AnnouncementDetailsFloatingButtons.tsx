@@ -304,6 +304,7 @@ Merci beaucoup et bonne journée !
                         ad.images,
                         ad.status,
                         "AD_DETAILS",
+                        ad.video,
                       ),
                   )
                 }
