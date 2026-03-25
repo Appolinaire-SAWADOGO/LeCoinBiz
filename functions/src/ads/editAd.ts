@@ -1,7 +1,6 @@
-import * as admin from "firebase-admin";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
+import { admin, db } from "../../firebase";
 
-const db = admin.firestore();
 const bucket = admin.storage().bucket();
 
 export const editAd = onCall(
@@ -34,7 +33,6 @@ export const editAd = onCall(
 
       await adRef.update({
         ...updates,
-        status: "PENDING",
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
@@ -62,4 +60,3 @@ export const editAd = onCall(
     }
   },
 );
-

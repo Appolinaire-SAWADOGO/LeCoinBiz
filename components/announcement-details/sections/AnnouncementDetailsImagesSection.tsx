@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: "transparent",
   },
-  subImage: { width: 60, height: 60 },
+  subImage: { width: 60, height: 60, borderRadius: 8 },
   videoThumb: {
     width: 60,
     height: 60,

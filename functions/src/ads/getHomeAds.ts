@@ -2,7 +2,8 @@ import * as admin from "firebase-admin";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 
 if (!admin.apps.length) {
-  }
+  admin.initializeApp();
+}
 
 const db = admin.firestore();
 const PAGE_SIZE = 10;
@@ -112,4 +113,3 @@ export const getHomeAds = onCall(
     }
   },
 );
-

@@ -1,11 +1,5 @@
 import { AdStatusType, AnnouncementType } from "@/types";
-import {
-  addAdToInfiniteList,
-  decrementCount,
-  incrementCount,
-  removeAdFromInfiniteList,
-  showToast,
-} from "@/utils";
+import { modifyAdToInfiniteList, showToast } from "@/utils";
 import { firebasyeFunctions } from "@/utils/firebase";
 import { PostAnAddSchema } from "@/zod/schema/postAnAd.schema";
 import { useQueryClient } from "@tanstack/react-query";
@@ -86,43 +80,29 @@ export const useEditAd = () => {
         deletedImages,
       });
 
-      if (adStatus === "ACTIVATED") {
-        removeAdFromInfiniteList(
-          ["user-activated-ads", preData.userId],
-          adId,
-          queryClient,
-        );
+      console.log(preData.title, data.title);
 
-        decrementCount(
-          ["user-activated-ads-count", preData.userId],
+      if (adStatus === "ACTIVATED") {
+        modifyAdToInfiniteList(
+          ["user-activated-ads", preData.userId],
+          { ...data, id: preData.id },
           queryClient,
         );
       } else if (adStatus === "DISABLED") {
-        removeAdFromInfiniteList(
+        modifyAdToInfiniteList(
           ["user-disabled-ads", preData.userId],
-          adId,
+          { ...data, id: preData.id },
           queryClient,
         );
-
-        decrementCount(
-          ["user-disabled-ads-count", preData.userId],
-          queryClient,
-        );
-      }
-
-      if (adStatus !== "PENDING") {
-        addAdToInfiniteList(
+      } else if (adStatus === "PENDING") {
+        modifyAdToInfiniteList(
           ["user-pending-ads", preData.userId],
-          { ...preData, ...data, status: "PENDING" },
+          { ...data, id: preData.id },
           queryClient,
         );
-
-        incrementCount(["user-pending-ads-count", preData.userId], queryClient);
-
-        removeAdFromInfiniteList(["home-ads"], adId, queryClient);
       }
 
-      showToast("success", "Annonce modifiée et envoyée pour validation.");
+      showToast("success", "Annonce modifiée.");
 
       router.back();
 

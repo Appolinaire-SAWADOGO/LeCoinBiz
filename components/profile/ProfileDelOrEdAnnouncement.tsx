@@ -55,7 +55,10 @@ export default function ProfileDelOrEdAnnouncement({
       onPress: () =>
         router.navigate({
           pathname: "/(root)/(announcement)/PostAnAd",
-          params: { ad: JSON.stringify(ad), from: "NORMAL" },
+          params: {
+            ad: encodeURIComponent(JSON.stringify(ad)),
+            from: "NORMAL",
+          },
         }),
     },
 

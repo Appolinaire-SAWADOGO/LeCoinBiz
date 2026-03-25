@@ -272,7 +272,10 @@ Merci beaucoup et bonne journée !
               onPress={() =>
                 router.navigate({
                   pathname: "/(root)/(announcement)/PostAnAd",
-                  params: { ad: JSON.stringify(ad), from: "AD_DETAILS" },
+                  params: {
+                    ad: encodeURIComponent(JSON.stringify(ad)),
+                    from: "AD_DETAILS",
+                  },
                 })
               }
             />

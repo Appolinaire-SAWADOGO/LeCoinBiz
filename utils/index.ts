@@ -273,13 +273,38 @@ export const getAdToInfiniteList = (
   return ad;
 };
 
-export const modifyAdToQueryData = (
+export const modifyAdToInfiniteList = (
   queryKey: any[],
   modification: any,
   queryClient: QueryClient,
 ) => {
   queryClient.setQueryData(queryKey, (oldData: any) => {
     if (!oldData) return oldData;
+
+    const newPages = oldData.pages.map((page: any) => ({
+      ...page,
+      ads: page.ads.map((ad: any) =>
+        ad.id === modification.id ? { ...ad, ...modification } : ad,
+      ),
+    }));
+
+    return {
+      ...oldData,
+      pages: newPages,
+    };
+  });
+};
+
+export const modifyAdToQueryData = (
+  queryKey: any[],
+  modification: any,
+  queryClient: QueryClient,
+) => {
+  queryClient.setQueryData(queryKey, (oldData: any) => {
+    console.log(JSON.stringify(oldData, null, 2));
+
+    if (!oldData) return oldData;
+
     return { ...oldData, ...modification };
   });
 };
@@ -299,11 +324,8 @@ export const addNotificationToQueryData = (
   notification: RemoteMessage,
   userId?: string,
 ) => {
-  console.log("1-----------------");
-
   queryClient.setQueryData(["notifications"], (oldData: any) => {
-    console.log("2-----------------");
-    console.log("oldData:", oldData); // 👈 Ajoutez ce log pour vérifier
+    console.log("oldData:", oldData);
 
     const time = notification.sentTime ?? Date.now();
 
@@ -311,8 +333,6 @@ export const addNotificationToQueryData = (
       _seconds: Math.floor(time / 1000),
       _nanoseconds: (time % 1000) * 1_000_000,
     };
-
-    console.log("3-----------------");
 
     const newNotification = {
       id: notification.data?.id ?? uuidv4(),
@@ -324,11 +344,6 @@ export const addNotificationToQueryData = (
       createdAt: timestamp,
       updatedAt: timestamp,
     };
-
-    console.log(
-      "new notification added : ",
-      JSON.stringify(newNotification, null, 2),
-    );
 
     return [newNotification, ...(oldData ?? [])];
   });

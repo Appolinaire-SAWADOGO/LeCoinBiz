@@ -1,6 +1,6 @@
 import FreeDeliveryImage from "@/assets/images/filter-options/FreeDelevery.png";
 import NeufImage from "@/assets/images/filter-options/Neuf.png";
-import { categoryIcon } from "@/constants/categories";
+import { subCategoryIcon } from "@/constants/categories";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AnnouncementType } from "@/types";
 import { getTimeSinceCreated } from "@/utils";
@@ -74,8 +74,8 @@ export default function AnnouncementDetailsInfoSection({
           }}
         >
           <Image
-            source={categoryIcon(currentAnnouncement.category)}
-            style={{ width: 14, height: 14 }}
+            source={subCategoryIcon(currentAnnouncement.subCategory)}
+            style={{ width: 20, height: 20 }}
             resizeMode="contain"
           />
           <AppText numberOfLines={1} style={{ flexShrink: 1 }}>

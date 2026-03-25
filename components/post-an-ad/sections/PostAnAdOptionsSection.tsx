@@ -32,7 +32,7 @@ export default function PostAnAdOptionsSection({
     <PostAnAdSection label="Options" optional>
       <AppAdOptionsPicker
         items={AD_OPTIONS}
-        options={options}
+        options={options} 
         setOptions={setOptions}
       />
     </PostAnAdSection>
