@@ -39,6 +39,7 @@ export { addAdFavorite } from "./ads/addAdFavorite";
 export { ifAdIsAddedToFavorites } from "./ads/checkFavorite";
 export { deleteAd } from "./ads/deleteAd";
 export { deleteImgs } from "./ads/deleteImgs";
+export { detectAdCategory } from "./ads/detectAdCategory";
 export { disableAd } from "./ads/disableAd";
 export { editAd } from "./ads/editAd";
 export { getAdById } from "./ads/getAdById";
@@ -76,5 +77,6 @@ export { getUserById } from "./user/getUserById";
 // ads
 export { adminActivateAd } from "./admin/ads/adminActivateAd";
 export { adminGetReportAds } from "./admin/ads/adminGetReportAds";
+export { adminGetUsers } from "./admin/ads/adminGetUsers";
 export { adminIgnoreAdReport } from "./admin/ads/adminIgnoreAdReport";
 export { adminSetAdPending } from "./admin/ads/adminSetAdPending";
