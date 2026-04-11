@@ -4,6 +4,7 @@ import { useBackPress } from "@/hooks/useBackPress";
 import { useVerifyEmailStore } from "@/store/useVerifyEmailStore";
 import { authEvents } from "@/utils/EventEmitter";
 import { sendEmailVerification } from "@react-native-firebase/auth";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import Container from "../Container";
@@ -130,6 +131,26 @@ export default function AuthVerifyEmailModal() {
                 l’e-mail, vérifiez également le dossier{" "}
                 <AppText font="Bold">Spam / Courriers indésirables</AppText>.
               </AppText>
+
+              <View style={{ flexDirection: "row" }}>
+                <AppText
+                  color={designSystem.colors.subText}
+                  style={{ marginBottom: 12, textAlign: "center" }}
+                >
+                  Besoin d'aide ?{" "}
+                </AppText>
+                <TouchableOpacity
+                  style={{ flexDirection: "row" }}
+                  onPress={() => {
+                    router.navigate("/(root)/(settings)/HelpSupport");
+                    close();
+                  }}
+                >
+                  <AppText font="Bold" color={designSystem.colors.primary}>
+                    Consulter le guide
+                  </AppText>
+                </TouchableOpacity>
+              </View>
             </>
           )}
 

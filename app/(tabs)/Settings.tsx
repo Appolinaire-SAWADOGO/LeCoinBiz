@@ -3,6 +3,7 @@ import AppText from "@/components/custom/AppText";
 import SettingApplicationSection from "@/components/settings/sections/SettingApplicationSection";
 import SettingAppVersionSection from "@/components/settings/sections/SettingAppVersionSection";
 import SettingContactSection from "@/components/settings/sections/SettingContactSection";
+import SettingHelpSupportSection from "@/components/settings/sections/SettingHelpSupportSection";
 import SettingLegalInformationSection from "@/components/settings/sections/SettingLegalInformationSection";
 import SettingSecuritySection from "@/components/settings/sections/SettingSecuritySection";
 import SettingsLoginSection from "@/components/settings/sections/SettingsLoginSection";
@@ -37,6 +38,9 @@ export default function Settings() {
 
         {/*  Contact */}
         <SettingContactSection />
+
+        {/*  Aide et support */}
+        <SettingHelpSupportSection />
 
         {/*  Informations légales */}
         <SettingLegalInformationSection />

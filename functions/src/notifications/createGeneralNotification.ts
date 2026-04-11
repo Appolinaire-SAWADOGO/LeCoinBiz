@@ -30,6 +30,25 @@ export const createGeneralNotification = onCall(
           title,
           body,
         },
+        android: {
+          priority: "high",
+          notification: {
+            sound: "default",
+            channelId: "default",
+            priority: "high",
+          },
+        },
+        apns: {
+          payload: {
+            aps: {
+              sound: "default",
+              badge: 1,
+            },
+          },
+          headers: {
+            "apns-priority": "10",
+          },
+        },
       });
 
       return {
@@ -41,4 +60,3 @@ export const createGeneralNotification = onCall(
     }
   },
 );
-

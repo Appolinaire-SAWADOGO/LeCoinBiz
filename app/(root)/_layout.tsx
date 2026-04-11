@@ -13,6 +13,7 @@ export default function RootLayout() {
       <Stack.Screen name="(announcement)/PostAnAd" />
       <Stack.Screen name="(category)/AllCategories" />
       <Stack.Screen name="(settings)/About" />
+      <Stack.Screen name="(settings)/HelpSupport" />
       <Stack.Screen name="(settings)/PostingRules" />
       <Stack.Screen name="(settings)/PrivacyPolicy" />
       <Stack.Screen name="(settings)/SecurityTips" />

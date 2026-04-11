@@ -2,7 +2,7 @@
   "expo": {
     "name": "LeCoinBiz",
     "slug": "LeCoinBiz",
-    "version": "1.0.12",
+    "version": "1.0.13",
     "orientation": "portrait",
     "icon": "./assets/images/icons/icon.png",
     "scheme": "LeCoinBiz",
