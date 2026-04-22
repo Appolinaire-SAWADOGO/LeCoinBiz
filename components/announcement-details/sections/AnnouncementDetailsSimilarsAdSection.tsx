@@ -83,7 +83,6 @@ export default function AnnouncementDetailsSimilarsAdSection({
         title: ad.title as string,
         category: ad.category as string,
         subCategory: ad.subCategory as string,
-        conditions: ad.conditions as string[],
         description: ad.description as string,
         userId: ad.userId as string,
         maxResults: 5,
@@ -102,11 +101,24 @@ export default function AnnouncementDetailsSimilarsAdSection({
         Annonces similaires
       </AppText>
 
-      {!similarsAds?.length  && !isLoading && ( <View style={{ paddingHorizontal: 20, marginTop: 40  , width: '100%' , justifyContent: 'center', alignItems: 'center' }}>
-        <AppText style={{textAlign: "center"}} color={designSystem.colors.subText}>
-          Aucune annonce similaire trouvée pour le moment.
-        </AppText>
-      </View> )}
+      {!similarsAds?.length && !isLoading && (
+        <View
+          style={{
+            paddingHorizontal: 20,
+            marginTop: 40,
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <AppText
+            style={{ textAlign: "center" }}
+            color={designSystem.colors.subText}
+          >
+            Aucune annonce similaire trouvée pour le moment.
+          </AppText>
+        </View>
+      )}
 
       {isLoading ? (
         <ScrollView

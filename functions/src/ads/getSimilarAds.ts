@@ -10,7 +10,6 @@ interface SimilarAdsParams {
   title: string;
   category: string;
   subCategory: string;
-  conditions: string[];
   description: string;
   userId: string;
   maxResults?: number;
@@ -28,7 +27,6 @@ export const getSimilarAds = onCall(
       title,
       category,
       subCategory,
-      conditions,
       description,
       userId,
       maxResults = 10,
@@ -67,40 +65,28 @@ export const getSimilarAds = onCall(
         }));
       };
 
-      // ==========================================
-      // STRATÉGIE 1 : Catégorie + Sous-catégorie + Conditions
-      // ==========================================
-      let filters = [
+      // STRATÉGIE 1 : Catégorie + Sous-catégorie
+      const filters1 = [
         `NOT objectID:${currentAdId}`,
         `NOT userId:${userId}`,
         `category:"${category}"`,
         `subCategory:"${subCategory}"`,
         `status:ACTIVATED`,
-      ];
-
-      if (conditions && conditions.length > 0) {
-        const conditionsFilter = conditions
-          .map((c) => `conditions:"${c}"`)
-          .join(" OR ");
-        filters.push(`(${conditionsFilter})`);
-      }
+      ].join(" AND ");
 
       similarAds = await runSearch(
         `${title || ""} ${description || ""}`.trim(),
-        filters.join(" AND "),
+        filters1,
         maxResults,
       );
 
-      // ==========================================
-      // STRATÉGIE 2 : Catégorie + Sous-catégorie
-      // ==========================================
+      // STRATÉGIE 2 : Catégorie seulement
       if (similarAds.length < maxResults) {
         const remaining = maxResults - similarAds.length;
         const filters2 = [
           `NOT objectID:${currentAdId}`,
           `NOT userId:${userId}`,
           `category:"${category}"`,
-          `subCategory:"${subCategory}"`,
           `status:ACTIVATED`,
         ].join(" AND ");
 
@@ -115,41 +101,16 @@ export const getSimilarAds = onCall(
         ];
       }
 
-      // ==========================================
-      // STRATÉGIE 3 : Catégorie seulement
-      // ==========================================
+      // STRATÉGIE 3 : Annonces aléatoires
       if (similarAds.length < maxResults) {
         const remaining = maxResults - similarAds.length;
         const filters3 = [
           `NOT objectID:${currentAdId}`,
           `NOT userId:${userId}`,
-          `category:"${category}"`,
           `status:ACTIVATED`,
         ].join(" AND ");
 
-        const newAds = await runSearch(
-          `${title || ""} ${description || ""}`.trim(),
-          filters3,
-          remaining,
-        );
-        similarAds = [
-          ...similarAds,
-          ...newAds.filter((a) => !similarAds.find((s) => s.id === a.id)),
-        ];
-      }
-
-      // ==========================================
-      // STRATÉGIE 4 : Annonces aléatoires
-      // ==========================================
-      if (similarAds.length < maxResults) {
-        const remaining = maxResults - similarAds.length;
-        const filters4 = [
-          `NOT objectID:${currentAdId}`,
-          `NOT userId:${userId}`,
-          `status:ACTIVATED`,
-        ].join(" AND ");
-
-        const newAds = await runSearch("", filters4, remaining);
+        const newAds = await runSearch("", filters3, remaining);
         similarAds = [
           ...similarAds,
           ...newAds.filter((a) => !similarAds.find((s) => s.id === a.id)),
@@ -168,4 +129,3 @@ export const getSimilarAds = onCall(
     }
   },
 );
-

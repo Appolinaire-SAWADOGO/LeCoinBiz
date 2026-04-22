@@ -99,6 +99,7 @@ export const getFilterAds = onCall(
         ads,
         currentPage: result.page,
         hasMore: result.page! < result.nbPages! - 1,
+        lastDoc: result.page, // ← ajout
         totalHits: result.nbHits,
         totalPages: result.nbPages,
       };
@@ -108,4 +109,3 @@ export const getFilterAds = onCall(
     }
   },
 );
-

@@ -39,7 +39,6 @@ export default function PostAnAd() {
     description: null,
     images: null,
     options: null,
-    conditions: null,
     city: null,
     phoneNumber: null,
     whatsappNumber: null,

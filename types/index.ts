@@ -139,9 +139,9 @@ export type AuthModalStepType =
 export type ResetFormType = UseFormReset<{
   title: string;
   price: number;
-  description?: string; // ← optionnel
+  description?: string;
   images: string[];
-  video?: string; // ← optionnel
+  video?: string;
   options: {
     label: string;
     active: boolean;
@@ -149,5 +149,4 @@ export type ResetFormType = UseFormReset<{
   city: string;
   phoneNumber: string;
   whatsappNumber: string;
-  // ← supprime category, subCategory, conditions
 }>;

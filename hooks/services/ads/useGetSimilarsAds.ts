@@ -6,7 +6,6 @@ interface SimilarAdsParams {
   title: string;
   category: string;
   subCategory: string;
-  conditions: string[];
   description: string;
   userId: string;
   maxResults?: number;
@@ -24,7 +23,6 @@ export const useGetSimilarAds = () => {
     title,
     category,
     subCategory,
-    conditions,
     description,
     userId,
     maxResults = 10,
@@ -40,7 +38,6 @@ export const useGetSimilarAds = () => {
         title,
         category,
         subCategory,
-        conditions,
         description,
         userId,
         maxResults,

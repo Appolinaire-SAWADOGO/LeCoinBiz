@@ -214,36 +214,12 @@ const styles = StyleSheet.create({
   locationText: {
     marginLeft: 5,
   },
-  conditionContainer: {
-    marginTop: 20,
-    paddingTop: 20,
-    borderTopWidth: 1,
-    borderColor: "#E5E5E5",
-  },
-  conditionTitle: {
-    marginBottom: 10,
-  },
-  conditionList: {
-    gap: 8,
-  },
-  conditionItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  conditionBullet: {
-    width: 5,
-    height: 5,
-    borderRadius: 5,
-  },
-  conditionText: {},
   descriptionSection: {
     marginTop: 20,
     paddingTop: 20,
     borderTopWidth: 1,
     borderColor: "#E5E5E5",
   },
-
   descriptionText: {
     lineHeight: 20,
   },

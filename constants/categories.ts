@@ -11,7 +11,7 @@ import Sport from "@/assets/images/categories/Sport.png";
 import Vehicules from "@/assets/images/categories/Vehicules.png";
 import Accessoires from "@/assets/images/sub-categories/Accessoires.png";
 import AccessoiresBebe from "@/assets/images/sub-categories/AccessoiresBebe.png";
-import AccessoiresEtAlimentationAnimaux from "@/assets/images/sub-categories/AccessoiresEtAlimentationAnimaux.png";
+import AccessoiresEtAlimentationAnimaux from "@/assets/images/sub-categories/Accesso iresEtAlimentationAnimaux.png";
 import AppareilsElectromenagers from "@/assets/images/sub-categories/AppareilsElectromenagers.png";
 import AppareilsElectroniques from "@/assets/images/sub-categories/AppareilsElectroniques.png";
 import BricolageEtOutils from "@/assets/images/sub-categories/BricolageEtOutils.png";

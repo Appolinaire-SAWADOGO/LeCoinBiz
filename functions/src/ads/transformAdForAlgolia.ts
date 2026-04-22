@@ -16,7 +16,6 @@ export const transformAdForAlgolia = onDocumentWritten(
       phoneNumber: string;
       whatsappNumber: string;
       userId: string;
-      conditions: string[];
       options: {
         label: string;
         active: boolean;
@@ -38,7 +37,7 @@ export const transformAdForAlgolia = onDocumentWritten(
       };
     };
 
-    const ad = event.data?.after?.data as AnnouncementType | undefined;
+    const ad = event.data?.after?.data() as AnnouncementType | undefined;
     const id = event.data?.after?.ref.id;
 
     if (!ad || !id) return null;
@@ -56,8 +55,6 @@ export const transformAdForAlgolia = onDocumentWritten(
       imageNames: (ad.images || [])
         .map((url) => url.split("/").pop()?.split(".")[0])
         .join(" "),
-      conditions: ad.conditions || [],
-      conditionsText: (ad.conditions || []).map(String).join(" "),
       options: ad.options,
       optionsText: (ad.options || [])
         .filter((opt: any) => opt.active)
@@ -71,4 +68,3 @@ export const transformAdForAlgolia = onDocumentWritten(
     };
   },
 );
-
