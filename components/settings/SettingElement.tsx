@@ -1,25 +1,28 @@
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { LucideIcon } from "lucide-react-native";
+import { MaterialCommunityIconsNameType } from "@/types";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import AppText from "../custom/AppText";
 
 export default function SettingElement({
-  Icon,
+  icon,
   label,
   color,
   fill = "#fff",
   onClick,
   children,
   disabled,
+  size = 18,
 }: {
-  Icon: LucideIcon;
+  icon: MaterialCommunityIconsNameType;
   label: string;
   color: string;
   fill?: string;
   onClick?: () => void;
   children?: React.ReactNode;
   disabled?: boolean;
+  size?: number;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -31,7 +34,7 @@ export default function SettingElement({
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
         <View style={[styles.icon, { backgroundColor: color }]}>
-          <Icon width={18} height={18} fill={fill} stroke={"#fff"} />
+          <MaterialCommunityIcons name={icon} size={size} color={"#fff"} />
         </View>
 
         <AppText

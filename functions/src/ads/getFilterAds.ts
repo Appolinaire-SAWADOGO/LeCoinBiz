@@ -11,6 +11,7 @@ export const getFilterAds = onCall(
   {
     secrets: [algoliaAppId, algoliaApiKey],
     consumeAppCheckToken: false,
+    invoker: "public",
     region: "europe-southwest1",
   },
   async (request) => {
@@ -45,22 +46,21 @@ export const getFilterAds = onCall(
       if (min) filters.push(`price >= ${Number(min)}`);
       if (max) filters.push(`price <= ${Number(max)}`);
 
-      const normalizedTempPub = tempPub?.normalize("NFC").trim();
-      if (normalizedTempPub && normalizedTempPub !== "Toutes les annonces") {
+      if (tempPub && tempPub !== "ALL") {
         let timestamp: number | null = null;
 
-        if (normalizedTempPub === "Aujourd'hui") {
+        if (tempPub === "TODAY") {
           const d = new Date();
           d.setHours(0, 0, 0, 0);
-          timestamp = Math.floor(d.getTime() / 1000);
-        } else if (normalizedTempPub === "Moins de 3 jours") {
+          timestamp = d.getTime();
+        } else if (tempPub === "THREE_DAYS") {
           const d = new Date();
           d.setDate(d.getDate() - 3);
-          timestamp = Math.floor(d.getTime() / 1000);
-        } else if (normalizedTempPub === "Moins de 7 jours") {
+          timestamp = d.getTime();
+        } else if (tempPub === "SEVEN_DAYS") {
           const d = new Date();
           d.setDate(d.getDate() - 7);
-          timestamp = Math.floor(d.getTime() / 1000);
+          timestamp = d.getTime();
         }
 
         if (timestamp) filters.push(`createdAt >= ${timestamp}`);
@@ -99,7 +99,7 @@ export const getFilterAds = onCall(
         ads,
         currentPage: result.page,
         hasMore: result.page! < result.nbPages! - 1,
-        lastDoc: result.page, // ← ajout
+        lastDoc: result.page,
         totalHits: result.nbHits,
         totalPages: result.nbPages,
       };

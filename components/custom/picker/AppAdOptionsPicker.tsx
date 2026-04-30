@@ -14,7 +14,7 @@ export default function AppAdOptionsPicker({
 }) {
   return (
     <View style={styles.optionscontainer}>
-      {items.map(({ label, image }, id) => (
+      {items.map(({ label, icon }, id) => (
         <AppCheckbox
           key={id}
           isChecked={() => {
@@ -22,7 +22,7 @@ export default function AppAdOptionsPicker({
             return finded!.active;
           }}
           setOptions={setOptions}
-          image={image}
+          icon={icon}
           label={label}
         />
       ))}

@@ -59,6 +59,7 @@ export { deleteAccount } from "./auth/signIn/deleteAccount";
 
 // auth/signUp
 export { createUserWithEmail } from "./auth/signUp/createUserWithEmail";
+export { createUserWithGoogle } from "./auth/signUp/createUserWithGoogle";
 export { createUserWithPhone } from "./auth/signUp/createUserWithPhone";
 
 // favorites
@@ -70,6 +71,7 @@ export { createUserNotification } from "./notifications/createUserNotification";
 export { getNotifications } from "./notifications/getNotifications";
 
 // user
+export { checkUserExistsByEmail } from "./user/checkUserExistsByEmail";
 export { editUserProfile } from "./user/editUserProfile";
 export { getUserById } from "./user/getUserById";
 
@@ -77,6 +79,7 @@ export { getUserById } from "./user/getUserById";
 // ads
 export { adminActivateAd } from "./admin/ads/adminActivateAd";
 export { adminGetReportAds } from "./admin/ads/adminGetReportAds";
-export { adminGetUsers } from "./admin/ads/adminGetUsers";
 export { adminIgnoreAdReport } from "./admin/ads/adminIgnoreAdReport";
 export { adminSetAdPending } from "./admin/ads/adminSetAdPending";
+// users
+export { adminGetUsers } from "./admin/users/adminGetUsers";

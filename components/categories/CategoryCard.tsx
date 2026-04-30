@@ -1,68 +1,74 @@
-import AppText from "@/components/custom/AppText";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useFilterStatesStore } from "@/store/useFilterStatesStore";
+import { MaterialCommunityIconsNameType } from "@/types";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
-import React from "react";
+import React, { memo, useCallback } from "react";
 import {
-  Image,
-  ImageSourcePropType,
   StyleProp,
   StyleSheet,
   TouchableOpacity,
+  View,
   ViewStyle,
 } from "react-native";
+import AppText from "../custom/AppText";
 
-export default function CategoryCard({
-  id,
-  name,
-  icon,
-  style,
-}: {
+interface CategoryCardProps {
   id: number;
   name: string;
-  icon: ImageSourcePropType;
+  icon: MaterialCommunityIconsNameType;
   style?: StyleProp<ViewStyle>;
-}) {
-  const { designSystem } = useAppTheme();
+}
 
-  const encodedName = encodeURIComponent(name);
+function CategoryCard({ id, name, icon, style }: CategoryCardProps) {
+  const { designSystem } = useAppTheme();
+  const queryClient = useQueryClient();
 
   const { setCategory, search, subCategory, city, min, max, tempPub, options } =
     useFilterStatesStore();
 
-  const filters = {
+  const handlePress = useCallback(async () => {
+    setCategory(name);
+    router.navigate(`/(root)/Filters?category=${encodeURIComponent(name)}`);
+    await queryClient.invalidateQueries({
+      queryKey: [
+        "filter-ads",
+        {
+          search,
+          category: name,
+          subCategory,
+          city,
+          min,
+          max,
+          tempPub,
+          options,
+        },
+      ],
+    });
+  }, [
+    name,
     search,
-    category: name,
     subCategory,
     city,
     min,
     max,
     tempPub,
     options,
-  };
-
-  const queryClient = useQueryClient();
+    setCategory,
+    queryClient,
+  ]);
 
   return (
-    <TouchableOpacity
-      style={[styles.card, style]}
-      onPress={async () => {
-        setCategory(name);
-
-        router.navigate(`/(root)/Filters?category=${encodedName}`);
-
-        await queryClient.invalidateQueries({
-          queryKey: ["filter-ads", filters],
-        });
-      }}
-    >
-      <Image source={icon} style={styles.icon} />
+    <TouchableOpacity style={[styles.card, style]} onPress={handlePress}>
+      <View style={styles.iconWrapper}>
+        <MaterialCommunityIcons name={icon} size={34} />
+      </View>
       <AppText
-        fontSize={13}
-        color={designSystem.colors.subText}
+        fontSize={12}
         style={styles.label}
         font="Medium"
+        numberOfLines={2}
       >
         {name}
       </AppText>
@@ -70,25 +76,21 @@ export default function CategoryCard({
   );
 }
 
+export default memo(CategoryCard);
+
 const styles = StyleSheet.create({
   card: {
+    // ❌ Supprimer minWidth / maxWidth — la largeur vient du wrapper parent
+    // borderColor: "rgba(0,0,0,.07)",'
     alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 12,
-    width: 120,
-    height: 70,
-    borderRadius: 10,
-    backgroundColor: "rgba(0,0,0,.03)",
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,.07)",
   },
-  icon: {
-    width: 25,
-    height: 25,
-    marginBottom: 3,
-  },
+  iconWrapper: {},
   label: {
     textAlign: "center",
+    marginTop: 4,
+    flexShrink: 1,
+    flexWrap: "wrap",
+    lineHeight: 16, // 12 * 1.33 — standard confortable
+    minHeight: 32, // 2 lignes × 16px → aligne tous les labels
   },
 });

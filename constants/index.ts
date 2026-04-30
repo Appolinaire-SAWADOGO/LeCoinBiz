@@ -1,31 +1,28 @@
 import { AdOptionsType, FilterOptionsType } from "@/types";
-import FlammeImage from "../assets/images/filter-options/Flamme.png";
-import LivarisonGratuiteImage from "../assets/images/filter-options/FreeDelevery.png";
-import NeufImage from "../assets/images/filter-options/Neuf.png";
 
 export const FILTER_OPTIONS: FilterOptionsType = [
   {
     label: "Annonces Populaire",
-    image: FlammeImage,
+    icon: "fire",
   },
   {
     label: "Livraison Gratuite",
-    image: LivarisonGratuiteImage,
+    icon: "package-variant-closed",
   },
   {
     label: "Neuf",
-    image: NeufImage,
+    icon: "new-box",
   },
 ];
 
 export const AD_OPTIONS: AdOptionsType = [
   {
     label: "Livraison Gratuite",
-    image: LivarisonGratuiteImage,
+    icon: "package-variant-closed",
   },
   {
     label: "Neuf",
-    image: NeufImage,
+    icon: "new-box",
   },
 ];
 
@@ -53,3 +50,10 @@ export const RESERVED_USERNAMES = [
   "staff",
   "lecoinbiz",
 ];
+
+export const TEMP_PUB_OPTIONS = {
+  ALL: "Toutes les annonces",
+  TODAY: "Aujourd'hui",
+  THREE_DAYS: "Moins de 3 jours",
+  SEVEN_DAYS: "Moins de 7 jours",
+} as const;

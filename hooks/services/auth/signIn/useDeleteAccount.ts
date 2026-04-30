@@ -1,5 +1,5 @@
 import { filterNotificationsQueryData, showToast } from "@/utils";
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 import { unsubscribeFromUserTopic } from "@/utils/notifications";
 import { getAuth } from "@react-native-firebase/auth";
 import { useQueryClient } from "@tanstack/react-query";
@@ -16,7 +16,7 @@ export const useDeleteAccount = () => {
 
     if (!currentUser) {
       showToast("error", "Aucun utilisateur connecté.");
-      return;
+      return null;
     }
 
     const userId = currentUser.uid;
@@ -28,7 +28,7 @@ export const useDeleteAccount = () => {
       await unsubscribeFromUserTopic(userId);
       filterNotificationsQueryData(queryClient, userId);
 
-      const deleteAccountCallable = firebasyeFunctions.httpsCallable<
+      const deleteAccountCallable = firebaseFunctions.httpsCallable<
         { userId: string },
         { message: "success" }
       >("deleteAccount");

@@ -1,12 +1,12 @@
 import { UserType } from "@/types";
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 
 export const useGetUserById = () => {
   const getUserById = async (id: string) => {
     try {
-      if (!id) return;
+      if (!id) return null;
 
-      const getUserCallable = firebasyeFunctions.httpsCallable<
+      const getUserCallable = firebaseFunctions.httpsCallable<
         { id: string },
         UserType
       >("getUserById");
@@ -16,7 +16,7 @@ export const useGetUserById = () => {
       return response.data;
     } catch (error) {
       console.error("Erreur lors de la récupération de l'utilisateur :", error);
-      return;
+      return null;
     }
   };
 

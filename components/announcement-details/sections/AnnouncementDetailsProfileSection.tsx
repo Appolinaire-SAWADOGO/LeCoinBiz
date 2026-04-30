@@ -5,9 +5,9 @@ import { DEFAULT_PROFILE_IMG } from "@/constants";
 import { useGetUserAdsCount } from "@/hooks/services/ads/useGetUserAdsCount";
 import { useGetUserById } from "@/hooks/services/user/useGetUserById";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { CornerDownRight, MapPin } from "lucide-react-native";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import AppText from "../../custom/AppText";
@@ -26,15 +26,21 @@ export default function AnnouncementDetailsProfileSection({
     queryKey: ["user", userId],
     queryFn: () => getUserById(userId as string),
     enabled: !!userId,
+    retry: false,
+    networkMode: "offlineFirst",
   });
 
   const { data: userAdsCount, isLoading: userAdsCountIsLoading } = useQuery({
     queryKey: ["userAdsCount", userId],
     queryFn: () => getUserAdsCount(userId as string),
     enabled: !!userId,
+    retry: false,
+    networkMode: "offlineFirst",
   });
 
   const isLoading = userIsLoading || userAdsCountIsLoading;
+
+  if (!isLoading && !user) return null;
 
   if (isLoading) {
     return (
@@ -94,7 +100,11 @@ export default function AnnouncementDetailsProfileSection({
         {/* Lieu et annonces */}
         <View style={{ flexDirection: "row", gap: 12, marginTop: 4 }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-            <MapPin size={14} color={designSystem.colors.subText} />
+            <MaterialCommunityIcons
+              name="map-marker-outline"
+              size={16}
+              color={designSystem.colors.subText}
+            />
             <AppText
               style={{
                 fontSize: 12.9,
@@ -107,7 +117,11 @@ export default function AnnouncementDetailsProfileSection({
           </View>
 
           <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-            <CornerDownRight size={14} color={designSystem.colors.subText} />
+            <MaterialCommunityIcons
+              name="tag-outline"
+              size={15}
+              color={designSystem.colors.subText}
+            />
             <AppText
               style={{ fontSize: 13, color: designSystem.colors.subText }}
             >

@@ -6,10 +6,10 @@ import { APP_NAME } from "@/constants";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { SignInWithEmailStepType } from "@/types";
 import { validateEmail } from "@/utils/auth/validation";
+import { firebaseFunctions } from "@/utils/firebase";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getAuth, sendPasswordResetEmail } from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
 
-import { ArrowLeft, ArrowRight, X } from "lucide-react-native";
 import React from "react";
 import {
   KeyboardAvoidingView,
@@ -25,7 +25,7 @@ export default function AuthForgotPassword({
   setBigStep: React.Dispatch<React.SetStateAction<SignInWithEmailStepType>>;
 }) {
   const [step, setStep] = React.useState<"resetPassword" | "CheckYourInbox">(
-    "resetPassword"
+    "resetPassword",
   );
   const [email, setEmail] = React.useState<string>("");
   const [isLoading, setIsLoading] = React.useState(false);
@@ -41,13 +41,13 @@ export default function AuthForgotPassword({
       setError(null);
       setIsLoading(true);
 
-      let fetchUser = await firestore()
-        .collection("Users")
-        .where("email", "==", email)
-        .get();
+      const checkUser = firebaseFunctions.httpsCallable(
+        "checkUserExistsByEmail",
+      );
+      const result = (await checkUser({ email })) as any;
 
-      if (fetchUser.empty) {
-        setError("Aucun utilisateur trouve avec cet email.");
+      if (!result.data.exists) {
+        setError("Aucun utilisateur trouvé avec cet email.");
         return;
       }
 
@@ -65,7 +65,7 @@ export default function AuthForgotPassword({
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 0} // Ajuste si besoin
+        keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 0}
       >
         <ScrollView
           contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20 }}
@@ -90,8 +90,9 @@ export default function AuthForgotPassword({
                   else return;
                 }}
               >
-                <ArrowLeft
-                  size={22}
+                <MaterialCommunityIcons
+                  name="arrow-left"
+                  size={24}
                   color={
                     step === "resetPassword"
                       ? designSystem.colors.infoCard
@@ -100,13 +101,29 @@ export default function AuthForgotPassword({
                 />
               </TouchableOpacity>
 
-              <ArrowRight size={22} color={designSystem.colors.infoCard} />
+              {/* <TouchableOpacity
+                disabled={step === "resetPassword"}
+                onPress={() => {
+                  if (step === "resetPassword") setStep("CheckYourInbox");
+                  else return;
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="arrow-right"
+                  size={24}
+                  color={
+                    step === "CheckYourInbox"
+                      ? designSystem.colors.infoCard
+                      : "#000"
+                  }
+                />
+              </TouchableOpacity> */}
             </View>
             <AppText fontSize={15} font="Bold">
               Mot de passe oublie ?
             </AppText>
             <TouchableOpacity onPress={() => setBigStep("signin")}>
-              <X size={22} />
+              <MaterialCommunityIcons name="close" size={24} />
             </TouchableOpacity>
           </View>
 
@@ -134,7 +151,7 @@ export default function AuthForgotPassword({
                       marginBottom: 20,
                     }}
                   >
-                    <ArrowLeft size={20} />
+                    <MaterialCommunityIcons name="arrow-left" size={22} />
                     <AppText font="Medium">Retour a la connexion</AppText>
                   </TouchableOpacity>
 

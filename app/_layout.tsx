@@ -21,7 +21,9 @@ import {
   subscribeToGeneralTopic,
   subscribeToUserTopic,
 } from "@/utils/notifications";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import analytics from "@react-native-firebase/analytics";
 import messaging from "@react-native-firebase/messaging";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
@@ -29,9 +31,9 @@ import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
-import { Stack } from "expo-router";
+import { Stack, usePathname } from "expo-router";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Platform, View } from "react-native";
 import {
   SafeAreaProvider,
@@ -41,6 +43,7 @@ import { enableFreeze } from "react-native-screens";
 
 enableFreeze(true);
 
+// definir la duree de persistance des donnes de react-query
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -59,6 +62,9 @@ export default function RootLayout() {
   const currentUser = useCurrentUser();
   const userId = currentUser?.uid;
 
+  const pathname = usePathname();
+  const previousPathname = useRef(pathname);
+
   const { getFavoritesAdsByUserId } = useGetFavoriteAdsByUserId();
   const { getUserById } = useGetUserById();
   const { getUserAdsCount } = useGetUserAdsCount();
@@ -69,14 +75,29 @@ export default function RootLayout() {
   const { setIsAppNotificationClosed, setIsAppNotificationBackground } =
     useAppNotificationStore();
 
+  // initialisation des poids du font
   const [fontsLoaded] = useFonts({
     "BasisGrotesqueArabicPro-Black": require("../assets/fonts/BasisGrotesqueArabicPro-Black.ttf"),
     "BasisGrotesqueArabicPro-Bold": require("../assets/fonts/BasisGrotesqueArabicPro-Bold.ttf"),
     "BasisGrotesqueArabicPro-Light": require("../assets/fonts/BasisGrotesqueArabicPro-Light.ttf"),
     "BasisGrotesqueArabicPro-Medium": require("../assets/fonts/BasisGrotesqueArabicPro-Medium.ttf"),
     "BasisGrotesqueArabicPro-Regular": require("../assets/fonts/BasisGrotesqueArabicPro-Regular.ttf"),
+
+    ...MaterialCommunityIcons.font,
   });
 
+  // tracage des ecrans
+  useEffect(() => {
+    if (previousPathname.current !== pathname) {
+      analytics().logScreenView({
+        screen_name: pathname,
+        screen_class: pathname,
+      });
+      previousPathname.current = pathname;
+    }
+  }, [pathname]);
+
+  // configuration des notifications
   useEffect(() => {
     if (Platform.OS === "android") {
       Notifications.setNotificationChannelAsync("default", {
@@ -88,6 +109,7 @@ export default function RootLayout() {
     }
   }, []);
 
+  // ecoute les notification et log
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       console.log("Notif reçue en foreground:", remoteMessage);
@@ -96,6 +118,7 @@ export default function RootLayout() {
     return unsubscribe;
   }, []);
 
+  // configuation des notifications
   useEffect(() => {
     handleNotificationNavigation(
       queryClient,
@@ -105,6 +128,7 @@ export default function RootLayout() {
     );
   }, []);
 
+  // se connecter au channel de notification
   useEffect(() => {
     (async () => {
       await subscribeToGeneralTopic();
@@ -112,12 +136,14 @@ export default function RootLayout() {
     })();
   }, []);
 
+  // configuation de la connexion par google
   useEffect(() => {
     GoogleSignin.configure({
       webClientId: process.env.EXPO_PUBLIC_WEB_CLIENT_ID,
     });
   }, []);
 
+  // prefetch des donnees des differentes pages
   useEffect(() => {
     (async () => {
       await initialPrefetchQuery(

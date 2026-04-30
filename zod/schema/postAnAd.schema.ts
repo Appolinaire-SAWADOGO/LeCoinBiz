@@ -10,7 +10,7 @@ export const PostAnAddSchema = z.object({
   price: z
     .number({ message: "Le prix est requis." })
     .min(1, "Le prix doit être d'au moins 1 F CFA.")
-    .max(10000000, "Le prix ne peut pas dépasser 10 000 000 F CFA."),
+    .max(1_000_000_000, "Le prix ne peut pas dépasser 1 milliard F CFA."),
 
   description: z
     .string()
@@ -22,7 +22,6 @@ export const PostAnAddSchema = z.object({
     .min(1, "Veuillez ajouter au moins une image.")
     .max(4, "Vous ne pouvez pas ajouter plus de 4 images."),
 
-  // ← NOUVEAU
   video: z.string().optional(),
 
   options: z

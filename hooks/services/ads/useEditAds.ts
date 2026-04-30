@@ -1,6 +1,6 @@
 import { AdStatusType, AnnouncementType } from "@/types";
 import { modifyAdToInfiniteList, showToast } from "@/utils";
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 import { PostAnAddSchema } from "@/zod/schema/postAnAd.schema";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
@@ -20,7 +20,7 @@ export const useEditAd = () => {
     adId: string,
     from: "NORMAL" | "AD_DETAILS",
   ) => {
-    if (!data || !adId) return;
+    if (!data || !adId) return null;
 
     try {
       // Identifier images locales
@@ -70,10 +70,10 @@ export const useEditAd = () => {
 
       if (!Object.keys(updates).length) {
         showToast("error", "Aucune modification détectée.");
-        return;
+        return null;
       }
 
-      const editAdFn = firebasyeFunctions.httpsCallable("editAd");
+      const editAdFn = firebaseFunctions.httpsCallable("editAd");
       await editAdFn({
         adId,
         updates,

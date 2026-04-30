@@ -1,127 +1,17 @@
-import Animaux from "@/assets/images/categories/Animaux.png";
-import Art from "@/assets/images/categories/Art.png";
-import Bebe from "@/assets/images/categories/Bebe.png";
-import Computer from "@/assets/images/categories/Computer.png";
-import Cosmetic from "@/assets/images/categories/Cosmetic.png";
-import House from "@/assets/images/categories/House.png";
-import Meubles from "@/assets/images/categories/Meubles.png";
-import Outils from "@/assets/images/categories/Outils.png";
-import Services from "@/assets/images/categories/Services.png";
-import Sport from "@/assets/images/categories/Sport.png";
-import Vehicules from "@/assets/images/categories/Vehicules.png";
-import Accessoires from "@/assets/images/sub-categories/Accessoires.png";
-import AccessoiresBebe from "@/assets/images/sub-categories/AccessoiresBebe.png";
-import AccessoiresEtAlimentationAnimaux from "@/assets/images/sub-categories/Accesso iresEtAlimentationAnimaux.png";
-import AppareilsElectromenagers from "@/assets/images/sub-categories/AppareilsElectromenagers.png";
-import AppareilsElectroniques from "@/assets/images/sub-categories/AppareilsElectroniques.png";
-import BricolageEtOutils from "@/assets/images/sub-categories/BricolageEtOutils.png";
-import BureauxEtFournitures from "@/assets/images/sub-categories/BureauxEtFournitures.png";
-import BurreauxEtMagasin from "@/assets/images/sub-categories/BurreauxEtMagasin.png";
-import BœufsEtVaches from "@/assets/images/sub-categories/BœufsEtVaches.png";
-import CamionsEtBus from "@/assets/images/sub-categories/CamionsEtBus.png";
-import Chaussures from "@/assets/images/sub-categories/Chaussures.png";
-import ChiensEtChats from "@/assets/images/sub-categories/ChiensEtChats.png";
-import CoursEtFormations from "@/assets/images/sub-categories/CoursEtFormations.png";
-import CuisineEtUstensiles from "@/assets/images/sub-categories/CuisineEtUstensiles.png";
-import EquipementsSportifs from "@/assets/images/sub-categories/EquipementsSportifs.png";
-import HotelsHebergements from "@/assets/images/sub-categories/HotelsHebergements.png";
-import InstrumentsDeMusique from "@/assets/images/sub-categories/InstrumentsDeMusique.png";
-import Jeux from "@/assets/images/sub-categories/Jeux.png";
-import JouetsBebe from "@/assets/images/sub-categories/JouetsBebe.png";
-import Lapins from "@/assets/images/sub-categories/Lapins.png";
-import Livres from "@/assets/images/sub-categories/Livres.png";
-import Location from "@/assets/images/sub-categories/Location.png";
-import MaisonAVendre from "@/assets/images/sub-categories/MaisonAVendre.png";
-import MaterielAgricole from "@/assets/images/sub-categories/MaterielAgricole.png";
-import MaterielArtisanat from "@/assets/images/sub-categories/MaterielArtisanat.png";
-import MaterielDeConstruction from "@/assets/images/sub-categories/MaterielDeConstruction.png";
-import MeublesEtDeco from "@/assets/images/sub-categories/MeublesEtDeco.png";
-import MontresEtBijoux from "@/assets/images/sub-categories/MontresEtBijoux.png";
-import MotosEtTricycles from "@/assets/images/sub-categories/MotosEtTricycles.png";
-import MoutonsEtChevres from "@/assets/images/sub-categories/MoutonsEtChevres.png";
-import ObjetsArt from "@/assets/images/sub-categories/ObjetsArt.png";
-import OrdinateursEtTablettes from "@/assets/images/sub-categories/OrdinateursEtTablettes.png";
-import Outillage from "@/assets/images/sub-categories/Outillage.png";
-import PeintureEtDecoration from "@/assets/images/sub-categories/PeintureEtDecoration.png";
-import PiecesEtAccessoires from "@/assets/images/sub-categories/PiecesEtAccessoires.png";
-import Porcs from "@/assets/images/sub-categories/Porcs.png";
-import PoterieEtSculpture from "@/assets/images/sub-categories/PoterieEtSculpture.png";
-import ProduitsDeBeaute from "@/assets/images/sub-categories/ProduitsDeBeaute.png";
-import ReparationEtMaintenance from "@/assets/images/sub-categories/ReparationEtMaintenance.png";
-import ServicesADomicile from "@/assets/images/sub-categories/ServicesADomicile.png";
-import ServicesDeBeaute from "@/assets/images/sub-categories/ServicesDeBeaute.png";
-import ServicesDeReparations from "@/assets/images/sub-categories/ServicesDeReparations.png";
-import ServicesDivers from "@/assets/images/sub-categories/ServicesDivers.png";
-import ServicesEvenementiel from "@/assets/images/sub-categories/ServicesEvenementiel.png";
-import TelephonesPortables from "@/assets/images/sub-categories/TelephonesPortables.png";
-import Terrain from "@/assets/images/sub-categories/Terrain.png";
-import TissageEtCouture from "@/assets/images/sub-categories/TissageEtCouture.png";
-import TissusEtPagnes from "@/assets/images/sub-categories/TissusEtPagnes.png";
-import TransportEtDemenagement from "@/assets/images/sub-categories/TransportEtDemenagement.png";
-import Velos from "@/assets/images/sub-categories/velos.png";
-import Vetements from "@/assets/images/sub-categories/Vetements.png";
-import VetementsBebe from "@/assets/images/sub-categories/VetementsBebe.png";
-import Voitures from "@/assets/images/sub-categories/Voitures.png";
-import Volaille from "@/assets/images/sub-categories/Volaille.png";
-
-import { CategoriesType } from "@/types";
+import { CategoriesType, SubCategoriesType } from "@/types";
 
 export const CATEGORIES: CategoriesType = [
-  {
-    id: 1,
-    name: "Véhicules",
-    icon: Vehicules,
-  },
-  {
-    id: 2,
-    name: "Immobilier",
-    icon: House,
-  },
-  {
-    id: 3,
-    name: "Informatique & High-Tech",
-    icon: Computer,
-  },
-  {
-    id: 4,
-    name: "Maison & Électroménager",
-    icon: Meubles,
-  },
-  {
-    id: 5,
-    name: "Mode & Beauté",
-    icon: Cosmetic,
-  },
-  {
-    id: 6,
-    name: "Bébé & Enfant",
-    icon: Bebe,
-  },
-  {
-    id: 7,
-    name: "Matériel Professionnel",
-    icon: Outils,
-  },
-  {
-    id: 8,
-    name: "Animaux & Élevage",
-    icon: Animaux,
-  },
-  {
-    id: 9,
-    name: "Sports & Loisirs",
-    icon: Sport,
-  },
-  {
-    id: 10,
-    name: "Services",
-    icon: Services,
-  },
-  {
-    id: 11,
-    name: "Artisanat & Culture",
-    icon: Art,
-  },
+  { id: 1, name: "Véhicules", icon: "car" },
+  { id: 2, name: "Immobilier", icon: "home" },
+  { id: 3, name: "Informatique & High-Tech", icon: "laptop" },
+  { id: 4, name: "Maison & Électroménager", icon: "sofa" },
+  { id: 5, name: "Mode & Beauté", icon: "hanger" },
+  { id: 6, name: "Bébé & Enfant", icon: "baby-carriage" },
+  { id: 7, name: "Matériel Professionnel", icon: "wrench" },
+  { id: 8, name: "Animaux & Élevage", icon: "paw" },
+  { id: 9, name: "Sports & Loisirs", icon: "dumbbell" },
+  { id: 10, name: "Services", icon: "briefcase" },
+  { id: 11, name: "Artisanat & Culture", icon: "palette" },
 ];
 
 export const CATEGORIES_NAMES = CATEGORIES.map((category) => category.name);
@@ -129,191 +19,132 @@ export const CATEGORIES_NAMES = CATEGORIES.map((category) => category.name);
 export const categoryIcon = (categoryName: string) =>
   CATEGORIES.find((category) => category.name === categoryName)?.icon;
 
-export const SUB_CATEGORIES = [
-  { id: 1, categoryId: 1, name: "Vélos", icon: Velos },
-  { id: 2, categoryId: 1, name: "Motos & tricycles", icon: MotosEtTricycles },
-  { id: 3, categoryId: 1, name: "Voitures", icon: Voitures },
-  { id: 4, categoryId: 1, name: "Camions & bus", icon: CamionsEtBus },
-  {
-    id: 5,
-    categoryId: 1,
-    name: "Pièces & accessoires",
-    icon: PiecesEtAccessoires,
-  },
+export const SUB_CATEGORIES: SubCategoriesType = [
+  // Véhicules
+  { id: 1, categoryId: 1, name: "Vélos", icon: "bicycle" },
+  { id: 2, categoryId: 1, name: "Motos & tricycles", icon: "motorbike" },
+  { id: 3, categoryId: 1, name: "Voitures", icon: "car" },
+  { id: 4, categoryId: 1, name: "Camions & bus", icon: "truck" },
+  { id: 5, categoryId: 1, name: "Pièces & accessoires", icon: "cog" },
 
-  { id: 6, categoryId: 2, name: "Maisons à vendre", icon: MaisonAVendre },
-  { id: 7, categoryId: 2, name: "Locations", icon: Location },
-  { id: 8, categoryId: 2, name: "Terrains", icon: Terrain },
-  { id: 9, categoryId: 2, name: "Bureaux & magasins", icon: BurreauxEtMagasin },
-  {
-    id: 10,
-    categoryId: 2,
-    name: "Hôtels & hébergements",
-    icon: HotelsHebergements,
-  },
+  // Immobilier
+  { id: 6, categoryId: 2, name: "Maisons à vendre", icon: "home" },
+  { id: 7, categoryId: 2, name: "Locations", icon: "key" },
+  { id: 8, categoryId: 2, name: "Terrains", icon: "map-marker" },
+  { id: 9, categoryId: 2, name: "Bureaux & magasins", icon: "office-building" },
+  { id: 10, categoryId: 2, name: "Hôtels & hébergements", icon: "bed" },
 
-  {
-    id: 11,
-    categoryId: 3,
-    name: "Téléphones portables",
-    icon: TelephonesPortables,
-  },
-  {
-    id: 12,
-    categoryId: 3,
-    name: "Ordinateurs & tablettes",
-    icon: OrdinateursEtTablettes,
-  },
-  { id: 13, categoryId: 3, name: "Accessoires", icon: Accessoires },
+  // Informatique & High-Tech
+  { id: 11, categoryId: 3, name: "Téléphones portables", icon: "cellphone" },
+  { id: 12, categoryId: 3, name: "Ordinateurs & tablettes", icon: "laptop" },
+  { id: 13, categoryId: 3, name: "Accessoires", icon: "headphones" },
   {
     id: 14,
     categoryId: 3,
     name: "Appareils électroniques",
-    icon: AppareilsElectroniques,
+    icon: "television",
   },
-  {
-    id: 15,
-    categoryId: 3,
-    name: "Réparation & maintenance",
-    icon: ReparationEtMaintenance,
-  },
+  { id: 15, categoryId: 3, name: "Réparation & maintenance", icon: "tools" },
 
-  { id: 16, categoryId: 4, name: "Meubles & déco", icon: MeublesEtDeco },
+  // Maison & Électroménager
+  { id: 16, categoryId: 4, name: "Meubles & déco", icon: "sofa" },
   {
     id: 17,
     categoryId: 4,
     name: "Appareils électroménagers",
-    icon: AppareilsElectromenagers,
+    icon: "washing-machine",
   },
   {
     id: 18,
     categoryId: 4,
     name: "Cuisine & ustensiles",
-    icon: CuisineEtUstensiles,
+    icon: "silverware-fork-knife",
   },
+  { id: 19, categoryId: 4, name: "Bricolage & outils", icon: "hammer" },
+
+  // Mode & Beauté
+  { id: 20, categoryId: 5, name: "Vêtements", icon: "tshirt-crew" },
+  { id: 21, categoryId: 5, name: "Chaussures", icon: "shoe-formal" },
+  { id: 22, categoryId: 5, name: "Montres & bijoux", icon: "watch" },
+  { id: 23, categoryId: 5, name: "Produits de beauté", icon: "lipstick" },
+  { id: 24, categoryId: 5, name: "Tissus & pagnes", icon: "content-cut" },
   {
-    id: 19,
-    categoryId: 4,
-    name: "Bricolage & outils",
-    icon: BricolageEtOutils,
+    id: 25,
+    categoryId: 5,
+    name: "Services de beauté",
+    icon: "mirror-rectangle",
   },
 
-  { id: 20, categoryId: 5, name: "Vêtements", icon: Vetements },
-  { id: 21, categoryId: 5, name: "Chaussures", icon: Chaussures },
-  { id: 22, categoryId: 5, name: "Montres & bijoux", icon: MontresEtBijoux },
-  { id: 23, categoryId: 5, name: "Produits de beauté", icon: ProduitsDeBeaute },
-  { id: 24, categoryId: 5, name: "Tissus & pagnes", icon: TissusEtPagnes },
-  { id: 25, categoryId: 5, name: "Services de beauté", icon: ServicesDeBeaute },
-
-  { id: 26, categoryId: 6, name: "Vêtements pour bébé", icon: VetementsBebe },
-  { id: 27, categoryId: 6, name: "jouets pour bébé", icon: JouetsBebe },
+  // Bébé & Enfant
+  {
+    id: 26,
+    categoryId: 6,
+    name: "Vêtements pour bébé",
+    icon: "baby-face-outline",
+  },
+  { id: 27, categoryId: 6, name: "jouets pour bébé", icon: "teddy-bear" },
   {
     id: 28,
     categoryId: 6,
     name: "Accessoires pour bébé",
-    icon: AccessoiresBebe,
+    icon: "baby-carriage",
   },
 
-  {
-    id: 29,
-    categoryId: 7,
-    name: "Matériel de construction",
-    icon: MaterielDeConstruction,
-  },
-  { id: 30, categoryId: 7, name: "Matériel agricole", icon: MaterielAgricole },
-  {
-    id: 31,
-    categoryId: 7,
-    name: "Bureaux & fournitures",
-    icon: BureauxEtFournitures,
-  },
-  { id: 32, categoryId: 7, name: "Outillage", icon: Outillage },
+  // Matériel Professionnel
+  { id: 29, categoryId: 7, name: "Matériel de construction", icon: "hard-hat" },
+  { id: 30, categoryId: 7, name: "Matériel agricole", icon: "tractor" },
+  { id: 31, categoryId: 7, name: "Bureaux & fournitures", icon: "printer" },
+  { id: 32, categoryId: 7, name: "Outillage", icon: "toolbox" },
 
-  { id: 33, categoryId: 8, name: "Bœufs & vaches", icon: BœufsEtVaches },
-  { id: 34, categoryId: 8, name: "Moutons & chèvres", icon: MoutonsEtChevres },
-  { id: 35, categoryId: 8, name: "Volaille", icon: Volaille },
-  { id: 36, categoryId: 8, name: "Chiens & chats", icon: ChiensEtChats },
-  { id: 37, categoryId: 8, name: "Porcs", icon: Porcs },
-  { id: 38, categoryId: 8, name: "Lapins", icon: Lapins },
+  // Animaux & Élevage
+  { id: 33, categoryId: 8, name: "Bœufs & vaches", icon: "cow" },
+  { id: 34, categoryId: 8, name: "Moutons & chèvres", icon: "sheep" },
+  { id: 35, categoryId: 8, name: "Volaille", icon: "turkey" },
+  { id: 36, categoryId: 8, name: "Chiens & chats", icon: "dog" },
+  { id: 37, categoryId: 8, name: "Porcs", icon: "pig" },
+  { id: 38, categoryId: 8, name: "Lapins", icon: "rabbit" },
   {
     id: 39,
     categoryId: 8,
     name: "Accessoires & alimentation d'animaux",
-    icon: AccessoiresEtAlimentationAnimaux,
+    icon: "food-drumstick",
   },
 
-  {
-    id: 40,
-    categoryId: 9,
-    name: "Instruments de musique",
-    icon: InstrumentsDeMusique,
-  },
-  {
-    id: 41,
-    categoryId: 9,
-    name: "Équipements sportifs",
-    icon: EquipementsSportifs,
-  },
-  { id: 42, categoryId: 9, name: "Livres", icon: Livres },
-  { id: 43, categoryId: 9, name: "Jeux", icon: Jeux },
+  // Sports & Loisirs
+  { id: 40, categoryId: 9, name: "Instruments de musique", icon: "music" },
+  { id: 41, categoryId: 9, name: "Équipements sportifs", icon: "dumbbell" },
+  { id: 42, categoryId: 9, name: "Livres", icon: "book-open-variant" },
+  { id: 43, categoryId: 9, name: "Jeux", icon: "gamepad-variant" },
 
-  {
-    id: 44,
-    categoryId: 10,
-    name: "Cours & formations",
-    icon: CoursEtFormations,
-  },
+  // Services
+  { id: 44, categoryId: 10, name: "Cours & formations", icon: "school" },
   {
     id: 45,
     categoryId: 10,
     name: "Transport & déménagement",
-    icon: TransportEtDemenagement,
+    icon: "truck-delivery",
   },
-  {
-    id: 46,
-    categoryId: 10,
-    name: "Services de réparations",
-    icon: ServicesDeReparations,
-  },
+  { id: 46, categoryId: 10, name: "Services de réparations", icon: "wrench" },
   {
     id: 47,
     categoryId: 10,
     name: "Services événementiel",
-    icon: ServicesEvenementiel,
+    icon: "party-popper",
   },
-  {
-    id: 48,
-    categoryId: 10,
-    name: "Services à domicile",
-    icon: ServicesADomicile,
-  },
-  {
-    id: 49,
-    categoryId: 10,
-    name: "Services divers",
-    icon: ServicesDivers,
-  },
+  { id: 48, categoryId: 10, name: "Services à domicile", icon: "home-heart" },
+  { id: 49, categoryId: 10, name: "Services divers", icon: "dots-horizontal" },
 
-  { id: 50, categoryId: 11, name: "Objets d’art", icon: ObjetsArt },
+  // Artisanat & Culture
+  { id: 50, categoryId: 11, name: "Objets d'art", icon: "image-frame" },
+  { id: 51, categoryId: 11, name: "Poterie & sculpture", icon: "pot-steam" },
   {
-    id: 51,
+    id: 52,
     categoryId: 11,
-    name: "Poterie & sculpture",
-    icon: PoterieEtSculpture,
+    name: "Tissage & couture",
+    icon: "scissors-cutting",
   },
-  { id: 52, categoryId: 11, name: "Tissage & couture", icon: TissageEtCouture },
-  {
-    id: 53,
-    categoryId: 11,
-    name: "Peinture & décoration",
-    icon: PeintureEtDecoration,
-  },
-  {
-    id: 54,
-    categoryId: 11,
-    name: "Matériel d’artisanat",
-    icon: MaterielArtisanat,
-  },
+  { id: 53, categoryId: 11, name: "Peinture & décoration", icon: "brush" },
+  { id: 54, categoryId: 11, name: "Matériel d'artisanat", icon: "toolbox" },
 ];
 
 export const subCategoriesNames = (categoryName: string) => {

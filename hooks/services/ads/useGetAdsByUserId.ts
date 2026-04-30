@@ -1,5 +1,5 @@
 import { AdStatusType, AnnouncementType } from "@/types";
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 
 export const useGetAdsByUserId = () => {
   const getAdsByUserId = async (
@@ -12,7 +12,7 @@ export const useGetAdsByUserId = () => {
     hasMore: boolean;
   }> => {
     try {
-      const getAdsFn = firebasyeFunctions.httpsCallable<
+      const getAdsFn = firebaseFunctions.httpsCallable<
         {
           userId: string;
           status: AdStatusType;

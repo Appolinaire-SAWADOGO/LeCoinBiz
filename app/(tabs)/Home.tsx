@@ -82,6 +82,7 @@ export default function Home() {
 
   const hasAds = allAds && allAds.length > 0;
   const initialLoading = isLoading && !hasAds;
+  const isOnlyFetching = isFetching && !isFetchingNextPage;
 
   return (
     <>
@@ -112,7 +113,7 @@ export default function Home() {
           <Announcements
             refreshControl={
               <RefreshControl
-                refreshing={refreshing || isFetching || initialLoading}
+                refreshing={refreshing || isOnlyFetching || initialLoading}
                 onRefresh={onRefresh}
                 colors={[designSystem.colors.primary]}
                 tintColor={designSystem.colors.primary}

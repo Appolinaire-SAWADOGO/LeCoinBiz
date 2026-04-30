@@ -1,4 +1,4 @@
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 import { useCurrentUser } from "../auth/signIn/useCurrentUser";
 
 export const useCheckAdFavorite = () => {
@@ -10,7 +10,7 @@ export const useCheckAdFavorite = () => {
     if (!adId) return false;
 
     try {
-      const checkFavoriteFunction = firebasyeFunctions.httpsCallable(
+      const checkFavoriteFunction = firebaseFunctions.httpsCallable(
         "ifAdIsAddedToFavorites",
       );
       const result = await checkFavoriteFunction({ adId });

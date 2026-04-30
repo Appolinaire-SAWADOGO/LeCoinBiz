@@ -1,4 +1,4 @@
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 
 interface SuggestionSearchParams {
   search: string;
@@ -13,7 +13,7 @@ export const useGetSuggestionSearchAds = () => {
     if (!search) return [];
 
     try {
-      const getSuggestionSearchAdsCallable = firebasyeFunctions.httpsCallable<
+      const getSuggestionSearchAdsCallable = firebaseFunctions.httpsCallable<
         SuggestionSearchParams,
         SuggestionSearchResponse
       >("getSuggestionSearchAds");

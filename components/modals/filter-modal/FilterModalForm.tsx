@@ -4,10 +4,10 @@ import { useFilterStatesStore } from "@/store/useFilterStatesStore";
 import { FilterModalUseCaseType } from "@/types";
 import { addRecentSearch } from "@/utils";
 import { FilterModalFormSchema } from "@/zod/schema/filterModalForm.schema";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { X } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -86,7 +86,9 @@ export default function FilterModalForm({ isOpen, close, useCase }: props) {
 
     filterStatesStore.setFilters(newFilters);
 
-    await addRecentSearch(data.search as string);
+    const searchTerm = data.search?.trim();
+
+    searchTerm && (await addRecentSearch(searchTerm));
 
     await queryClient.invalidateQueries({
       queryKey: ["filter-ads", newFilters],
@@ -146,7 +148,7 @@ export default function FilterModalForm({ isOpen, close, useCase }: props) {
               close();
             }}
           >
-            <X color="#000" />
+            <MaterialCommunityIcons name="close" size={25} color="#000" />
           </TouchableOpacity>
         </View>
         <KeyboardAvoidingView

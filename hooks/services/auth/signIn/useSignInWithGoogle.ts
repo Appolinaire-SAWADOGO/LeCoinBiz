@@ -1,18 +1,20 @@
 import { useAuthModalStore } from "@/store/useAuthModalStore";
-import { showToast } from "@/utils";
+import { getUserCity, showToast } from "@/utils";
+import { firebaseFunctions } from "@/utils/firebase";
 import { subscribeToUserTopic } from "@/utils/notifications";
 import {
   GoogleAuthProvider,
   getAuth,
   signInWithCredential,
 } from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 export const useSignInWithGoogle = () => {
   const { onClose } = useAuthModalStore();
 
   const signInWithGoogle = async () => {
+    const userCity = await getUserCity();
+
     try {
       await GoogleSignin.signOut();
 
@@ -31,7 +33,7 @@ export const useSignInWithGoogle = () => {
       if (!idToken) {
         console.log("signInResult : ", JSON.stringify(signInResult, null, 2));
 
-        return;
+        return null;
       }
 
       // Create a Google credential with the token
@@ -46,24 +48,19 @@ export const useSignInWithGoogle = () => {
       );
 
       if (signInWithCredentialResult.additionalUserInfo?.isNewUser) {
-        await firestore()
-          .collection("Users")
-          .doc(signInWithCredentialResult.user.uid)
-          .set({
-            userName: signInWithCredentialResult.user.displayName || "",
-            firstAndLastName: signInWithCredentialResult.user.displayName || "",
-            image: signInWithCredentialResult.user.photoURL || "",
-            location: {
-              country: "burkina faso",
-              city: "ouagadougou",
-            },
-            phoneNumber: signInWithCredentialResult.user.phoneNumber || "",
-            whatsappNumber: signInWithCredentialResult.user.phoneNumber || "",
-            email: signInWithCredentialResult.user.email || "",
-            authMethod: "GOOGLE",
-            createdAt: firestore.FieldValue.serverTimestamp(),
-            updatedAt: firestore.FieldValue.serverTimestamp(),
-          });
+        const createUser = firebaseFunctions.httpsCallable(
+          "createUserWithGoogle",
+        );
+
+        await createUser({
+          userName: signInWithCredentialResult.user.displayName || "",
+          firstAndLastName: signInWithCredentialResult.user.displayName || "",
+          image: signInWithCredentialResult.user.photoURL || "",
+          phoneNumber: signInWithCredentialResult.user.phoneNumber || "",
+          whatsappNumber: signInWithCredentialResult.user.phoneNumber || "",
+          email: signInWithCredentialResult.user.email || "",
+          city: userCity || "ouagadougou",
+        });
       }
 
       await subscribeToUserTopic(signInWithCredentialResult.user.uid);

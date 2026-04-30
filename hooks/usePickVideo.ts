@@ -17,7 +17,7 @@ export const usePickVideo = () => {
         setTimeout(() => {
           open("Permission requise pour accéder à vos vidéos.");
         }, 500);
-        return;
+        return null;
       }
 
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -27,7 +27,7 @@ export const usePickVideo = () => {
         quality: 1,
       });
 
-      if (result.canceled) return;
+      if (result.canceled) return null;
 
       const asset = result.assets[0];
       const uri = asset.uri;
@@ -39,14 +39,14 @@ export const usePickVideo = () => {
             `La vidéo est trop longue. La durée maximale est de ${MAX_DURATION_SEC} secondes.`,
           );
         }, 500);
-        return;
+        return null;
       }
 
       // Vérif taille
       const fileInfo = await FileSystem.getInfoAsync(uri);
       if (!fileInfo.exists || !fileInfo.size) {
         open("Impossible de vérifier la vidéo. Veuillez réessayer.");
-        return;
+        return null;
       }
 
       const sizeInMB = fileInfo.size / (1024 * 1024);
@@ -56,12 +56,12 @@ export const usePickVideo = () => {
             `La vidéo est trop volumineuse. Maximum ${MAX_SIZE_MB} MB. Votre fichier fait ${sizeInMB.toFixed(0)} MB.`,
           );
         }, 500);
-        return;
+        return null;
       }
 
       callBack(uri);
     } catch (e: any) {
-      if (e?.code === "E_PICKER_CANCELLED") return;
+      if (e?.code === "E_PICKER_CANCELLED") return null;
       open("Une erreur est survenue. Veuillez réessayer.");
     }
   };

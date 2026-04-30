@@ -13,7 +13,7 @@ export const useSignOut = () => {
   const disconnect = async () => {
     const auth = getAuth();
 
-    if (!auth) return;
+    if (!auth) return null;
 
     const userId = auth.currentUser?.uid;
 

@@ -1,5 +1,4 @@
 import { router } from "expo-router";
-import { BellRing, CircleAlert, Share2, Star } from "lucide-react-native";
 import React from "react";
 import { Share } from "react-native";
 import SettingElement from "../SettingElement";
@@ -15,15 +14,16 @@ export default function SettingApplicationSection() {
       <SettingsSectionContainer title="Application">
         <SettingElement
           disabled
-          Icon={BellRing}
+          icon="bell-ring"
           color="#F84F31"
           label="Notifications"
         >
           <SettingsNotifications />
         </SettingElement>
         <SettingElement
-          Icon={Star}
+          icon="star"
           color="#E7AA3D"
+          size={20}
           label="Évaluez notre application"
           onClick={() => setIsEvaluatedModalOpen(true)}
         >
@@ -33,14 +33,14 @@ export default function SettingApplicationSection() {
           />
         </SettingElement>
         <SettingElement
-          Icon={CircleAlert}
+          icon="alert-circle"
           color="#25B7D3"
           fill="none"
           label="À propos de nous"
           onClick={() => router.navigate("/(root)/(settings)/About")}
         />
         <SettingElement
-          Icon={Share2}
+          icon="share-variant"
           color="#25B7D3"
           label="Partager l'application à un ami"
           onClick={async () => {

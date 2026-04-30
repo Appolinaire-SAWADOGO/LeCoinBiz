@@ -26,7 +26,7 @@ export const usePickImage = () => {
         open(
           "Impossible de vérifier la taille de l'image. Veuillez réessayer.",
         );
-        return;
+        return null;
       }
 
       const sizeInMB = fileInfo.size / (1024 * 1024);
@@ -35,19 +35,19 @@ export const usePickImage = () => {
         open(
           `L'image sélectionnée est trop volumineuse. La taille maximale autorisée est de ${maxSizeInMB} MB. Votre fichier fait ${sizeInMB.toFixed(2)} MB.`,
         );
-        return;
+        return null;
       }
 
       close();
       callBack(uri);
     } catch (e: any) {
       // L'utilisateur a annulé — on ne montre pas d'erreur
-      if (e?.code === "E_PICKER_CANCELLED") return;
+      if (e?.code === "E_PICKER_CANCELLED") return null;
 
       // Permission refusée
       if (e?.code === "E_NO_LIBRARY_PERMISSION") {
         open("Permission requise pour accéder à vos photos.");
-        return;
+        return null;
       }
 
       open("Une erreur est survenue. Veuillez réessayer.");

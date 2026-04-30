@@ -1,14 +1,6 @@
-import WattsAppIcon from "@/assets/images/WattsAppIcon.png";
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { Image } from "expo-image";
-import {
-  Edit3,
-  Eye,
-  EyeClosed,
-  MessageSquare,
-  Phone,
-  Trash,
-} from "lucide-react-native";
+import { MaterialCommunityIconsNameType } from "@/types";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import AppText from "../custom/AppText";
@@ -29,14 +21,14 @@ export default function AnnouncementDetailsFloatingButtonsCard({
 }) {
   const { designSystem } = useAppTheme();
 
-  const ButtonIcon = {
-    watsApp: undefined,
-    sms: MessageSquare,
-    call: Phone,
-    edit: Edit3,
-    disable: EyeClosed,
-    enable: Eye,
-    delete: Trash,
+  const ButtonName = {
+    watsApp: "whatsapp",
+    sms: "message-text-outline",
+    call: "phone-outline",
+    edit: "pencil-outline",
+    disable: "eye-off-outline",
+    enable: "eye-outline",
+    delete: "trash-can-outline",
   }[useCase];
 
   const ButtonText = {
@@ -76,11 +68,11 @@ export default function AnnouncementDetailsFloatingButtonsCard({
       onPress={onPress}
     >
       {/* button icon */}
-      {useCase === "watsApp" ? (
-        <Image source={WattsAppIcon} style={{ height: 17, width: 17 }} />
-      ) : (
-        <>{ButtonIcon && <ButtonIcon size={17} color="#fff" />}</>
-      )}
+      <MaterialCommunityIcons
+        name={ButtonName as MaterialCommunityIconsNameType}
+        size={20}
+        color="#fff"
+      />
 
       <AppText font="Medium" style={styles.buttonText}>
         {ButtonText}

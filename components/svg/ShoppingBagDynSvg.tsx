@@ -1,5 +1,4 @@
 import { ViewStyle } from "@expo/html-elements/build/primitives/View";
-import { Filter } from "lucide-react-native";
 import React from "react";
 import { StyleProp } from "react-native";
 import Svg, {
@@ -10,6 +9,7 @@ import Svg, {
   FeFlood,
   FeGaussianBlur,
   FeOffset,
+  Filter,
   G,
   Path,
 } from "react-native-svg";

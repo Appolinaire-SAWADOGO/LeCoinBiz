@@ -7,7 +7,7 @@ import {
   removeAdFromInfiniteList,
   showToast,
 } from "@/utils";
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 
@@ -21,17 +21,17 @@ export const useActivateAd = () => {
   ) => {
     if (!adId) {
       showToast("error", "Annonce introuvable.");
-      return;
+      return null;
     }
 
     if (!userId) {
-      return;
+      return null;
     }
 
     showToast("loading", "Traitement en cours.");
 
     try {
-      const activateAdFunction = firebasyeFunctions.httpsCallable("activateAd");
+      const activateAdFunction = firebaseFunctions.httpsCallable("activateAd");
       await activateAdFunction({ adId });
 
       const disabledAd = getAdToInfiniteList(
@@ -70,7 +70,7 @@ export const useActivateAd = () => {
       } else {
         showToast("error", "Une erreur est survenue.");
       }
-      return;
+      return null;
     }
   };
 

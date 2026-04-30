@@ -78,7 +78,7 @@ export function useSignInWithPhoneNumber(
 
   // Handle the button press
   async function handleSignInWithPhoneNumber() {
-    if (!phoneNumber) return;
+    if (!phoneNumber) return null;
 
     try {
       setIsLoading(true);

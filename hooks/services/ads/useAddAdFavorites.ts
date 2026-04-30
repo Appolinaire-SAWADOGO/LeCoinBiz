@@ -4,7 +4,7 @@ import {
   removeAdFromInfiniteList,
   showToast,
 } from "@/utils";
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 import { useCurrentUser } from "../auth/signIn/useCurrentUser";
@@ -15,15 +15,15 @@ export const useAddAdFavorites = () => {
   const userId = useCurrentUser()?.uid;
 
   const addAdFavorites = async (adId: string, ad: AnnouncementType) => {
-    if (!userId) return;
+    if (!userId) return null;
 
-    if (!adId) return;
+    if (!adId) return null;
 
     showToast("loading", "Traitement en cours.", 0);
 
     try {
       const addFavoriteFunction =
-        firebasyeFunctions.httpsCallable("addAdFavorite");
+        firebaseFunctions.httpsCallable("addAdFavorite");
       const result = await addFavoriteFunction({ adId });
 
       const { added } = result.data as { success: boolean; added: boolean };

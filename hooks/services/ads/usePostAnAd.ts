@@ -5,7 +5,7 @@ import {
   showToast,
   Timestamp,
 } from "@/utils";
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 import { PostAnAddSchema } from "@/zod/schema/postAnAd.schema";
 import { useQueryClient } from "@tanstack/react-query";
 import "react-native-get-random-values";
@@ -56,7 +56,7 @@ export const usePostAnAd = () => {
     }
 
     try {
-      const postAnAdCallable = firebasyeFunctions.httpsCallable<
+      const postAnAdCallable = firebaseFunctions.httpsCallable<
         {
           data: FormData;
         },

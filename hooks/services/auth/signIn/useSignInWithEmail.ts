@@ -33,7 +33,7 @@ export const useSignInWithEmail = () => {
     setEmail: React.Dispatch<React.SetStateAction<string>>,
     setPassword: React.Dispatch<React.SetStateAction<string>>,
   ) => {
-    if (!email || !isValidEmail(email) || !password) return;
+    if (!email || !isValidEmail(email) || !password) return null;
 
     const resetForm = () => {
       setEmail("");

@@ -7,7 +7,7 @@ import {
   removeAdFromInfiniteList,
   showToast,
 } from "@/utils";
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 
@@ -21,17 +21,17 @@ export const useDisableAd = () => {
   ) => {
     if (!adId) {
       showToast("error", "Annonce introuvable.");
-      return;
+      return null;
     }
 
     if (!userId) {
-      return;
+      return null;
     }
 
     showToast("loading", "Traitement en cours.");
 
     try {
-      const disableAdFn = firebasyeFunctions.httpsCallable("disableAd");
+      const disableAdFn = firebaseFunctions.httpsCallable("disableAd");
       await disableAdFn({ adId });
 
       const activateAd = getAdToInfiniteList(

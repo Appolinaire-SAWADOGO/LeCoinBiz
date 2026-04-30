@@ -1,7 +1,7 @@
 import AppText from "@/components/custom/AppText";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { ChevronRight } from "lucide-react-native";
 import React from "react";
 import {
   StyleProp,
@@ -35,9 +35,9 @@ export default function SectionHeaderText({
           onPress={() => router.navigate("/(root)/(category)/AllCategories")}
         >
           <AppText color={designSystem.colors.primary}>Voir tout</AppText>
-          <ChevronRight
-            width={12}
-            height={12}
+          <MaterialCommunityIcons
+            name="chevron-right"
+            size={16}
             color={designSystem.colors.primary}
           />
         </TouchableOpacity>

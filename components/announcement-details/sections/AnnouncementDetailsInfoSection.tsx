@@ -1,12 +1,10 @@
-import FreeDeliveryImage from "@/assets/images/filter-options/FreeDelevery.png";
-import NeufImage from "@/assets/images/filter-options/Neuf.png";
 import { subCategoryIcon } from "@/constants/categories";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AnnouncementType } from "@/types";
 import { getTimeSinceCreated } from "@/utils";
-import { Clock4, MapPin } from "lucide-react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import AppText from "../../custom/AppText";
 
 export default function AnnouncementDetailsInfoSection({
@@ -47,7 +45,7 @@ export default function AnnouncementDetailsInfoSection({
         {isFreeDelivery && (
           <View style={styles.tagWrapper}>
             <View style={styles.tag}>
-              <Image style={styles.tagImage} source={FreeDeliveryImage} />
+              <MaterialCommunityIcons name="package-variant-closed" size={18} />
               <AppText>Livraison gratuite</AppText>
             </View>
           </View>
@@ -56,7 +54,7 @@ export default function AnnouncementDetailsInfoSection({
         {isNew && (
           <View style={styles.tagWrapper}>
             <View style={styles.tag}>
-              <Image style={styles.tagImage} source={NeufImage} />
+              <MaterialCommunityIcons name="new-box" size={18} />
               <AppText>Neuf</AppText>
             </View>
           </View>
@@ -73,10 +71,9 @@ export default function AnnouncementDetailsInfoSection({
             marginTop: 12,
           }}
         >
-          <Image
-            source={subCategoryIcon(currentAnnouncement.subCategory)}
-            style={{ width: 20, height: 20 }}
-            resizeMode="contain"
+          <MaterialCommunityIcons
+            name={subCategoryIcon(currentAnnouncement.subCategory)}
+            size={18}
           />
           <AppText numberOfLines={1} style={{ flexShrink: 1 }}>
             {currentAnnouncement.category} › {currentAnnouncement.subCategory}
@@ -86,7 +83,7 @@ export default function AnnouncementDetailsInfoSection({
 
       {/* location */}
       <View style={styles.location}>
-        <MapPin size={16} />
+        <MaterialCommunityIcons name="map-marker-outline" size={18} />
         <AppText style={styles.locationText}>
           {currentAnnouncement.city}
         </AppText>
@@ -102,7 +99,7 @@ export default function AnnouncementDetailsInfoSection({
             marginTop: 12,
           }}
         >
-          <Clock4 width={16} height={16} />
+          <MaterialCommunityIcons name="eye-outline" size={18} />
           <AppText>{currentAnnouncement.stats.clicks} Clicks</AppText>
         </View>
       )}
@@ -116,7 +113,7 @@ export default function AnnouncementDetailsInfoSection({
           marginTop: 12,
         }}
       >
-        <Clock4 width={16} height={16} />
+        <MaterialCommunityIcons name="clock-outline" size={18} />
         <AppText>{getTimeSinceCreated(currentAnnouncement.createdAt)}</AppText>
       </View>
 

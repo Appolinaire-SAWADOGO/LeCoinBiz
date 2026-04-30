@@ -1,5 +1,5 @@
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { SearchIcon, X } from "lucide-react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, TextInput, TouchableOpacity } from "react-native";
 
@@ -34,7 +34,11 @@ export default function AppSearchInput({
       activeOpacity={activeOpacity}
       onPress={() => filtersSearchModalOpen?.()}
     >
-      <SearchIcon width={16} height={16} color={designSystem.colors.bigText} />
+      <MaterialCommunityIcons
+        name="magnify"
+        color={designSystem.colors.bigText}
+        size={20}
+      />
       <TextInput
         value={search}
         onSubmitEditing={async (e) => await handleSearch?.(e.nativeEvent.text)}
@@ -59,7 +63,7 @@ export default function AppSearchInput({
                 }
           }
         >
-          <X color={"white"} width={12} height={12} />
+          <MaterialCommunityIcons name="close" color={"white"} size={12} />
         </TouchableOpacity>
       )}
     </TouchableOpacity>

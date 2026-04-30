@@ -1,4 +1,3 @@
-import { Facebook, Mail, MessageCircle } from "lucide-react-native";
 import React from "react";
 import { Linking } from "react-native";
 import SettingElement from "../SettingElement";
@@ -9,7 +8,7 @@ export default function SettingContactSection() {
     <>
       <SettingsSectionContainer title=" Contact">
         <SettingElement
-          Icon={Mail}
+          icon="email"
           color="#7D5AFC"
           fill="none"
           label="Nous contacter par e-mail"
@@ -25,7 +24,7 @@ export default function SettingContactSection() {
           }
         />
         <SettingElement
-          Icon={MessageCircle}
+          icon="message-text"
           color="#2BB741"
           label="Nous contacter sur WhatsApp"
           onClick={() =>
@@ -38,8 +37,9 @@ export default function SettingContactSection() {
           }
         />
         <SettingElement
-          Icon={Facebook}
+          icon="facebook"
           color="#1877F2"
+          size={22}
           label="Nous suivre sur Facebook"
           onClick={() =>
             Linking.openURL("https://www.facebook.com/share/1Ae57kVgHY/").catch(

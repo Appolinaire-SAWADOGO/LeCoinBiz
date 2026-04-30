@@ -1,7 +1,8 @@
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { AdOptionsPickerType } from "@/types";
+import { AdOptionsPickerType, MaterialCommunityIconsNameType } from "@/types";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import { Image, ImageSourcePropType, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
   Checkbox,
   CheckboxIcon,
@@ -14,12 +15,12 @@ import AppText from "./AppText";
 export default function AppCheckbox({
   isChecked,
   setOptions,
-  image,
+  icon,
   label,
 }: {
   isChecked: () => boolean;
   setOptions: React.Dispatch<React.SetStateAction<AdOptionsPickerType>>;
-  image: ImageSourcePropType;
+  icon: MaterialCommunityIconsNameType;
   label: string;
 }) {
   const { designSystem } = useAppTheme();
@@ -35,7 +36,7 @@ export default function AppCheckbox({
         onChange={() => {
           setOptions((prev) => {
             return prev.map((item) =>
-              item.label === label ? { ...item, active: !item.active } : item
+              item.label === label ? { ...item, active: !item.active } : item,
             );
           });
         }}
@@ -58,7 +59,12 @@ export default function AppCheckbox({
           }}
         >
           <View style={styles.checkboxLabelContain}>
-            <Image source={image} style={styles.checkboxImage} />
+            <MaterialCommunityIcons
+              name={icon}
+              size={16}
+              style={styles.checkboxImage}
+              color={isChecked() ? designSystem.colors.primary : "#000"}
+            />
             <AppText
               color={isChecked() ? designSystem.colors.primary : "#000"}
               font={isChecked() ? "Medium" : "Regular"}
@@ -83,9 +89,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
   },
-  checkboxImage: {
-    width: 16,
-    height: 16,
-    resizeMode: "contain",
-  },
+  checkboxImage: {},
 });

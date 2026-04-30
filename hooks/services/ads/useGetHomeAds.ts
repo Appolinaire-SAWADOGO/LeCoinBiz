@@ -1,6 +1,6 @@
 import { AnnouncementType } from "@/types";
 import { getUserCity } from "@/utils";
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 
 type PageParam = {
   path: string;
@@ -22,7 +22,7 @@ export const useGetHomeAds = () => {
         return { ads: [], lastDoc: null, hasMore: false };
       }
 
-      const getHomeAdsCallable = firebasyeFunctions.httpsCallable("getHomeAds");
+      const getHomeAdsCallable = firebaseFunctions.httpsCallable("getHomeAds");
 
       const response = await getHomeAdsCallable({
         pageParam,

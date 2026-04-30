@@ -1,6 +1,6 @@
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { usePickVideo } from "@/hooks/usePickVideo";
-import { Plus, Video } from "lucide-react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import {
   StyleProp,
@@ -40,14 +40,18 @@ export default function PostAnAdAddVideoCard({
         style,
       ]}
     >
-      <Video strokeWidth={1.3} size={36} color={designSystem.colors.bigText} />
+      <MaterialCommunityIcons
+        name="video-outline"
+        size={36}
+        color={designSystem.colors.bigText}
+      />
       <View
         style={[
           styles.addIcon,
           { backgroundColor: designSystem.colors.smallText },
         ]}
       >
-        <Plus strokeWidth={1.3} color="#fff" />
+        <MaterialCommunityIcons name="plus" size={25} color={"#fff"} />
       </View>
     </TouchableOpacity>
   );

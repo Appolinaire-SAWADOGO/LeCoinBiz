@@ -77,7 +77,7 @@ export default function PostAnAdPhotosSection({
       </View>
 
       {/* Indication limite */}
-      <AppText style={{ fontSize: 11, color: "#999", marginTop: -8 }}>
+      <AppText style={{ fontSize: 11, color: "#999" }}>
         {`Max ${maxImages} photos${!video ? " + 1 vidéo (30 sec max)" : ""}`}
       </AppText>
     </PostAnAdSection>

@@ -24,7 +24,7 @@ export const createUserWithPhone = onCall(
         .set({
           location: {
             country: "burkina faso",
-            city: "ouagadougou",
+            city: "ouagadougou", // a mettre la valeur originale
           },
           authMethod: "PHONE_NUMBER",
           phoneNumber,
@@ -39,4 +39,3 @@ export const createUserWithPhone = onCall(
     }
   },
 );
-

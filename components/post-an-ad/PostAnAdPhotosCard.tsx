@@ -1,5 +1,6 @@
+import { useAppTheme } from "@/hooks/useAppTheme";
 import { usePickImage } from "@/hooks/usePickImage";
-import { Edit, Trash } from "lucide-react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -15,6 +16,8 @@ export default function PostAnAdPhotosCard({
   imgNumber: number;
 }) {
   const { pickImage } = usePickImage();
+
+  const { designSystem } = useAppTheme();
 
   const editPhoto = () => {
     pickImage((img: string) => {
@@ -38,14 +41,22 @@ export default function PostAnAdPhotosCard({
           activeOpacity={0.5}
           style={[styles.icon, { backgroundColor: "#fff" }]}
         >
-          <Edit strokeWidth={1.5} size={20} color="#000" />
+          <MaterialCommunityIcons
+            name="pencil"
+            size={20}
+            color={designSystem.colors.bigText}
+          />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => removeImg()}
           activeOpacity={0.5}
           style={[styles.icon, { backgroundColor: "red" }]}
         >
-          <Trash strokeWidth={1.5} size={20} color="white" />
+          <MaterialCommunityIcons
+            name="trash-can-outline"
+            size={20}
+            color={"white"}
+          />
         </TouchableOpacity>
       </View>
     </View>

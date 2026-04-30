@@ -59,7 +59,7 @@ export const useSignUpWithEmail = () => {
       !validateUsername(userName).isValid ||
       !isValidPassword(userName)
     )
-      return;
+      return null;
 
     try {
       setIsLoading(true);

@@ -88,6 +88,8 @@ export default function AnnouncementDetailsSimilarsAdSection({
         maxResults: 5,
       }),
     enabled: !!ad,
+    retry: false,
+    networkMode: "offlineFirst",
   });
 
   return (

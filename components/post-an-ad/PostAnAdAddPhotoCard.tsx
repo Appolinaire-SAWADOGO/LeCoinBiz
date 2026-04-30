@@ -1,6 +1,6 @@
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { usePickImage } from "@/hooks/usePickImage";
-import { Camera, Plus } from "lucide-react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import {
   StyleProp,
@@ -41,7 +41,11 @@ export default function PostAnAdAddPhotoCard({
         style,
       ]}
     >
-      <Camera strokeWidth={1.3} size={36} color={designSystem.colors.bigText} />
+      <MaterialCommunityIcons
+        name="camera-outline"
+        size={36}
+        color={designSystem.colors.bigText}
+      />
       <View
         style={[
           styles.addImage,
@@ -52,7 +56,7 @@ export default function PostAnAdAddPhotoCard({
           },
         ]}
       >
-        <Plus strokeWidth={1.3} color={"#fff"} />
+        <MaterialCommunityIcons name="plus" size={25} color={"#fff"} />
       </View>
     </TouchableOpacity>
   );

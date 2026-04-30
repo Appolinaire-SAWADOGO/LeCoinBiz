@@ -65,7 +65,7 @@ export const getSimilarAds = onCall(
         }));
       };
 
-      // STRATÉGIE 1 : Catégorie + Sous-catégorie
+      // STRATÉGIE 1 : Catégorie + Sous-catégorie + recherche
       const filters1 = [
         `NOT objectID:${currentAdId}`,
         `NOT userId:${userId}`,
@@ -80,37 +80,53 @@ export const getSimilarAds = onCall(
         maxResults,
       );
 
-      // STRATÉGIE 2 : Catégorie seulement
+      // STRATÉGIE 2 : Catégorie + Sous-catégorie + sans recherche
       if (similarAds.length < maxResults) {
         const remaining = maxResults - similarAds.length;
         const filters2 = [
           `NOT objectID:${currentAdId}`,
           `NOT userId:${userId}`,
           `category:"${category}"`,
+          `subCategory:"${subCategory}"`,
           `status:ACTIVATED`,
         ].join(" AND ");
 
-        const newAds = await runSearch(
-          `${title || ""} ${description || ""}`.trim(),
-          filters2,
-          remaining,
-        );
+        const newAds = await runSearch("", filters2, remaining);
+
         similarAds = [
           ...similarAds,
           ...newAds.filter((a) => !similarAds.find((s) => s.id === a.id)),
         ];
       }
 
-      // STRATÉGIE 3 : Annonces aléatoires
+      // STRATÉGIE 3 : Catégorie seulement sans recherche
       if (similarAds.length < maxResults) {
         const remaining = maxResults - similarAds.length;
         const filters3 = [
           `NOT objectID:${currentAdId}`,
           `NOT userId:${userId}`,
+          `category:"${category}"`,
           `status:ACTIVATED`,
         ].join(" AND ");
 
         const newAds = await runSearch("", filters3, remaining);
+
+        similarAds = [
+          ...similarAds,
+          ...newAds.filter((a) => !similarAds.find((s) => s.id === a.id)),
+        ];
+      }
+
+      // STRATÉGIE 4 : Annonces aléatoires
+      if (similarAds.length < maxResults) {
+        const remaining = maxResults - similarAds.length;
+        const filters4 = [
+          `NOT objectID:${currentAdId}`,
+          `NOT userId:${userId}`,
+          `status:ACTIVATED`,
+        ].join(" AND ");
+
+        const newAds = await runSearch("", filters4, remaining);
         similarAds = [
           ...similarAds,
           ...newAds.filter((a) => !similarAds.find((s) => s.id === a.id)),

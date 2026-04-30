@@ -1,5 +1,5 @@
 import { AnnouncementType } from "@/types";
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 import { useCurrentUser } from "../auth/signIn/useCurrentUser";
 
 type PageParam = { path: string } | null | undefined;
@@ -22,7 +22,7 @@ export const useGetFavoriteAdsByUserId = () => {
     }
 
     try {
-      const getFavoritesCallable = firebasyeFunctions.httpsCallable<
+      const getFavoritesCallable = firebaseFunctions.httpsCallable<
         { pageParam?: PageParam },
         GetFavoritesResult
       >("getFavoriteAdsByUserId");

@@ -2,7 +2,7 @@ import { DEFAULT_PROFILE_IMG } from "@/constants";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { UserType } from "@/types";
 import { getUserAccountTimeSinceCreated } from "@/utils";
-import { CalendarClock, CornerDownRight, MapPin } from "lucide-react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { Image, StyleSheet, View } from "react-native";
 import AppText from "../custom/AppText";
@@ -29,20 +29,28 @@ export default function MerchantInfoSection({
         </AppText>
 
         <View style={styles.flex}>
-          <MapPin color={designSystem.colors.bigText} width={15} height={15} />
+          <MaterialCommunityIcons
+            name="map-marker-outline"
+            color={designSystem.colors.bigText}
+            size={17}
+          />
           <AppText>Ouagadougou, Burkina</AppText>
         </View>
 
         <View style={styles.flex}>
-          <CornerDownRight width={15} height={15} />
+          <MaterialCommunityIcons
+            name="tag-outline"
+            size={16}
+            color={designSystem.colors.bigText}
+          />
           <AppText>{adsCount} Annonces</AppText>
         </View>
 
         <View style={styles.flex}>
-          <CalendarClock
+          <MaterialCommunityIcons
+            name="clock-outline"
+            size={16}
             color={designSystem.colors.bigText}
-            width={15}
-            height={15}
           />
           <AppText>{getUserAccountTimeSinceCreated(data.createdAt)}</AppText>
         </View>

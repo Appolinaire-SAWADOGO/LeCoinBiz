@@ -1,5 +1,5 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { ArrowLeft } from "lucide-react-native";
 import React from "react";
 import {
   ScrollView,
@@ -46,7 +46,11 @@ export default function AuthPagesContainer({
             }}
             hitSlop={10}
           >
-            <ArrowLeft size={22} color={iconColor} />
+            <MaterialCommunityIcons
+              name="arrow-left"
+              size={25}
+              color={iconColor}
+            />
           </TouchableOpacity>
           <View />
           <View />

@@ -1,5 +1,5 @@
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { CircleCheck } from "lucide-react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { View } from "react-native";
 import AppText from "../../custom/AppText";
@@ -19,7 +19,11 @@ export default function AuthPasswordInputCheckCard({
 
   return (
     <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-      <CircleCheck height={19} width={19} color={color} />
+      <MaterialCommunityIcons
+        name="check-circle-outline"
+        size={19}
+        color={color}
+      />
       <AppText fontSize={12} color={color}>
         {label}
       </AppText>

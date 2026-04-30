@@ -1,6 +1,6 @@
 import AppText from "@/components/custom/AppText";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ResizeMode, Video } from "expo-av";
-import { Trash } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -32,7 +32,11 @@ export default function PostAnAdVideoCard({
           activeOpacity={0.5}
           style={styles.deleteBtn}
         >
-          <Trash strokeWidth={1.5} size={20} color="white" />
+          <MaterialCommunityIcons
+            name="trash-can-outline"
+            size={20}
+            color={"white"}
+          />
         </TouchableOpacity>
       </View>
     </View>

@@ -3,9 +3,9 @@ import { useAppTheme } from "@/hooks/useAppTheme";
 import { useAddUsernameModalStore } from "@/store/useAddUsernameModalStore";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
 import { getCurrentUserAuthMethod } from "@/utils/auth";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { EventArg } from "@react-navigation/native";
 import { Tabs } from "expo-router";
-import { Heart, HomeIcon, Settings, User } from "lucide-react-native";
 import React from "react";
 import { Platform } from "react-native";
 
@@ -66,7 +66,13 @@ export default function TabLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
-            <HomeIcon size={24} fill={fill(color)} color={color} />
+            <MaterialCommunityIcons
+              name="home-outline"
+              size={29}
+              fill={fill(color)}
+              color={color}
+            />
+            // <HomeIcon size={24} fill={fill(color)} color={color} />
           ),
           tabBarLabelStyle: {
             fontFamily: "BasisGrotesqueArabicPro-Regular",
@@ -74,12 +80,19 @@ export default function TabLayout() {
           },
         }}
       />
+
       <Tabs.Screen
         name="Favorites"
         options={{
           title: "Favories",
           tabBarIcon: ({ color }) => (
-            <Heart size={24} fill={fill(color)} color={color} />
+            <MaterialCommunityIcons
+              name="heart-outline"
+              size={26}
+              fill={fill(color)}
+              color={color}
+            />
+            // <Heart size={24} fill={fill(color)} color={color} />
           ),
           tabBarLabelStyle: {
             fontFamily: "BasisGrotesqueArabicPro-Regular",
@@ -96,7 +109,13 @@ export default function TabLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color }) => (
-            <User size={24} fill={fill(color)} color={color} />
+            <MaterialCommunityIcons
+              name="account-outline"
+              size={28}
+              fill={fill(color)}
+              color={color}
+            />
+            // <User size={24} fill={fill(color)} color={color} />
           ),
           tabBarLabelStyle: {
             fontFamily: "BasisGrotesqueArabicPro-Regular",
@@ -107,12 +126,19 @@ export default function TabLayout() {
           tabPress: (e) => onPress(e, navigation, true),
         })}
       />
+
       <Tabs.Screen
         name="Settings"
         options={{
           title: "Parametres",
           tabBarIcon: ({ color }) => (
-            <Settings size={24} fill={fill(color)} color={color} />
+            // <Settings size={24} fill={fill(color)} color={color} />
+            <MaterialCommunityIcons
+              name="cog-outline"
+              size={26}
+              fill={fill(color)}
+              color={color}
+            />
           ),
           tabBarLabelStyle: {
             fontFamily: "BasisGrotesqueArabicPro-Regular",

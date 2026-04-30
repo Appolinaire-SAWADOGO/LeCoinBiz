@@ -6,9 +6,9 @@ import { useGetSuggestionSearchAds } from "@/hooks/services/ads/useGetSuggestion
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AdOptionsPickerType } from "@/types";
 import { addRecentSearch } from "@/utils";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowUpRight, X } from "lucide-react-native";
 import React, { useEffect } from "react";
 import { TouchableOpacity, View } from "react-native";
 import AppFullModal from "../AppFullModal";
@@ -95,7 +95,11 @@ export default function FiltersSearchModal({
             }}
             hitSlop={10}
           >
-            <X size={22} color={designSystem.colors.bigText} />
+            <MaterialCommunityIcons
+              name="close"
+              size={24}
+              color={designSystem.colors.bigText}
+            />
           </TouchableOpacity>
 
           <AppSearchInput
@@ -145,7 +149,7 @@ export default function FiltersSearchModal({
                   }}
                 >
                   <AppText fontSize={13}>{recSearch}</AppText>
-                  <ArrowUpRight size={16} strokeWidth={1.5} />
+                  <MaterialCommunityIcons name="arrow-top-right" size={17} />
                 </TouchableOpacity>
               ))}
             </View>
@@ -166,7 +170,7 @@ export default function FiltersSearchModal({
                   }}
                 >
                   <AppText fontSize={13}>{sugSearch}</AppText>
-                  <ArrowUpRight size={16} strokeWidth={1.5} />
+                  <MaterialCommunityIcons name="arrow-top-right" size={17} />
                 </TouchableOpacity>
               ))}
             </View>

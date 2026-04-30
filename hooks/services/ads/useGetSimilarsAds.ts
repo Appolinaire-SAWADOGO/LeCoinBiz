@@ -1,5 +1,5 @@
 import { AnnouncementType } from "@/types";
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 
 interface SimilarAdsParams {
   currentAdId: string;
@@ -28,7 +28,7 @@ export const useGetSimilarAds = () => {
     maxResults = 10,
   }: SimilarAdsParams): Promise<AnnouncementsType> => {
     try {
-      const getSimilarAdsCallable = firebasyeFunctions.httpsCallable<
+      const getSimilarAdsCallable = firebaseFunctions.httpsCallable<
         SimilarAdsParams,
         SimilarAdsResponse
       >("getSimilarAds");

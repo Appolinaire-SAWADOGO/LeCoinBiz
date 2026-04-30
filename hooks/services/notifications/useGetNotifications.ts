@@ -1,6 +1,6 @@
 import { useNotificationStore } from "@/store/useNotificationStore";
 import { NotificationType } from "@/types";
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const useGetNotifications = () => {
@@ -9,7 +9,7 @@ export const useGetNotifications = () => {
   const getNotifications = async () => {
     try {
       const getNotificationsFn =
-        firebasyeFunctions.httpsCallable("getNotifications");
+        firebaseFunctions.httpsCallable("getNotifications");
       const rlst = (await getNotificationsFn()) as any;
       const notifications = rlst.data.notifications as NotificationType[];
 

@@ -7,12 +7,13 @@ interface CreateUserParams {
   uid: string;
   userName: string;
   email: string;
+  city: string;
 }
 
 export const createUserWithEmail = onCall(
   { consumeAppCheckToken: false, region: "europe-southwest1" },
   async (request) => {
-    const { uid, userName, email } = request.data as CreateUserParams;
+    const { uid, userName, email, city } = request.data as CreateUserParams;
 
     if (!uid || !userName || !email) {
       throw new HttpsError("invalid-argument", "Paramètres manquants");
@@ -25,7 +26,7 @@ export const createUserWithEmail = onCall(
         .set({
           userName,
           email,
-          location: { country: "burkina faso", city: "ouagadougou" },
+          location: { country: "burkina faso", city: city || "ouagadougou" },
           authMethod: "EMAIL_PASSWORD",
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
           updatedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -38,4 +39,3 @@ export const createUserWithEmail = onCall(
     }
   },
 );
-

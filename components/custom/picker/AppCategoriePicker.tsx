@@ -1,7 +1,7 @@
-import AllCategoriesImage from "@/assets/images/categories/Menu.png";
 import { CATEGORIES } from "@/constants/categories";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import { Image, StyleProp, ViewStyle } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 import AppDropDownPicker from "./AppDropDownPicker";
 
 export default function AppCategoriePicker({
@@ -30,10 +30,10 @@ export default function AppCategoriePicker({
           label: "Toutes les catégories",
           value: "Toutes les catégories",
           icon: () => (
-            <Image
-              source={AllCategoriesImage}
-              style={{ width: 20, height: 20, marginRight: 10 }}
-              resizeMode="contain"
+            <MaterialCommunityIcons
+              name="view-grid"
+              size={20}
+              style={{ marginRight: 10 }}
             />
           ),
         },
@@ -41,10 +41,10 @@ export default function AppCategoriePicker({
           label: category.name,
           value: category.name,
           icon: () => (
-            <Image
-              source={category.icon}
-              style={{ width: 20, height: 20, marginRight: 10 }}
-              resizeMode="contain"
+            <MaterialCommunityIcons
+              name={category.icon}
+              size={20}
+              style={{ marginRight: 10 }}
             />
           ),
         })),
@@ -54,10 +54,10 @@ export default function AppCategoriePicker({
         label: category.name,
         value: category.name,
         icon: () => (
-          <Image
-            source={category.icon}
-            style={{ width: 20, height: 20, marginRight: 10 }}
-            resizeMode="contain"
+          <MaterialCommunityIcons
+            name={category.icon}
+            size={20}
+            style={{ marginRight: 10 }}
           />
         ),
       })),

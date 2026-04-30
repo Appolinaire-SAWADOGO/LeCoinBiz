@@ -1,5 +1,4 @@
 import { router } from "expo-router";
-import { ArrowLeft } from "lucide-react-native";
 import React from "react";
 import {
   StyleProp,
@@ -11,6 +10,7 @@ import {
 import AppText from "./custom/AppText";
 
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function PageHeader({
   name,
@@ -45,8 +45,9 @@ export default function PageHeader({
           }}
           hitSlop={10}
         >
-          <ArrowLeft
-            size={22}
+          <MaterialCommunityIcons
+            name="arrow-left"
+            size={24}
             color={iconColor || designSystem.colors.bigText}
           />
         </TouchableOpacity>

@@ -1,5 +1,5 @@
 import { AdStatusType } from "@/types";
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 
 type GetUserAdsCountResult = { count: number };
 
@@ -9,7 +9,7 @@ export const useGetUserAdsCount = () => {
     status: AdStatusType = "ACTIVATED",
   ) => {
     try {
-      const getUserAdsCountCallable = firebasyeFunctions.httpsCallable<
+      const getUserAdsCountCallable = firebaseFunctions.httpsCallable<
         { userId: string; status?: AdStatusType },
         GetUserAdsCountResult
       >("getUserAdsCount");

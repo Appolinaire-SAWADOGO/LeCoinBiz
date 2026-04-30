@@ -1,4 +1,5 @@
 import AppText from "@/components/custom/AppText";
+import { TEMP_PUB_OPTIONS } from "@/constants";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
@@ -16,18 +17,20 @@ export default function FilterModalFormTemPubSection({
     <>
       <AppText style={styles.label}>Temps de publication</AppText>
       <View style={styles.timeFilterContainer}>
-        {[
-          "Toutes les annonces",
-          "Aujourd'hui",
-          "Moins de 3 jours",
-          "Moins de 7 jours",
-        ].map((label, id) => {
-          const isSelected = temPub === label;
+        {Object.values(TEMP_PUB_OPTIONS).map((label, id) => {
+          const TempPubOptionsKey = Object.keys(TEMP_PUB_OPTIONS).find(
+            (key) =>
+              TEMP_PUB_OPTIONS[key as keyof typeof TEMP_PUB_OPTIONS] === label,
+          );
+
+          const isSelected = temPub === TempPubOptionsKey;
 
           return (
             <TouchableOpacity
               key={id}
-              onPress={() => setTemPub!(label)}
+              onPress={() =>
+                setTemPub!(TempPubOptionsKey as keyof typeof TEMP_PUB_OPTIONS)
+              }
               style={[
                 styles.timeButton,
                 {

@@ -1,10 +1,22 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { LucideIcon } from "lucide-react-native";
 import { UseFormReset } from "react-hook-form";
-import { ImageSourcePropType } from "react-native";
+
+export type MaterialCommunityIconsNameType = React.ComponentProps<
+  typeof MaterialCommunityIcons
+>["name"];
 
 export type CategoriesType = {
   id: number;
   name: string;
-  icon: ImageSourcePropType;
+  icon: MaterialCommunityIconsNameType;
+}[];
+
+export type SubCategoriesType = {
+  id: number;
+  categoryId: number;
+  name: string;
+  icon: MaterialCommunityIconsNameType;
 }[];
 
 export type AdStatusType = "ACTIVATED" | "PENDING" | "DISABLED";
@@ -25,7 +37,7 @@ export type AnnouncementType = {
     active: boolean;
   }[];
   images: string[];
-  video?: string; // ← NOUVEAU
+  video?: string;
   stats: {
     clicks: number;
     favorites: number;
@@ -104,19 +116,19 @@ export type NotificationType = {
 
 export type SortByType = {
   name: string;
-  icon: ImageSourcePropType;
+  icon: LucideIcon;
 }[];
 
 export type BurkinaCitiesType = string[];
 
 export type FilterOptionsType = {
   label: "Annonces Populaire" | "Livraison Gratuite" | "Neuf";
-  image: ImageSourcePropType;
+  icon: MaterialCommunityIconsNameType;
 }[];
 
 export type AdOptionsType = {
   label: "Livraison Gratuite" | "Neuf";
-  image: ImageSourcePropType;
+  icon: MaterialCommunityIconsNameType;
 }[];
 
 export type AdOptionsPickerType = {

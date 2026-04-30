@@ -5,9 +5,9 @@ import { APP_NAME } from "@/constants";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useFilterStatesStore } from "@/store/useFilterStatesStore";
 import { useNotificationStore } from "@/store/useNotificationStore";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { BellRing, Search, SlidersHorizontal } from "lucide-react-native";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import SectionHeaderText from "../SectionHeaderText";
@@ -72,7 +72,11 @@ export default function HomeHeaderSection() {
               }}
               style={styles.notificationIcon}
             >
-              <BellRing size={18} color={"#fff"} />
+              <MaterialCommunityIcons
+                name="bell-ring-outline"
+                size={18}
+                color={"#fff"}
+              />
 
               {/* Badge */}
               {hasNotifications && <View style={styles.dot} />}
@@ -92,7 +96,11 @@ export default function HomeHeaderSection() {
               }}
               style={styles.searchChip}
             >
-              <Search size={18} color={designSystem.colors.bigText} />
+              <MaterialCommunityIcons
+                name="magnify"
+                color={designSystem.colors.bigText}
+                size={20}
+              />
               <AppText
                 style={[
                   styles.searchText,
@@ -107,8 +115,9 @@ export default function HomeHeaderSection() {
               style={[styles.filterButton]}
               onPress={() => openFilterModal()}
             >
-              <SlidersHorizontal
-                size={16}
+              <MaterialCommunityIcons
+                name="tune"
+                size={18}
                 color={designSystem.colors.bigText}
               />
               <AppText
@@ -190,7 +199,6 @@ const styles = StyleSheet.create({
   },
   searchText: {
     fontSize: 15,
-
     marginLeft: 8,
   },
   filterButton: {

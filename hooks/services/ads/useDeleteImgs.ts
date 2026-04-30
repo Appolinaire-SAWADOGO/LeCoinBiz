@@ -1,13 +1,13 @@
 import { showToast } from "@/utils";
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 import Toast from "react-native-toast-message";
 
 export const useDeleteImgs = () => {
   const deleteImgs = async (imgs: string[]) => {
-    if (!imgs || imgs.length === 0) return;
+    if (!imgs || imgs.length === 0) return null;
 
     try {
-      const deleteImgsFn = firebasyeFunctions.httpsCallable("deleteImgs");
+      const deleteImgsFn = firebaseFunctions.httpsCallable("deleteImgs");
       await deleteImgsFn({ imgs });
     } catch (error) {
       console.error("Erreur suppression images :", error);

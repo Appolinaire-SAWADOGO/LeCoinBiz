@@ -2,7 +2,7 @@ import { DEFAULT_PROFILE_IMG } from "@/constants";
 import { useEditProfile } from "@/hooks/services/user/useEditProfile";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { usePickImage } from "@/hooks/usePickImage";
-import { Edit3, Trash2 } from "lucide-react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import AppText from "../custom/AppText";
@@ -44,7 +44,11 @@ export default function EditProfileImageSection({
           style={styles.editBadge}
         >
           <Text style={styles.editText}>
-            {value ? <Trash2 strokeWidth={1.3} /> : <Edit3 strokeWidth={1.3} />}
+            {value ? (
+              <MaterialCommunityIcons name="trash-can" size={18} />
+            ) : (
+              <MaterialCommunityIcons name="pencil" size={18} />
+            )}
           </Text>
         </TouchableOpacity>
       </TouchableOpacity>

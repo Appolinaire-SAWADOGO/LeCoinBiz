@@ -4,7 +4,7 @@ import { showToast } from "@/utils";
 import {} from "@/utils/auth";
 import { validateUsername } from "@/utils/auth/validation";
 import { authEvents } from "@/utils/EventEmitter";
-import firestore from "@react-native-firebase/firestore";
+import { firebaseFunctions } from "@/utils/firebase";
 import React from "react";
 import { useCurrentUser } from "../signIn/useCurrentUser";
 
@@ -18,12 +18,12 @@ export const useAddUserName = () => {
   const currentUser = useCurrentUser();
 
   const addUserName = async (userName: string) => {
-    if (!userName || !validateUsername(userName).isValid) return;
+    if (!userName || !validateUsername(userName).isValid) return null;
 
     const userUuid = currentUser?.uid;
     const userPhoneNumber = currentUser?.phoneNumber;
 
-    if (!userUuid || !userPhoneNumber) return;
+    if (!userUuid || !userPhoneNumber) return null;
 
     try {
       setIsLoading(true);
@@ -32,7 +32,9 @@ export const useAddUserName = () => {
       await currentUser.reload();
       authEvents.emit("profile_updated");
 
-      await firestore().collection("Users").doc(userUuid).update({
+      const httpsCallable = firebaseFunctions.httpsCallable("editUserProfile");
+
+      await httpsCallable({
         userName: userName,
       });
 

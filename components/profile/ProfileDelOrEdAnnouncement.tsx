@@ -1,13 +1,6 @@
 import AppDropDownPicker from "@/components/custom/picker/AppDropDownPicker";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { router } from "expo-router";
-import {
-  Edit3,
-  EllipsisVertical,
-  Eye,
-  EyeOff,
-  Trash,
-} from "lucide-react-native";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -15,6 +8,7 @@ import { useActivateAd } from "@/hooks/services/ads/useActivateAd";
 import { useDeleteAd } from "@/hooks/services/ads/useDeleteAd";
 import { useDisableAd } from "@/hooks/services/ads/useDisableAd";
 import { AdStatusType, AnnouncementType } from "@/types";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AppText from "../custom/AppText";
 import AppCenterModal from "../modals/AppCenterModal";
 
@@ -47,11 +41,10 @@ export default function ProfileDelOrEdAnnouncement({
     setIsModalOpen(true);
   };
 
-  const actions = [
+  const actions: any[] = [
     {
       label: "Modifier",
       value: "edit",
-      icon: <Edit3 size={14} color={designSystem.colors.primary} />,
       onPress: () =>
         router.navigate({
           pathname: "/(root)/(announcement)/PostAnAd",
@@ -67,7 +60,6 @@ export default function ProfileDelOrEdAnnouncement({
           {
             label: "Désactiver",
             value: "disable",
-            icon: <EyeOff size={14} color="#dc3545" />,
             onPress: async () => await disableAd(adId, ad.userId, "NORMAL"),
           },
         ]
@@ -78,7 +70,6 @@ export default function ProfileDelOrEdAnnouncement({
           {
             label: "Réactiver",
             value: "reactivate",
-            icon: <Eye size={14} color={designSystem.colors.primary} />,
             onPress: async () => await activateAd(adId, ad.userId, "NORMAL"),
           },
         ]
@@ -89,7 +80,6 @@ export default function ProfileDelOrEdAnnouncement({
           {
             label: "Supprimer",
             value: "delete",
-            icon: <Trash size={14} color="#dc3545" />,
             onPress: () =>
               handleActionWithWarning(
                 async () =>
@@ -155,7 +145,11 @@ export default function ProfileDelOrEdAnnouncement({
       <View style={styles.wrapper}>
         {/* Bouton menu */}
         <TouchableOpacity style={styles.menuButton} onPress={handleToggle}>
-          <EllipsisVertical size={16} color={designSystem.colors.bigText} />
+          <MaterialCommunityIcons
+            name="dots-vertical"
+            size={18}
+            color={designSystem.colors.bigText}
+          />
         </TouchableOpacity>
 
         {/* Dropdown custom */}

@@ -1,10 +1,10 @@
 import { AnnouncementType } from "@/types";
-import { firebasyeFunctions } from "@/utils/firebase";
+import { firebaseFunctions } from "@/utils/firebase";
 
 export const useGetAdById = () => {
   const getAdById = async (adId: string): Promise<AnnouncementType | null> => {
     try {
-      const getAdFn = firebasyeFunctions.httpsCallable<
+      const getAdFn = firebaseFunctions.httpsCallable<
         { adId: string },
         { ad: AnnouncementType | null }
       >("getAdById");

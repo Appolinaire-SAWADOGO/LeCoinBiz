@@ -180,7 +180,7 @@ export default function PostAnAd() {
               <PostAnAdSection
                 keyboardType={"numeric"}
                 label="Prix"
-                maxLength={8}
+                maxLength={9}
                 placeholder="Ecrivez le prix de l'annonce"
                 onChangeText={onChange}
                 value={value?.toString()}

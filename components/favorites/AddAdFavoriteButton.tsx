@@ -4,8 +4,8 @@ import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
 import { AnnouncementType } from "@/types";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
-import { Heart } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
@@ -69,20 +69,24 @@ export default function AddAdFavoriteButton({
       disabled={isLoading}
     >
       {fromAnnouncementCard ? (
-        <Heart
-          size={16}
+        <MaterialCommunityIcons
+          name={isSelected ? "heart" : "heart-outline"}
+          size={17}
           color={
             isSelected
               ? designSystem.colors.primary
               : designSystem.colors.bigText
           }
-          fill={isSelected ? designSystem.colors.primary : "none"}
         />
       ) : (
-        <Heart
-          fill={isSelected ? designSystem.colors.primary : "none"}
-          size={20}
-          color={designSystem.colors.bigText}
+        <MaterialCommunityIcons
+          name={isSelected ? "heart" : "heart-outline"}
+          size={21}
+          color={
+            isSelected
+              ? designSystem.colors.primary
+              : designSystem.colors.bigText
+          }
         />
       )}
     </TouchableOpacity>

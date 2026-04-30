@@ -1,6 +1,7 @@
 import { subCategories } from "@/constants/categories";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import { Image, StyleProp, ViewStyle } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 import AppDropDownPicker from "./AppDropDownPicker";
 
 export default function AppSubCategoriePicker({
@@ -26,10 +27,10 @@ export default function AppSubCategoriePicker({
     label: name,
     value: name,
     icon: () => (
-      <Image
-        source={icon}
-        style={{ width: 23, height: 23, marginRight: 10 }}
-        resizeMode="contain"
+      <MaterialCommunityIcons
+        name={icon}
+        size={20}
+        style={{ marginRight: 10 }}
       />
     ),
   }));

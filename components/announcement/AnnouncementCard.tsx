@@ -2,8 +2,8 @@ import AppText from "@/components/custom/AppText";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AnnouncementType } from "@/types";
 import { getTimeSinceCreated, getTimeSinceMs, Timestamp } from "@/utils";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { Clock3, Eye, MapPin } from "lucide-react-native";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import AddAdFavoriteButton from "../favorites/AddAdFavoriteButton";
@@ -76,7 +76,11 @@ export default function AnnouncementCard({
 
         {/* city */}
         <View style={styles.cityRow}>
-          <MapPin size={14} color="#888" />
+          <MaterialCommunityIcons
+            name="map-marker-outline"
+            color="#888"
+            size={16}
+          />
           <AppText fontSize={12} color={designSystem.colors.subText}>
             {ad?.city}
           </AppText>
@@ -85,7 +89,7 @@ export default function AnnouncementCard({
         {/* Clicks */}
         {useCase === "ProfilePage" && (
           <View style={styles.viewsRow}>
-            <Eye size={14} color="#888" />
+            <MaterialCommunityIcons name="eye-outline" color="#888" size={16} />
             <AppText fontSize={12} color={designSystem.colors.subText}>
               {ad?.stats.clicks} Clicks
             </AppText>
@@ -93,7 +97,7 @@ export default function AnnouncementCard({
         )}
 
         <View style={styles.dateRow}>
-          <Clock3 size={14} color="#888" />
+          <MaterialCommunityIcons name="clock-outline" color="#888" size={16} />
           <AppText
             style={{ flexShrink: 1 }}
             fontSize={12}
