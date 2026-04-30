@@ -34,7 +34,7 @@ export const useGetFavoriteAdsByUserId = () => {
         "Erreur lors de la récupération des favoris de l'utilisateur :",
         error,
       );
-      return { ads: [], lastDoc: null, hasMore: false };
+      throw error;
     }
   };
 

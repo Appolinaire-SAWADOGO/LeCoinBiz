@@ -78,7 +78,7 @@ export default function Notifications() {
         onBack={() => router.replace("/(tabs)/Home")}
       />
 
-      {!isLoading && !isFetching && data && data.length === 0 && (
+      {!isLoading && !isFetching && (data?.length ?? 0) === 0 && (
         <NoData
           style={{ paddingTop: "40%" }}
           text="Vous n'avez aucune notification pour le moment."
@@ -86,7 +86,7 @@ export default function Notifications() {
       )}
 
       <FlatList
-        data={data}
+        data={data ?? []}
         contentContainerStyle={{
           paddingHorizontal: 20,
           paddingVertical: 20,

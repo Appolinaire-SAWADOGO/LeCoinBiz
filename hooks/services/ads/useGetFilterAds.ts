@@ -37,7 +37,7 @@ export const useGetFilterAds = () => {
       return result.data;
     } catch (error) {
       console.error("getFilterAds error:", error);
-      return { ads: [], lastDoc: 0, hasMore: false, totalHits: 0 };
+      throw error;
     }
   };
 

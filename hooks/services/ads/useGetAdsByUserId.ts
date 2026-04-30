@@ -34,7 +34,7 @@ export const useGetAdsByUserId = () => {
       return result.data;
     } catch (error) {
       console.error("getAdsByUserId error:", error);
-      return { ads: [], lastCreatedAt: null, hasMore: false };
+      throw error;
     }
   };
 

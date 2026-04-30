@@ -239,8 +239,7 @@ export default function Profile() {
     desabledAdsCountIsLoading ||
     pendingAdsCountIsLoading;
 
-  const isLoading =
-    userIsLoading || adsCountIsLoading || activatedAdsIsLoading || !userData;
+  const isLoading = userIsLoading || adsCountIsLoading || activatedAdsIsLoading;
 
   const ads = useMemo(() => {
     if (contentHeadSelected === 0) return allActivatedAds;
@@ -346,11 +345,11 @@ export default function Profile() {
           <>
             <ProfileTitleSection
               user={userData as UserType}
-              isLoading={isLoading}
+              isLoading={isLoading || !userData}
             />
 
             {/* info section */}
-            {!isLoading && (
+            {!isLoading && !!userData && (
               <MerchantInfoSection
                 data={userData as UserType}
                 adsCount={activatedAdsCount! as number}
@@ -358,7 +357,7 @@ export default function Profile() {
             )}
 
             {/* profile content head */}
-            {!isLoading && (
+            {!isLoading && !!userData && (
               <ProfileContentHead
                 useCase={"profile"}
                 contentHeadSelected={contentHeadSelected}
@@ -376,6 +375,7 @@ export default function Profile() {
       />
 
       {!isLoading &&
+        !!userData &&
         !selectedAdsIsLoading &&
         selectedAds.length === 0 &&
         !selectedAdsCount && (
@@ -384,6 +384,13 @@ export default function Profile() {
             text="Aucune annonce disponible."
           />
         )}
+
+      {!isLoading && !userData && (
+        <NoData
+          style={{ paddingTop: "100%" }}
+          text="Aucune donnée de profil disponible pour le moment."
+        />
+      )}
 
       {!isLoading &&
         ((contentHeadSelected === 1 &&

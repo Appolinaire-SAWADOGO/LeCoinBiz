@@ -18,7 +18,7 @@ export const useGetUserAdsCount = () => {
       return response.data.count;
     } catch (error) {
       console.error("Erreur récupération du nombre d'annonces:", error);
-      return 0;
+      throw error;
     }
   };
 

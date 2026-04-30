@@ -38,7 +38,7 @@ export const useGetNotifications = () => {
         "Erreur récupération des notifications [getNotifications]:",
         error,
       );
-      return [];
+      throw error;
     }
   };
 

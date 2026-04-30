@@ -40,7 +40,8 @@ export default function AnnouncementDetails() {
     queryKey: ["ad", initialAd?.id],
     queryFn: async () => {
       try {
-        return await getAdById(initialAd!.id);
+        const fetchedAd = await getAdById(initialAd!.id);
+        return fetchedAd ?? (initialAd as AnnouncementType);
       } catch {
         return initialAd as AnnouncementType; // ← fallback hors ligne
       }
@@ -72,7 +73,10 @@ export default function AnnouncementDetails() {
   }, []);
 
   // Guard APRÈS tous les hooks
-  if (!initialAd || !ad) return null;
+  if (!initialAd) return null;
+
+  const safeTitle = currentAd?.title ?? "Annonce";
+  const safePrice = currentAd?.price != null ? String(currentAd.price) : "";
 
   return (
     <Container withBottom withGoBack>
@@ -84,9 +88,7 @@ export default function AnnouncementDetails() {
         from={from as "OtherPage" | "ProfilePage"}
         status={currentAd?.status as AdStatusType}
         name={
-          currentAd?.title.length! > 15
-            ? currentAd?.title.slice(0, 15) + "..."
-            : currentAd?.title
+          safeTitle.length > 15 ? safeTitle.slice(0, 15) + "..." : safeTitle
         }
         adId={currentAd?.id as string}
         ad={currentAd as AnnouncementType}
@@ -153,8 +155,8 @@ export default function AnnouncementDetails() {
           whattsAppNumber={currentAd?.whatsappNumber}
           phoneNumber={currentAd?.phoneNumber}
           adImage={currentAd?.images?.[0] ?? ""}
-          adTitle={currentAd?.title as string}
-          adPrice={currentAd?.price.toString() as string}
+          adTitle={safeTitle}
+          adPrice={safePrice}
           adCategory={currentAd?.category as string}
           adSubCategory={currentAd?.subCategory as string}
           adTempUb={formatCreatedAt(

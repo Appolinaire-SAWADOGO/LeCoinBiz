@@ -16,13 +16,15 @@ export default function AnnouncementDetailsInfoSection({
 }) {
   const { designSystem } = useAppTheme();
 
-  const isNew = currentAnnouncement.options.some(
-    (option) => option.label === "Neuf" && option.active,
-  );
+  const options = currentAnnouncement.options ?? [];
 
-  const isFreeDelivery = currentAnnouncement.options.some(
-    (option) => option.label === "Livraison Gratuite" && option.active,
-  );
+  const isNew =
+    options.some((option) => option.label === "Neuf" && option.active) ?? false;
+
+  const isFreeDelivery =
+    options.some(
+      (option) => option.label === "Livraison Gratuite" && option.active,
+    ) ?? false;
 
   return (
     <>
@@ -100,7 +102,7 @@ export default function AnnouncementDetailsInfoSection({
           }}
         >
           <MaterialCommunityIcons name="eye-outline" size={18} />
-          <AppText>{currentAnnouncement.stats.clicks} Clicks</AppText>
+          <AppText>{currentAnnouncement.stats?.clicks ?? 0} Clicks</AppText>
         </View>
       )}
 
@@ -114,7 +116,11 @@ export default function AnnouncementDetailsInfoSection({
         }}
       >
         <MaterialCommunityIcons name="clock-outline" size={18} />
-        <AppText>{getTimeSinceCreated(currentAnnouncement.createdAt)}</AppText>
+        <AppText>
+          {currentAnnouncement.createdAt
+            ? getTimeSinceCreated(currentAnnouncement.createdAt)
+            : "Date indisponible"}
+        </AppText>
       </View>
 
       {/* Description */}

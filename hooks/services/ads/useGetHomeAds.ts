@@ -32,7 +32,7 @@ export const useGetHomeAds = () => {
       return response.data as GetHomeAdsResult;
     } catch (error) {
       console.error("Erreur récupération annonces [getHomeAds]:", error);
-      return { ads: [], lastDoc: null, hasMore: false };
+      throw error;
     }
   };
 
