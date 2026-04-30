@@ -1,23 +1,20 @@
-import Fire from "../assets/images/Fire.png";
-import Star from "../assets/images/Star.png";
-import Money from "../assets/images/Money.png";
 import { SortByType } from "@/types";
 
 export const sortBy: SortByType = [
   {
     name: "Most Popular",
-    icon: Fire,
+    icon: "fire",
   },
   {
     name: "Ratings",
-    icon: Star,
+    icon: "star",
   },
   {
     name: "Price (Hight to Low)",
-    icon: Money,
+    icon: "fire", // la vrai valeur de l'icon est "money", mais comme on utilise les icons de MaterialCommunityIcons, il n'y a pas d'icon "money" dans cette librairie, du coup j'ai mis "fire" pour le moment
   },
   {
     name: "Price (Low to Hight)",
-    icon: Money,
+    icon: "fire",
   },
 ];
