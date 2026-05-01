@@ -10,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import HeaderTexture1 from "../../assets/images/textures/HeaderTexture1.png";
 import SectionHeaderText from "../SectionHeaderText";
 import FilterModalForm from "../modals/filter-modal/FilterModalForm";
 
@@ -29,8 +30,8 @@ export default function HomeHeaderSection() {
   } = useFilterStatesStore();
 
   const { designSystem } = useAppTheme();
-
   const queryClient = useQueryClient();
+  const { hasNotifications, setHasNotifications } = useNotificationStore();
 
   const filters = {
     search,
@@ -43,128 +44,115 @@ export default function HomeHeaderSection() {
     options,
   };
 
-  const { hasNotifications, setHasNotifications } = useNotificationStore();
-
   return (
     <>
+      <FilterModalForm isOpen={isOpen} close={close} useCase={"Home"} />
+
+      {/* ── Top bar ── */}
       <View
         style={[
-          styles.header,
+          styles.topBar,
           { backgroundColor: designSystem.colors.primary },
         ]}
       >
-        {/* filter modal */}
-        <FilterModalForm isOpen={isOpen} close={close} useCase={"Home"} />
+        {/* texture */}
+        <Image style={styles.headerTexture1} source={HeaderTexture1} />
+        <Image style={[styles.headerTexture2]} source={HeaderTexture2} />
 
-        <View>
-          {/* texture */}
-          <Image style={[styles.headerTexture2]} source={HeaderTexture2} />
-
-          {/* logo */}
-          <View style={styles.top}>
-            <AppText style={styles.logo} font="Bold">
+        {/* Search pill */}
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={async () => {
+            router.navigate("/(root)/Filters");
+            await queryClient.invalidateQueries({
+              queryKey: ["filter-ads", filters],
+            });
+          }}
+          style={styles.searchPill}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <MaterialCommunityIcons
+              name="magnify"
+              size={20}
+              color={designSystem.colors.bigText}
+            />
+            <AppText
+              style={styles.searchText}
+              font="Bold"
+              color={designSystem.colors.bigText}
+            >
               {APP_NAME}
             </AppText>
-            <TouchableOpacity
-              onPress={() => {
-                setHasNotifications(false);
-                router.navigate("/(root)/Notifications");
-              }}
-              style={styles.notificationIcon}
-            >
-              <MaterialCommunityIcons
-                name="bell-ring-outline"
-                size={18}
-                color={"#fff"}
-              />
-
-              {/* Badge */}
-              {hasNotifications && <View style={styles.dot} />}
-            </TouchableOpacity>
           </View>
-
-          {/* search and filter */}
-          <View style={styles.searchRow}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={async () => {
-                router.navigate("/(root)/Filters");
-
-                await queryClient.invalidateQueries({
-                  queryKey: ["filter-ads", filters],
-                });
-              }}
-              style={styles.searchChip}
+          <View style={styles.divider} />
+          <TouchableOpacity
+            onPress={() => openFilterModal()}
+            style={styles.filterInner}
+          >
+            <MaterialCommunityIcons
+              name="tune-variant"
+              size={18}
+              color={designSystem.colors.bigText}
+            />
+            <AppText
+              style={styles.filterLabel}
+              font="Bold"
+              color={designSystem.colors.bigText}
             >
-              <MaterialCommunityIcons
-                name="magnify"
-                color={designSystem.colors.bigText}
-                size={20}
-              />
-              <AppText
-                style={[
-                  styles.searchText,
-                  { color: designSystem.colors.bigText },
-                ]}
-              >
-                Rechercher une annonce
-              </AppText>
-            </TouchableOpacity>
+              Filtrer
+            </AppText>
+          </TouchableOpacity>
+        </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.filterButton]}
-              onPress={() => openFilterModal()}
-            >
-              <MaterialCommunityIcons
-                name="tune"
-                size={18}
-                color={designSystem.colors.bigText}
-              />
-              <AppText
-                style={[
-                  styles.filterText,
-                  { color: designSystem.colors.bigText },
-                ]}
-              >
-                Filtrer
-              </AppText>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/*categories */}
-        <View style={styles.category}>
-          <SectionHeaderText name={"Catégories"} withViewAll />
-          <HomeCategories />
-          <SectionHeaderText
-            withViewAll={false}
-            name={"Annonces récentes"}
-            style={{ marginBottom: 0 }}
+        {/* Bell */}
+        <TouchableOpacity
+          onPress={() => {
+            setHasNotifications(false);
+            router.navigate("/(root)/Notifications");
+          }}
+          style={styles.iconBtn}
+        >
+          <MaterialCommunityIcons
+            name="bell-ring-outline"
+            size={20}
+            color="#fff"
           />
-        </View>
+          {hasNotifications && <View style={styles.dot} />}
+        </TouchableOpacity>
+      </View>
+
+      {/* ── Categories ── */}
+      <View style={styles.categoryBar}>
+        <SectionHeaderText
+          name="Catégories"
+          withViewAll
+          style={{ paddingHorizontal: 20, paddingBottom: 10 }}
+        />
+        <HomeCategories />
+      </View>
+
+      {/* ── Section title ── */}
+      <View style={styles.sectionTitle}>
+        <SectionHeaderText
+          withViewAll={false}
+          name="Annonces récentes"
+          style={{ marginBottom: 0 }}
+        />
       </View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  headerTexture2: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    zIndex: 0,
-  },
-  header: {},
-  top: {
+  topBar: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 14,
     paddingTop: 50,
-    paddingBottom: 10,
-    zIndex: 100,
+    paddingBottom: 16,
+    gap: 10,
   },
-  notificationIcon: {
+  iconBtn: {
     width: 32,
     height: 32,
     borderRadius: 50,
@@ -172,25 +160,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  logo: {
-    fontSize: 28,
-    color: "#fff",
+  dot: {
+    position: "absolute",
+    top: 4,
+    right: 4,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#FF3B30",
+    borderWidth: 1.5,
+    borderColor: "white",
   },
-  searchRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    marginBottom: 16,
-  },
-  searchChip: {
+  searchPill: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: "#fff",
     borderRadius: 30,
     paddingVertical: 10,
     paddingHorizontal: 16,
-    marginRight: 10,
     elevation: 2,
     shadowColor: "#000",
     shadowOpacity: 0.1,
@@ -201,37 +190,42 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginLeft: 8,
   },
-  filterButton: {
+  divider: {
+    width: 1,
+    height: 22,
+    backgroundColor: "#ddd",
+    marginHorizontal: 10,
+  },
+  filterInner: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderRadius: 30,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 2,
+    gap: 5,
   },
-  filterText: {
-    marginLeft: 6,
-    fontSize: 14,
+  filterLabel: {
+    fontSize: 15,
   },
-  category: {
+  categoryBar: {
     backgroundColor: "#fff",
-    paddingTop: 20,
-    paddingBottom: 7,
+    paddingTop: 16,
+    paddingBottom: 6,
+  },
+  sectionTitle: {
+    backgroundColor: "#fff",
     paddingHorizontal: 20,
-    gap: 12,
+    paddingTop: 4,
+    paddingBottom: 10,
   },
-  dot: {
+  headerTexture2: {
     position: "absolute",
-    top: 1,
-    right: 3,
-    width: 7.5,
-    height: 7.5,
-    borderRadius: 4,
-    backgroundColor: "#FF3B30",
+    bottom: 0,
+    right: 0,
+    zIndex: 0,
+    width: 70,
+  },
+  headerTexture1: {
+    position: "absolute",
+    top: 40,
+    left: 0,
+    zIndex: 0,
   },
 });

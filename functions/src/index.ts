@@ -78,8 +78,13 @@ export { getUserById } from "./user/getUserById";
 // admin
 // ads
 export { adminActivateAd } from "./admin/ads/adminActivateAd";
+export { adminChangeAdCatAndSubCatById } from "./admin/ads/adminChangeAdCatAndSubCatById";
 export { adminGetReportAds } from "./admin/ads/adminGetReportAds";
 export { adminIgnoreAdReport } from "./admin/ads/adminIgnoreAdReport";
 export { adminSetAdPending } from "./admin/ads/adminSetAdPending";
 // users
 export { adminGetUsers } from "./admin/users/adminGetUsers";
+
+// analytics
+export { getDailyOpenStats } from "./analytics/getDailyOpenStats";
+export { trackDailyOpen } from "./analytics/trackDailyOpen";

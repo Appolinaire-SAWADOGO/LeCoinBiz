@@ -117,12 +117,12 @@ export default function Home() {
                 onRefresh={onRefresh}
                 colors={[designSystem.colors.primary]}
                 tintColor={designSystem.colors.primary}
-                progressViewOffset={280}
+                progressViewOffset={240}
               />
             }
             values={allAds}
             scrollY={scrollY}
-            style={{ paddingBottom: 60, paddingTop: 293 }}
+            style={{ paddingBottom: 60, paddingTop: 240 }}
             onEndReached={handleLoadMore}
             isLoadingMore={isFetchingNextPage}
           />
@@ -140,12 +140,13 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
   },
   headerTexture1: {
     position: "absolute",
     top: 0,
     left: 0,
-    zIndex: 10,
+    zIndex: 0,
   },
   main: {
     flex: 1,

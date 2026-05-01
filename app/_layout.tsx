@@ -7,6 +7,7 @@ import AuthModal from "@/components/modals/AuthModal";
 import AuthVerifyEmailModal from "@/components/modals/AuthVerifyEmailModal";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
+import { useTrackDailyOpen } from "@/hooks/analytics/useTrackDailyOpen";
 import { useGetAdsByUserId } from "@/hooks/services/ads/useGetAdsByUserId";
 import { useGetHomeAds } from "@/hooks/services/ads/useGetHomeAds";
 import { useGetUserAdsCount } from "@/hooks/services/ads/useGetUserAdsCount";
@@ -63,7 +64,9 @@ export default function RootLayout() {
   const userId = currentUser?.uid;
 
   const pathname = usePathname();
-  const previousPathname = useRef(pathname);
+  const previousPathname = useRef<string | null>(null); // ← null au lieu de pathname
+
+  const { trackDailyOpen } = useTrackDailyOpen();
 
   const { getFavoritesAdsByUserId } = useGetFavoriteAdsByUserId();
   const { getUserById } = useGetUserById();
@@ -88,14 +91,28 @@ export default function RootLayout() {
 
   // tracage des ecrans
   useEffect(() => {
-    if (previousPathname.current !== pathname) {
-      analytics().logScreenView({
-        screen_name: pathname,
-        screen_class: pathname,
-      });
-      previousPathname.current = pathname;
-    }
+    if (!pathname) return;
+    if (previousPathname.current === pathname) return;
+
+    previousPathname.current = pathname;
+
+    console.log("📍 screen_view:", pathname);
+
+    analytics().logScreenView({
+      screen_name: pathname,
+      screen_class: pathname,
+    });
   }, [pathname]);
+
+  // tracking des ouvertures quotidiennes
+  useEffect(() => {
+    (async () => {
+      await trackDailyOpen();
+    })();
+    console.log(
+      "=======================================================================",
+    );
+  }, []);
 
   // configuration des notifications
   useEffect(() => {
