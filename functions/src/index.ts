@@ -86,5 +86,7 @@ export { adminSetAdPending } from "./admin/ads/adminSetAdPending";
 export { adminGetUsers } from "./admin/users/adminGetUsers";
 
 // analytics
+export { getAdContactStats } from "./analytics/getAdContactStats";
 export { getDailyOpenStats } from "./analytics/getDailyOpenStats";
+export { trackAdContact } from "./analytics/trackAdContact";
 export { trackDailyOpen } from "./analytics/trackDailyOpen";

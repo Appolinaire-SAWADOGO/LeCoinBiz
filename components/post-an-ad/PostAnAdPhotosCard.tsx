@@ -21,14 +21,16 @@ export default function PostAnAdPhotosCard({
 
   const editPhoto = () => {
     pickImage((img: string) => {
-      const newImages = images;
-      newImages[imgNumber - 1] = img;
-      setImages([...newImages]);
+      const targetIndex = imgNumber - 1;
+      const newImages = [...images];
+      newImages[targetIndex] = img;
+      setImages(newImages);
     });
   };
 
   const removeImg = () => {
-    const newImages = images.filter((img) => img !== image);
+    const targetIndex = imgNumber - 1;
+    const newImages = images.filter((_, index) => index !== targetIndex);
     setImages([...newImages]);
   };
 

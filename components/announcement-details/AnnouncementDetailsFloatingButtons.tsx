@@ -1,3 +1,4 @@
+import { useTrackContactInBackground } from "@/hooks/analytics/useTrackContactInBackground";
 import { useActivateAd } from "@/hooks/services/ads/useActivateAd";
 import { useDeleteAd } from "@/hooks/services/ads/useDeleteAd";
 import { useDisableAd } from "@/hooks/services/ads/useDisableAd";
@@ -75,6 +76,8 @@ Merci beaucoup et bonne journée !
   const [isDeleteAdModalOpen, setIsDeleteAdModalOpen] = React.useState(false);
   const deleteAdPendingAction = React.useRef<(() => void) | null>(null);
 
+  const { trackContactInBackground } = useTrackContactInBackground();
+
   const handleDeleteAdWithWarning = async (action: () => void) => {
     deleteAdPendingAction.current = action;
     setIsDeleteAdModalOpen(true);
@@ -107,6 +110,9 @@ Merci beaucoup et bonne journée !
   const openWhatsApp = async () => {
     if (from !== "OtherPage" || !whattsAppNumber) return;
 
+    // Background — ne ralentit pas
+    trackContactInBackground(adId, "whatsapp");
+
     const cleanNumber = whattsAppNumber.replace(/[^0-9]/g, "");
 
     const url = `https://wa.me/226${cleanNumber}?text=${encodeURIComponent(message)}`;
@@ -120,6 +126,9 @@ Merci beaucoup et bonne journée !
 
   const sendSMS = async () => {
     if (from !== "OtherPage" || !phoneNumber) return;
+
+    // Background — ne ralentit pas
+    trackContactInBackground(adId, "sms");
 
     const cleanNumber = phoneNumber.replace(/[^0-9]/g, "");
 
@@ -135,6 +144,9 @@ Merci beaucoup et bonne journée !
 
   const makeCall = () => {
     if (from !== "OtherPage" || !phoneNumber) return;
+
+    // Background — ne ralentit pas
+    trackContactInBackground(adId, "call");
 
     const url = `tel:+226${phoneNumber}`;
 

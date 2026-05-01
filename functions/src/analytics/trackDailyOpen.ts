@@ -1,3 +1,4 @@
+// trackDailyOpen.ts
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 import { admin, db } from "../../firebase";
 
@@ -14,40 +15,44 @@ export const trackDailyOpen = onCall(
       }
 
       const today = new Date().toISOString().split("T")[0];
-      const docRef = db.collection("daily_opens").doc(today);
+      const dayRef = db.collection("DailyOpens").doc(today);
+      const deviceRef = dayRef.collection("DailyOpensDevices").doc(deviceId);
 
       await db.runTransaction(async (transaction) => {
-        const snap = await transaction.get(docRef);
+        const [daySnap, deviceSnap] = await Promise.all([
+          transaction.get(dayRef),
+          transaction.get(deviceRef),
+        ]);
 
-        if (!snap.exists) {
-          transaction.set(docRef, {
+        // Créer ou initialiser le document du jour
+        if (!daySnap.exists) {
+          transaction.set(dayRef, {
             date: today,
             total: 1,
             authenticated: isAuthenticated ? 1 : 0,
             anonymous: isAuthenticated ? 0 : 1,
-            devices: [{ deviceId, userId, isAuthenticated }],
           });
-        } else {
-          const data = snap.data()!;
-          const devices: { deviceId: string }[] = data.devices || [];
-          const alreadyTracked = devices.some((d) => d.deviceId === deviceId);
+        } else if (!deviceSnap.exists) {
+          // Device pas encore tracké aujourd'hui → incrémenter les compteurs
+          transaction.update(dayRef, {
+            total: admin.firestore.FieldValue.increment(1),
+            authenticated: admin.firestore.FieldValue.increment(
+              isAuthenticated ? 1 : 0,
+            ),
+            anonymous: admin.firestore.FieldValue.increment(
+              isAuthenticated ? 0 : 1,
+            ),
+          });
+        }
 
-          if (!alreadyTracked) {
-            transaction.update(docRef, {
-              total: admin.firestore.FieldValue.increment(1),
-              authenticated: admin.firestore.FieldValue.increment(
-                isAuthenticated ? 1 : 0,
-              ),
-              anonymous: admin.firestore.FieldValue.increment(
-                isAuthenticated ? 0 : 1,
-              ),
-              devices: admin.firestore.FieldValue.arrayUnion({
-                deviceId,
-                userId,
-                isAuthenticated,
-              }),
-            });
-          }
+        // Écrire dans la sous-collection seulement si nouveau device
+        if (!deviceSnap.exists) {
+          transaction.set(deviceRef, {
+            deviceId,
+            userId,
+            isAuthenticated,
+            trackedAt: new Date().toISOString(),
+          });
         }
       });
 

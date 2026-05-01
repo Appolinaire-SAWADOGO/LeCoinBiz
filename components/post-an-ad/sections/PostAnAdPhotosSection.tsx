@@ -23,8 +23,25 @@ export default function PostAnAdPhotosSection({
   const [images, setImages] = React.useState<string[]>(value || []);
 
   useEffect(() => {
-    if (images) onChange(images);
-  }, [images, onChange]);
+    const nextValue = value || [];
+    const isSame =
+      images.length === nextValue.length &&
+      images.every((img, index) => img === nextValue[index]);
+
+    if (!isSame) {
+      setImages(nextValue);
+    }
+  }, [value, images]);
+
+  const setImagesAndSync: React.Dispatch<React.SetStateAction<string[]>> = (
+    updater,
+  ) => {
+    setImages((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      onChange(next);
+      return next;
+    });
+  };
 
   // Max 3 images si vidéo présente, 4 sans vidéo
   const maxImages = video ? 3 : 4;
@@ -44,7 +61,7 @@ export default function PostAnAdPhotosSection({
         {/* Bouton ajout photo */}
         <PostAnAdAddPhotoCard
           images={images}
-          setImages={setImages}
+          setImages={setImagesAndSync}
           pickerDisabled={images.length >= maxImages}
           style={style}
         />
@@ -56,7 +73,7 @@ export default function PostAnAdPhotosSection({
             image={image}
             imgNumber={index + 1}
             images={images}
-            setImages={setImages}
+            setImages={setImagesAndSync}
           />
         ))}
 

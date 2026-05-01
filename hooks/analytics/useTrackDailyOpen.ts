@@ -4,19 +4,12 @@ import { Platform } from "react-native";
 
 export const useTrackDailyOpen = () => {
   const trackDailyOpen = async () => {
-    console.log("hello from trackDailyOpen --------------");
-
     try {
       // ID unique par appareil, sans besoin d'auth
       const deviceId =
         Platform.OS === "android"
           ? Application.getAndroidId()
           : await Application.getIosIdForVendorAsync();
-
-      console.log(
-        "deviceId envoyé: ++++++++++++++++++++++++++++++++++++++++++++",
-        deviceId,
-      ); // ← vérifie que c'est bien une string
 
       if (!deviceId) return;
 

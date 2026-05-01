@@ -109,9 +109,6 @@ export default function RootLayout() {
     (async () => {
       await trackDailyOpen();
     })();
-    console.log(
-      "=======================================================================",
-    );
   }, []);
 
   // configuration des notifications
