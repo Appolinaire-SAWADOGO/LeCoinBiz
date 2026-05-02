@@ -2,10 +2,10 @@
   "expo": {
     "name": "LeCoinBiz",
     "slug": "LeCoinBiz",
-    "version": "1.0.14",
+    "version": "1.0.15",
     "orientation": "portrait",
     "icon": "./assets/images/icons/icon.png",
-    "scheme": "LeCoinBiz",
+    "scheme": "lecoinbiz",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -83,6 +83,14 @@
       "eas": {
         "projectId": "180ef98d-089f-4c23-9637-d86ce0d46608"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/180ef98d-089f-4c23-9637-d86ce0d46608",
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD"
     }
   }
 }
