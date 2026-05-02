@@ -71,7 +71,7 @@ export default function HomeCategories() {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: { paddingHorizontal: 20 },
   list: {},
   content: {
     alignItems: "flex-start",
