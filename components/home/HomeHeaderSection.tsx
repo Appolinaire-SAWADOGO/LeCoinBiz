@@ -60,17 +60,27 @@ export default function HomeHeaderSection() {
         <Image style={[styles.headerTexture2]} source={HeaderTexture2} />
 
         {/* Search pill */}
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={async () => {
-            router.navigate("/(root)/Filters");
-            await queryClient.invalidateQueries({
-              queryKey: ["filter-ads", filters],
-            });
-          }}
-          style={styles.searchPill}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={styles.searchPill}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={async () => {
+              router.navigate("/(root)/Filters");
+              await queryClient.invalidateQueries({
+                queryKey: ["filter-ads", filters],
+              });
+            }}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              flex: 1,
+              // width: "50%",
+              // borderRightWidth: 1,
+              // borderRightColor: "#ddd",
+              // backgroundColor: designSystem.colors.primary,
+              paddingLeft: 16,
+              paddingVertical: 10,
+            }}
+          >
             <MaterialCommunityIcons
               name="magnify"
               size={20}
@@ -83,11 +93,23 @@ export default function HomeHeaderSection() {
             >
               {APP_NAME}
             </AppText>
-          </View>
+          </TouchableOpacity>
+
           <View style={styles.divider} />
+
           <TouchableOpacity
             onPress={() => openFilterModal()}
-            style={styles.filterInner}
+            style={[
+              styles.filterInner,
+              {
+                // width: "50%",
+                flex: 1,
+                justifyContent: "flex-end",
+                // backgroundColor: "red",
+                paddingRight: 16,
+                paddingVertical: 10,
+              },
+            ]}
           >
             <MaterialCommunityIcons
               name="tune-variant"
@@ -102,7 +124,7 @@ export default function HomeHeaderSection() {
               Filtrer
             </AppText>
           </TouchableOpacity>
-        </TouchableOpacity>
+        </View>
 
         {/* Bell */}
         <TouchableOpacity
@@ -178,8 +200,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: "#fff",
     borderRadius: 30,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
+    // paddingVertical: 10,
+    // paddingHorizontal: 16,
     elevation: 2,
     shadowColor: "#000",
     shadowOpacity: 0.1,

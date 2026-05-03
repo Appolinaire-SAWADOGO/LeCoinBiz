@@ -12,7 +12,7 @@ export const getDailyOpenStats = onCall(
       }
 
       const snap = await db
-        .collection("daily_opens")
+        .collection("DailyOpens")
         .where("date", ">=", from)
         .where("date", "<=", to)
         .orderBy("date", "asc")
