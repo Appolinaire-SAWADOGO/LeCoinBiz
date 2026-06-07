@@ -117,12 +117,12 @@ export default function Home() {
                 onRefresh={onRefresh}
                 colors={[designSystem.colors.primary]}
                 tintColor={designSystem.colors.primary}
-                progressViewOffset={240}
+                progressViewOffset={235}
               />
             }
             values={allAds}
             scrollY={scrollY}
-            style={{ paddingBottom: 60, paddingTop: 240 }}
+            style={{ paddingBottom: 60, paddingTop: 235 }}
             onEndReached={handleLoadMore}
             isLoadingMore={isFetchingNextPage}
           />

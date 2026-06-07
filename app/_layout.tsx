@@ -7,7 +7,6 @@ import AuthModal from "@/components/modals/AuthModal";
 import AuthVerifyEmailModal from "@/components/modals/AuthVerifyEmailModal";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
-import { useTrackDailyOpen } from "@/hooks/analytics/useTrackDailyOpen";
 import { useGetAdsByUserId } from "@/hooks/services/ads/useGetAdsByUserId";
 import { useGetHomeAds } from "@/hooks/services/ads/useGetHomeAds";
 import { useGetUserAdsCount } from "@/hooks/services/ads/useGetUserAdsCount";
@@ -66,8 +65,6 @@ export default function RootLayout() {
   const pathname = usePathname();
   const previousPathname = useRef<string | null>(null); // ← null au lieu de pathname
 
-  const { trackDailyOpen } = useTrackDailyOpen();
-
   const { getFavoritesAdsByUserId } = useGetFavoriteAdsByUserId();
   const { getUserById } = useGetUserById();
   const { getUserAdsCount } = useGetUserAdsCount();
@@ -103,13 +100,6 @@ export default function RootLayout() {
       screen_class: pathname,
     });
   }, [pathname]);
-
-  // tracking des ouvertures quotidiennes
-  useEffect(() => {
-    (async () => {
-      await trackDailyOpen();
-    })();
-  }, []);
 
   // configuration des notifications
   useEffect(() => {

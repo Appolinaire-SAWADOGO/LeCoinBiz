@@ -20,6 +20,14 @@ export default function Index() {
     const timer = setTimeout(async () => {
       try {
         const location = await AsyncStorage.getItem("user_location");
+        const onboardingCompleted = await AsyncStorage.getItem(
+          "onboarding_completed",
+        );
+
+        if (!onboardingCompleted) {
+          router.replace("/(root)/Onboarding");
+          return;
+        }
 
         if (location) {
           console.log("Data getted successfully!", location);

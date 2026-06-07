@@ -97,14 +97,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF", // Fond blanc
   },
   headerTitle: {
-    fontSize: 26,
+    fontSize: 22,
     color: "#1B2430", // Texte foncé
     textAlign: "center",
     marginBottom: 10,
     marginTop: 30,
   },
   subTitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#444", // Gris foncé lisible
     textAlign: "center",
     marginBottom: 30,
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#FFFFFF", // Texte blanc sur bouton foncé
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "600",
     textAlign: "center",
   },

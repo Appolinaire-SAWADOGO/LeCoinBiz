@@ -88,7 +88,7 @@ export default function HomeHeaderSection() {
             />
             <AppText
               style={styles.searchText}
-              font="Bold"
+              font="Medium"
               color={designSystem.colors.bigText}
             >
               {APP_NAME}
@@ -112,13 +112,13 @@ export default function HomeHeaderSection() {
             ]}
           >
             <MaterialCommunityIcons
-              name="tune-variant"
+              name="tune"
               size={18}
               color={designSystem.colors.bigText}
             />
             <AppText
               style={styles.filterLabel}
-              font="Bold"
+              font="Medium"
               color={designSystem.colors.bigText}
             >
               Filtrer
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     backgroundColor: "#FF3B30",
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: "white",
   },
   searchPill: {
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 20,
     paddingTop: 4,
-    paddingBottom: 10,
+    paddingBottom: 5,
   },
   headerTexture2: {
     position: "absolute",

@@ -3,6 +3,7 @@ import { useAppTheme } from "@/hooks/useAppTheme";
 import { AnnouncementType } from "@/types";
 import { getTimeSinceCreated, getTimeSinceMs, Timestamp } from "@/utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
@@ -25,22 +26,29 @@ export default function AnnouncementCard({
   setOpenAdId?: (id: string | null) => void;
 }) {
   const { designSystem } = useAppTheme();
+  const queryClient = useQueryClient();
 
   const isSimilarType = type === "similar";
 
   return (
     <TouchableOpacity
       activeOpacity={0.7}
-      onPress={() =>
+      onPress={() => {
+        try {
+          queryClient.setQueryData(["ad", ad.id], ad);
+        } catch (e) {
+          // ignore
+        }
+
         router.navigate({
           pathname: "/(root)/(announcement)/AnnouncementDetails",
           params: {
-            initialRslt: encodeURIComponent(JSON.stringify(ad)),
+            initialAdId: ad.id,
             from: useCase,
             status: ad.status,
           },
-        })
-      }
+        });
+      }}
       style={[styles.card, { width: isSimilarType ? 170 : "100%" }]}
     >
       {/*menu*/}

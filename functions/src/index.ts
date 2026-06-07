@@ -68,6 +68,7 @@ export { getFavoriteAdsByUserId } from "./favorites/getFavoriteAdsByUserId";
 // notifications
 export { createGeneralNotification } from "./notifications/createGeneralNotification";
 export { createUserNotification } from "./notifications/createUserNotification";
+export { dailyNotification } from "./notifications/dailyNotification";
 export { getNotifications } from "./notifications/getNotifications";
 
 // user

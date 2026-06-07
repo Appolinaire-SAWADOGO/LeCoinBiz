@@ -9,19 +9,22 @@
       "distribution": "internal",
       "env": {
         "EXPO_PUBLIC_WEB_CLIENT_ID": "641604581560-ege8p5dejjrpq5327staqvr8te49rr1p.apps.googleusercontent.com"
-      }
+      },
+      "channel": "development"
     },
     "preview": {
       "distribution": "internal",
       "env": {
         "EXPO_PUBLIC_WEB_CLIENT_ID": "641604581560-ege8p5dejjrpq5327staqvr8te49rr1p.apps.googleusercontent.com"
-      }
+      },
+      "channel": "preview"
     },
     "production": {
       "autoIncrement": true,
       "env": {
         "EXPO_PUBLIC_WEB_CLIENT_ID": "641604581560-ege8p5dejjrpq5327staqvr8te49rr1p.apps.googleusercontent.com"
-      }
+      },
+      "channel": "production"
     }
   },
   "submit": {

@@ -20,6 +20,7 @@ export default function RootLayout() {
       <Stack.Screen name="(settings)/TermsOfUs" />
 
       {/* Écrans directs */}
+      <Stack.Screen name="Onboarding" />
       <Stack.Screen name="ChooseCity" />
       <Stack.Screen name="EditProfile" />
       <Stack.Screen name="Filters" />

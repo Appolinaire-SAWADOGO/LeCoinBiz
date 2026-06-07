@@ -21,7 +21,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 export default function AnnouncementDetails() {
   const { designSystem } = useAppTheme();
   const { getAdById } = useGetAdById();
-  const { initialRslt, from } = useLocalSearchParams();
+  const { initialRslt, from, initialAdId } = useLocalSearchParams();
   const currentUser = useCurrentUser();
   const currentUserAuthMethod = getCurrentUserAuthMethod(currentUser);
   const queryClient = useQueryClient();
@@ -29,26 +29,39 @@ export default function AnnouncementDetails() {
 
   // Parse
   const initialAd: AnnouncementType | null = React.useMemo(() => {
-    try {
-      return JSON.parse(decodeURIComponent(initialRslt as string));
-    } catch {
-      return null;
+    if (initialRslt) {
+      try {
+        return JSON.parse(decodeURIComponent(initialRslt as string));
+      } catch {
+        return null;
+      }
     }
-  }, [initialRslt]);
+
+    if (initialAdId) {
+      return (
+        (queryClient.getQueryData(["ad", initialAdId]) as AnnouncementType) ??
+        null
+      );
+    }
+
+    return null;
+  }, [initialRslt, initialAdId, queryClient]);
+
+  const adId = initialAd?.id ?? (initialAdId as string | undefined);
 
   const { data: ad } = useQuery({
-    queryKey: ["ad", initialAd?.id],
+    queryKey: ["ad", adId],
     queryFn: async () => {
       try {
-        const fetchedAd = await getAdById(initialAd!.id);
+        const fetchedAd = await getAdById(adId as string);
         return fetchedAd ?? (initialAd as AnnouncementType);
       } catch {
         return initialAd as AnnouncementType; // ← fallback hors ligne
       }
     },
-    enabled: !!initialAd,
+    enabled: !!adId,
     initialData: () =>
-      queryClient.getQueryData(["ad", initialAd?.id]) ?? initialAd ?? undefined,
+      queryClient.getQueryData(["ad", adId]) ?? initialAd ?? undefined,
     refetchOnWindowFocus: false,
     retry: false,
     networkMode: "offlineFirst",
@@ -70,10 +83,9 @@ export default function AnnouncementDetails() {
         // Silencieux hors ligne
       }
     })();
-  }, []);
+  }, [currentAd, incrementAdClics, from]);
 
-  // Guard APRÈS tous les hooks
-  if (!initialAd) return null;
+  // removed early guard so the query can run and render from cache/fetch
 
   const safeTitle = currentAd?.title ?? "Annonce";
   const safePrice = currentAd?.price != null ? String(currentAd.price) : "";
