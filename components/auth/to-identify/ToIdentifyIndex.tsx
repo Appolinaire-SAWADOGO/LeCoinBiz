@@ -81,8 +81,8 @@ export default function ToIdentifyIndex({
           fontSize={15}
           color="#fff"
         >
-          Des milliers d'annonces près de chez vous.{"\n"}
-          Vendez facilement, achetez en confiance.
+          Créez un compte ou connectez-vous pour publier, sauvegarder vos
+          favoris et accéder au profil et à toutes les fonctionnalités.
         </AppText>
         {/* <AppButton
           title={"Continuer avec un numéro de téléphone"}

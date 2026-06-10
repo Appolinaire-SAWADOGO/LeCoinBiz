@@ -7,6 +7,7 @@ import MyLocationDynSvg from "@/components/svg/onboarding/MyLocationDynSvg";
 import PhotoDynSvg from "@/components/svg/onboarding/PhotoDynSvg";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
@@ -32,7 +33,7 @@ const slides: Array<{
     image: PhotoDynSvg,
     title: "Photos et vidéos",
     description:
-      "Vois exactement ce que tu achètes grâce aux photos et vidéos des vendeurs.",
+      "Regarde exactement ce que tu vas acheter grâce aux photos et vidéos que les vendeurs publient.",
   },
   {
     image: ChatDynSvg,
@@ -49,6 +50,7 @@ export default function Onboarding() {
   const completeOnboarding = useCallback(async () => {
     try {
       await AsyncStorage.setItem("onboarding_completed", "true");
+      await Notifications.requestPermissionsAsync();
     } catch (error) {
       console.error("Erreur lors de l'enregistrement de l'onboarding :", error);
     }

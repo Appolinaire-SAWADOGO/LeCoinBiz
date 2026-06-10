@@ -2,7 +2,6 @@ import TopBottomBackground from "@/components/TopBottomBackground";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useAppNotificationStore } from "@/store/useNotificationStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
@@ -25,8 +24,6 @@ export default function Index() {
         );
 
         if (!onboardingCompleted) {
-          await Notifications.requestPermissionsAsync();
-
           router.replace("/(root)/Onboarding");
           return;
         }
@@ -42,6 +39,9 @@ export default function Index() {
           } else {
             router.replace("/(tabs)/Home");
           }
+        } else {
+          router.replace("/(root)/ChooseCity");
+          return;
         }
       } catch (error) {
         console.error("Error saving data:", error);
