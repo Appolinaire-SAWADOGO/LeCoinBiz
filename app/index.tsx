@@ -25,6 +25,8 @@ export default function Index() {
         );
 
         if (!onboardingCompleted) {
+          await Notifications.requestPermissionsAsync();
+
           router.replace("/(root)/Onboarding");
           return;
         }
@@ -40,10 +42,6 @@ export default function Index() {
           } else {
             router.replace("/(tabs)/Home");
           }
-        } else {
-          await Notifications.requestPermissionsAsync();
-
-          router.replace("/(root)/ChooseCity");
         }
       } catch (error) {
         console.error("Error saving data:", error);
