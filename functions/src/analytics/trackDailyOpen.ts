@@ -1,4 +1,3 @@
-// trackDailyOpen.ts
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 import { admin, db } from "../../firebase";
 

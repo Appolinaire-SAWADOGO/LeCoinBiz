@@ -1,7 +1,7 @@
 import { useAddUsernameModalStore } from "@/store/useAddUsernameModalStore";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
 import { showToast } from "@/utils";
-import {} from "@/utils/auth";
+import { } from "@/utils/auth";
 import { validateUsername } from "@/utils/auth/validation";
 import { authEvents } from "@/utils/EventEmitter";
 import { firebaseFunctions } from "@/utils/firebase";

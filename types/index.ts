@@ -1,5 +1,4 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { LucideIcon } from "lucide-react-native";
 import { UseFormReset } from "react-hook-form";
 
 export type MaterialCommunityIconsNameType = React.ComponentProps<
@@ -116,7 +115,7 @@ export type NotificationType = {
 
 export type SortByType = {
   name: string;
-  icon: LucideIcon;
+  icon: MaterialCommunityIconsNameType;
 }[];
 
 export type BurkinaCitiesType = string[];
