@@ -13,6 +13,7 @@ interface SimilarAdsParams {
   description: string;
   userId: string;
   maxResults?: number;
+  userToken: string;
 }
 
 export const getSimilarAds = onCall(
@@ -30,6 +31,7 @@ export const getSimilarAds = onCall(
       description,
       userId,
       maxResults = 10,
+      userToken,
     } = request.data as SimilarAdsParams;
 
     if (!currentAdId || !userId) {
@@ -56,6 +58,7 @@ export const getSimilarAds = onCall(
             query: query || "",
             hitsPerPage: hitsToFetch,
             filters,
+            userToken: userToken ?? "anonymous",
           },
         });
 

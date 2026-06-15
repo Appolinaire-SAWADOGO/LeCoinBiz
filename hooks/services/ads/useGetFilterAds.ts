@@ -1,5 +1,6 @@
 import { SetFilterType } from "@/store/useFilterStatesStore";
 import { AnnouncementType } from "@/types";
+import { getUserToken } from "@/utils";
 import { firebaseFunctions } from "@/utils/firebase";
 
 export const useGetFilterAds = () => {
@@ -16,10 +17,13 @@ export const useGetFilterAds = () => {
     totalHits: number;
   }> => {
     try {
+      const userToken = await getUserToken();
+
       const getFilterAdsFn = firebaseFunctions.httpsCallable<
         {
           page: number;
           filtersStatesStore: SetFilterType;
+          userToken: string;
         },
         {
           ads: AnnouncementType[];
@@ -32,6 +36,7 @@ export const useGetFilterAds = () => {
       const result = await getFilterAdsFn({
         page: pageParam,
         filtersStatesStore,
+        userToken,
       });
 
       return result.data;

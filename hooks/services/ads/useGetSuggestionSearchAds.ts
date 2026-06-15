@@ -1,7 +1,9 @@
+import { getUserToken } from "@/utils";
 import { firebaseFunctions } from "@/utils/firebase";
 
 interface SuggestionSearchParams {
   search: string;
+  userToken: string;
 }
 
 interface SuggestionSearchResponse {
@@ -13,12 +15,17 @@ export const useGetSuggestionSearchAds = () => {
     if (!search) return [];
 
     try {
+      const userToken = await getUserToken();
+
       const getSuggestionSearchAdsCallable = firebaseFunctions.httpsCallable<
         SuggestionSearchParams,
         SuggestionSearchResponse
       >("getSuggestionSearchAds");
 
-      const response = await getSuggestionSearchAdsCallable({ search });
+      const response = await getSuggestionSearchAdsCallable({
+        search,
+        userToken,
+      });
 
       return response.data.suggestions;
     } catch (error) {

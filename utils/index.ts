@@ -348,3 +348,14 @@ export const addNotificationToQueryData = (
     return [newNotification, ...(oldData ?? [])];
   });
 };
+
+export const getUserToken = async (): Promise<string> => {
+  let token = (await AsyncStorage.getItem("algolia_user_token")) as
+    | string
+    | null;
+  if (!token) {
+    token = uuidv4();
+    await AsyncStorage.setItem("algolia_user_token", token!);
+  }
+  return token as string;
+};

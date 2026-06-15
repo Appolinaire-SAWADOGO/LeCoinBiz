@@ -12,7 +12,7 @@ export const getSuggestionSearchAds = onCall(
     region: "europe-southwest1",
   },
   async (request) => {
-    const { search } = request.data;
+    const { search, userToken } = request.data;
 
     if (!search) {
       return { suggestions: [] };
@@ -31,6 +31,7 @@ export const getSuggestionSearchAds = onCall(
           highlightPreTag: "<mark>",
           highlightPostTag: "</mark>",
           filters: "status:ACTIVATED",
+          userToken: userToken ?? "anonymous",
         },
       });
 
@@ -46,4 +47,3 @@ export const getSuggestionSearchAds = onCall(
     }
   },
 );
-

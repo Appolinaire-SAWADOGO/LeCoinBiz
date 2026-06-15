@@ -15,7 +15,7 @@ export const getFilterAds = onCall(
     region: "europe-southwest1",
   },
   async (request) => {
-    const { page = 0, filtersStatesStore } = request.data;
+    const { page = 0, filtersStatesStore, userToken } = request.data;
 
     const client = algoliasearch(algoliaAppId.value(), algoliaApiKey.value());
 
@@ -75,6 +75,7 @@ export const getFilterAds = onCall(
           hitsPerPage: PAGE_SIZE,
           page,
           filters: filtersString,
+          userToken: userToken ?? "anonymous",
         },
       });
 

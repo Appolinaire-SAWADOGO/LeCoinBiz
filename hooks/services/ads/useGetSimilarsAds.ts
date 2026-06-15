@@ -1,4 +1,5 @@
 import { AnnouncementType } from "@/types";
+import { getUserToken } from "@/utils";
 import { firebaseFunctions } from "@/utils/firebase";
 
 interface SimilarAdsParams {
@@ -9,6 +10,7 @@ interface SimilarAdsParams {
   description: string;
   userId: string;
   maxResults?: number;
+  userToken: string;
 }
 
 interface SimilarAdsResponse {
@@ -28,6 +30,8 @@ export const useGetSimilarAds = () => {
     maxResults = 10,
   }: SimilarAdsParams): Promise<AnnouncementsType> => {
     try {
+      const userToken = await getUserToken();
+
       const getSimilarAdsCallable = firebaseFunctions.httpsCallable<
         SimilarAdsParams,
         SimilarAdsResponse
@@ -41,6 +45,7 @@ export const useGetSimilarAds = () => {
         description,
         userId,
         maxResults,
+        userToken,
       });
 
       return response.data.ads;
