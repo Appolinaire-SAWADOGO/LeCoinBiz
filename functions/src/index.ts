@@ -37,6 +37,7 @@ setGlobalOptions({ maxInstances: 10 });
 export { activateAd } from "./ads/activateAd";
 export { addAdFavorite } from "./ads/addAdFavorite";
 export { ifAdIsAddedToFavorites } from "./ads/checkFavorite";
+export { dailyUpdateAdsClicks } from "./ads/dailyUpdateAdsClicks";
 export { deleteAd } from "./ads/deleteAd";
 export { deleteImgs } from "./ads/deleteImgs";
 export { detectAdCategory } from "./ads/detectAdCategory";
