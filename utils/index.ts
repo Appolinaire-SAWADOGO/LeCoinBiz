@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RemoteMessage } from "@react-native-firebase/messaging";
 import { QueryClient } from "@tanstack/react-query";
+import "react-native-get-random-values";
 import Toast from "react-native-toast-message";
 import { v4 as uuidv4 } from "uuid";
 
