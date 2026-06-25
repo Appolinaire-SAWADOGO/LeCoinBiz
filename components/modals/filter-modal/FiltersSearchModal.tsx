@@ -2,13 +2,12 @@ import Container from "@/components/Container";
 import AppText from "@/components/custom/AppText";
 import AppSearchInput from "@/components/custom/input/AppSearchInput";
 import PageHeader from "@/components/PageHeader";
-import { useGetSuggestionSearchAds } from "@/hooks/services/ads/useGetSuggestionSearchAds";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AdOptionsPickerType } from "@/types";
 import { addRecentSearch } from "@/utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 import { TouchableOpacity, View } from "react-native";
 import AppFullModal from "../AppFullModal";
@@ -45,7 +44,7 @@ export default function FiltersSearchModal({
 
   const [recentsSearchs, setRecentsSearchs] = React.useState<string[]>([]);
 
-  const { getSuggestionSearchAds } = useGetSuggestionSearchAds();
+  // const { getSuggestionSearchAds } = useGetSuggestionSearchAds();
 
   const [searchState, setSearchState] = React.useState<string>(search);
 
@@ -66,10 +65,10 @@ export default function FiltersSearchModal({
     setSearchState(search);
   }, [search]);
 
-  const { data, isFetching } = useQuery({
-    queryKey: ["suggestion-search-ads"],
-    queryFn: () => getSuggestionSearchAds(searchState),
-  });
+  // const { data, isFetching } = useQuery({
+  //   queryKey: ["suggestion-search-ads"],
+  //   queryFn: () => getSuggestionSearchAds(searchState),
+  // });
 
   const handleSearch = async (query: string) => {
     if (!query) return;
@@ -111,11 +110,11 @@ export default function FiltersSearchModal({
             onChangeText={async (text) => {
               setSearchState?.(text);
 
-              if (!text) return;
+              // if (!text) return;
 
-              await queryClient.invalidateQueries({
-                queryKey: ["suggestion-search-ads"],
-              });
+              // await queryClient.invalidateQueries({
+              //   queryKey: ["suggestion-search-ads"],
+              // });
             }}
             onPressX={() => {
               setSearchState?.("");
@@ -124,39 +123,38 @@ export default function FiltersSearchModal({
         </PageHeader>
         <View style={{ marginTop: 30 }}>
           <AppText font="Bold" fontSize={18} style={{ marginBottom: 12 }}>
-            {searchState && data && data.length > 0
-              ? "Suggestions de Recherches"
-              : "Recherches Récentes"}
+            {/* {searchState && data && data.length > 0
+              ? "Suggestions de recherches"
+              : "Recherches recentes"} */}
+            Recherches recentes
           </AppText>
 
           {/* recents search */}
-          {(!searchState || isFetching || !data || data.length === 0) && (
-            <View style={{ flexDirection: "row", gap: 12, flexWrap: "wrap" }}>
-              {recentsSearchs.map((recSearch, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={async () => await handleSearch(recSearch)}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 4,
-                    borderRadius: 50,
-                    borderWidth: 1,
-                    borderColor: designSystem.colors.inputBorder,
-                    paddingVertical: 8,
-                    paddingHorizontal: 12,
-                    alignSelf: "flex-start",
-                  }}
-                >
-                  <AppText fontSize={13}>{recSearch}</AppText>
-                  <MaterialCommunityIcons name="arrow-top-right" size={17} />
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
+          <View style={{ flexDirection: "row", gap: 12, flexWrap: "wrap" }}>
+            {recentsSearchs.map((recSearch, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={async () => await handleSearch(recSearch)}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 4,
+                  borderRadius: 50,
+                  borderWidth: 1,
+                  borderColor: designSystem.colors.inputBorder,
+                  paddingVertical: 8,
+                  paddingHorizontal: 12,
+                  alignSelf: "flex-start",
+                }}
+              >
+                <AppText fontSize={13}>{recSearch}</AppText>
+                <MaterialCommunityIcons name="arrow-top-right" size={17} />
+              </TouchableOpacity>
+            ))}
+          </View>
 
           {/* suggestion search */}
-          {searchState && data && data.length > 0 && !isFetching && (
+          {/* {searchState && data && data.length > 0 && !isFetching && (
             <View style={{ flexDirection: "column", gap: 12 }}>
               {data?.map((sugSearch, index) => (
                 <TouchableOpacity
@@ -174,7 +172,7 @@ export default function FiltersSearchModal({
                 </TouchableOpacity>
               ))}
             </View>
-          )}
+          )} */}
         </View>
       </Container>
     </AppFullModal>

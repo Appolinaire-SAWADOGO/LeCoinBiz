@@ -4,13 +4,15 @@ import { firebaseFunctions } from "@/utils/firebase";
 
 interface SimilarAdsParams {
   currentAdId: string;
-  title: string;
+  title?: string;
   category: string;
   subCategory: string;
+  city?: string;
+  price?: number;
   description: string;
   userId: string;
   maxResults?: number;
-  userToken: string;
+  userToken?: string;
 }
 
 interface SimilarAdsResponse {
@@ -25,6 +27,8 @@ export const useGetSimilarAds = () => {
     title,
     category,
     subCategory,
+    city,
+    price,
     description,
     userId,
     maxResults = 10,
@@ -42,6 +46,8 @@ export const useGetSimilarAds = () => {
         title,
         category,
         subCategory,
+        city,
+        price,
         description,
         userId,
         maxResults,

@@ -1,37 +1,33 @@
-import { algoliasearch } from "algoliasearch";
-import { defineSecret } from "firebase-functions/params";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
-
-const algoliaAppId = defineSecret("ALGOLIA_APP_ID");
-const algoliaApiKey = defineSecret("ALGOLIA_API_KEY");
+import { db } from "../../firebase";
 
 interface SimilarAdsParams {
   currentAdId: string;
-  title: string;
+  title?: string;
   category: string;
   subCategory: string;
+  city?: string;
+  price?: number;
   description: string;
   userId: string;
   maxResults?: number;
-  userToken: string;
+  userToken?: string;
 }
 
 export const getSimilarAds = onCall(
   {
-    secrets: [algoliaAppId, algoliaApiKey],
     consumeAppCheckToken: false,
     region: "europe-southwest1",
   },
   async (request) => {
     const {
       currentAdId,
-      title,
       category,
       subCategory,
-      description,
       userId,
-      maxResults = 10,
-      userToken,
+      city,
+      price,
+      maxResults = 5,
     } = request.data as SimilarAdsParams;
 
     if (!currentAdId || !userId) {
@@ -41,104 +37,68 @@ export const getSimilarAds = onCall(
       );
     }
 
-    const client = algoliasearch(algoliaAppId.value(), algoliaApiKey.value());
-
     try {
-      let similarAds: any[] = [];
+      let candidates: FirebaseFirestore.DocumentData[] = [];
 
-      // Fonction utilitaire pour exécuter une recherche
-      const runSearch = async (
-        query: string,
-        filters: string,
-        hitsToFetch: number,
-      ) => {
-        const result = await client.searchSingleIndex({
-          indexName: "Ads",
-          searchParams: {
-            query: query || "",
-            hitsPerPage: hitsToFetch,
-            filters,
-            userToken: userToken ?? "anonymous",
-          },
-        });
+      // REQUÊTE 1 : même subCategory (pool le plus pertinent)
+      const snap1 = await db
+        .collection("Ads")
+        .where("status", "==", "ACTIVATED")
+        .where("category", "==", category)
+        .where("subCategory", "==", subCategory)
+        .limit(30)
+        .get();
 
-        return result.hits.map((hit: any) => ({
-          id: hit.objectID,
-          ...hit,
-        }));
-      };
+      candidates = snap1.docs
+        .filter((d) => d.id !== currentAdId && d.data().userId !== userId)
+        .map((d) => ({ id: d.id, ...d.data() }));
 
-      // STRATÉGIE 1 : Catégorie + Sous-catégorie + recherche
-      const filters1 = [
-        `NOT objectID:${currentAdId}`,
-        `NOT userId:${userId}`,
-        `category:"${category}"`,
-        `subCategory:"${subCategory}"`,
-        `status:ACTIVATED`,
-      ].join(" AND ");
+      // REQUÊTE 2 : si pas assez, élargir à toute la catégorie
+      if (candidates.length < maxResults) {
+        const snap2 = await db
+          .collection("Ads")
+          .where("status", "==", "ACTIVATED")
+          .where("category", "==", category)
+          .limit(50)
+          .get();
 
-      similarAds = await runSearch(
-        `${title || ""} ${description || ""}`.trim(),
-        filters1,
-        maxResults,
-      );
+        const existing = new Set(candidates.map((c) => c.id));
 
-      // STRATÉGIE 2 : Catégorie + Sous-catégorie + sans recherche
-      if (similarAds.length < maxResults) {
-        const remaining = maxResults - similarAds.length;
-        const filters2 = [
-          `NOT objectID:${currentAdId}`,
-          `NOT userId:${userId}`,
-          `category:"${category}"`,
-          `subCategory:"${subCategory}"`,
-          `status:ACTIVATED`,
-        ].join(" AND ");
+        const extra = snap2.docs
+          .filter(
+            (d) =>
+              d.id !== currentAdId &&
+              d.data().userId !== userId &&
+              !existing.has(d.id),
+          )
+          .map((d) => ({ id: d.id, ...d.data() }));
 
-        const newAds = await runSearch("", filters2, remaining);
-
-        similarAds = [
-          ...similarAds,
-          ...newAds.filter((a) => !similarAds.find((s) => s.id === a.id)),
-        ];
+        candidates = [...candidates, ...extra];
       }
 
-      // STRATÉGIE 3 : Catégorie seulement sans recherche
-      if (similarAds.length < maxResults) {
-        const remaining = maxResults - similarAds.length;
-        const filters3 = [
-          `NOT objectID:${currentAdId}`,
-          `NOT userId:${userId}`,
-          `category:"${category}"`,
-          `status:ACTIVATED`,
-        ].join(" AND ");
+      // SCORING : trier les candidats par pertinence
+      const scored = candidates.map((ad) => {
+        let score = 0;
 
-        const newAds = await runSearch("", filters3, remaining);
+        if (ad.subCategory === subCategory) score += 3;
+        if (city && ad.city === city) score += 2;
+        if (price && ad.price) {
+          const diff = Math.abs(ad.price - price) / price;
+          if (diff < 0.2)
+            score += 2; // prix similaire à ±20%
+          else if (diff < 0.5) score += 1; // prix similaire à ±50%
+        }
 
-        similarAds = [
-          ...similarAds,
-          ...newAds.filter((a) => !similarAds.find((s) => s.id === a.id)),
-        ];
-      }
+        return { ...ad, _score: score };
+      });
 
-      // STRATÉGIE 4 : Annonces aléatoires
-      if (similarAds.length < maxResults) {
-        const remaining = maxResults - similarAds.length;
-        const filters4 = [
-          `NOT objectID:${currentAdId}`,
-          `NOT userId:${userId}`,
-          `status:ACTIVATED`,
-        ].join(" AND ");
+      // Tri par score décroissant
+      scored.sort((a, b) => b._score - a._score);
 
-        const newAds = await runSearch("", filters4, remaining);
-        similarAds = [
-          ...similarAds,
-          ...newAds.filter((a) => !similarAds.find((s) => s.id === a.id)),
-        ];
-      }
+      // Nettoyage du champ interne avant retour
+      const ads = scored.slice(0, maxResults).map(({ _score, ...ad }) => ad);
 
-      return {
-        ads: similarAds.slice(0, maxResults),
-      };
+      return { ads };
     } catch (error) {
       console.error("Erreur getSimilarAds:", error);
       throw new HttpsError(

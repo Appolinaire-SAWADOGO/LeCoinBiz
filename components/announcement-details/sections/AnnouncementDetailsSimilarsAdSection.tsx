@@ -83,6 +83,8 @@ export default function AnnouncementDetailsSimilarsAdSection({
         title: ad.title as string,
         category: ad.category as string,
         subCategory: ad.subCategory as string,
+        city: ad.city as string,
+        price: ad.price as number,
         description: ad.description as string,
         userId: ad.userId as string,
         maxResults: 5,
