@@ -26,7 +26,11 @@ import { setGlobalOptions } from "firebase-functions";
 
 admin.initializeApp();
 
-setGlobalOptions({ maxInstances: 10 });
+setGlobalOptions({ 
+  maxInstances: 10,
+  cpu: 0.333,
+  memory: "256MiB",
+});
 
 // export const helloWorld = onRequest((request, response) => {
 //   logger.info("Hello logs!", {structuredData: true});
