@@ -37,6 +37,11 @@ export const useDeleteAccount = () => {
 
       await auth.signOut();
 
+      queryClient.setQueriesData(
+        { queryKey: ["if-ad-is-added-to-favorites"] },
+        false,
+      );
+
       showToast("success", "Compte supprimé avec succès.");
     } catch (error: any) {
       console.error(

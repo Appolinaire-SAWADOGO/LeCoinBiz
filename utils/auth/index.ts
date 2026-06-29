@@ -57,10 +57,14 @@ export const initialPrefetchQuery = async (
       },
       pages: 1,
     }),
-      await queryClient.prefetchQuery({
-        queryKey: ["user", userId, "profile"],
-        queryFn: () => getUserById(userId),
-      }),
+      queryClient.invalidateQueries({
+        queryKey: ["if-ad-is-added-to-favorites"],
+      });
+
+    await queryClient.prefetchQuery({
+      queryKey: ["user", userId, "profile"],
+      queryFn: () => getUserById(userId),
+    }),
       await queryClient.prefetchQuery({
         queryKey: ["user-activated-ads-count", userId],
         queryFn: () => getUserAdsCount(userId, "ACTIVATED"),

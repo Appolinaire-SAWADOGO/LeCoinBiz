@@ -85,6 +85,11 @@ export default function AuthChangeEmailModal() {
 
       await auth().signOut();
 
+      queryClient.setQueriesData(
+        { queryKey: ["if-ad-is-added-to-favorites"] },
+        false,
+      );
+
       if (user.uid) {
         await unsubscribeFromUserTopic(user.uid);
         filterNotificationsQueryData(queryClient, user.uid);

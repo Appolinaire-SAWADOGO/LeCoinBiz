@@ -5,11 +5,15 @@ export const useCheckAdFavorite = () => {
   const userId = useCurrentUser()?.uid;
 
   const ifAdIsAddedToFavorites = async (adId: string) => {
+    console.log("hello");
+
     if (!userId) return false;
 
     if (!adId) return false;
 
     try {
+      console.log(adId, userId);
+
       const checkFavoriteFunction = firebaseFunctions.httpsCallable(
         "ifAdIsAddedToFavorites",
       );

@@ -29,6 +29,11 @@ export const useSignOut = () => {
 
       await auth.signOut();
 
+      queryClient.setQueriesData(
+        { queryKey: ["if-ad-is-added-to-favorites"] },
+        false,
+      );
+
       Toast.hide();
       showToast("success", "Deconnexion reussie.");
     } catch (error) {

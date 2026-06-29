@@ -1,35 +1,27 @@
 import { AdStatusType, AnnouncementType } from "@/types";
 import { firebaseFunctions } from "@/utils/firebase";
 
+export type PageParam = { path: string } | null;
+
+export type GetAdsByUserIdResult = {
+  ads: AnnouncementType[];
+  lastDoc: PageParam;
+  hasMore: boolean;
+};
+
 export const useGetAdsByUserId = () => {
   const getAdsByUserId = async (
     userId: string,
     status: AdStatusType = "ACTIVATED",
-    lastCreatedAt?: any,
-  ): Promise<{
-    ads: AnnouncementType[];
-    lastCreatedAt: any;
-    hasMore: boolean;
-  }> => {
+    pageParam: PageParam,
+  ): Promise<GetAdsByUserIdResult> => {
     try {
       const getAdsFn = firebaseFunctions.httpsCallable<
-        {
-          userId: string;
-          status: AdStatusType;
-          lastCreatedAt?: any;
-        },
-        {
-          ads: AnnouncementType[];
-          lastCreatedAt: any;
-          hasMore: boolean;
-        }
+        { userId: string; status: AdStatusType; pageParam: PageParam },
+        GetAdsByUserIdResult
       >("getAdsByUserId");
 
-      const result = await getAdsFn({
-        userId,
-        status,
-        lastCreatedAt,
-      });
+      const result = await getAdsFn({ userId, status, pageParam });
 
       return result.data;
     } catch (error) {

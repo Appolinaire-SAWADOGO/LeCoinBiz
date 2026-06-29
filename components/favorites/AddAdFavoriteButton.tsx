@@ -30,21 +30,27 @@ export default function AddAdFavoriteButton({
 
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const { data: isSelected } = useQuery({
+  const currentUser = useCurrentUser();
+
+  const {
+    data: isSelected,
+    status,
+    fetchStatus,
+  } = useQuery({
     queryKey: ["if-ad-is-added-to-favorites", adId],
+
     queryFn: () => ifAdIsAddedToFavorites(adId),
-    enabled: !!adId,
 
-    staleTime: Infinity, // ✅ Les données ne deviennent JAMAIS stale
-    gcTime: Infinity, // ✅ Les données ne sont JAMAIS supprimées du cache
+    staleTime: Infinity, // données immédiatement périmées → re-fetch au montage
+    gcTime: Infinity, // garde en mémoire entre les navigations
 
-    refetchOnWindowFocus: false, // ✅ Pas de refetch au focus
-    refetchOnMount: false, // ✅ Pas de refetch au montage
-    refetchOnReconnect: false, // ✅ Pas de refetch lors de la reconnexion
+    refetchOnMount: false, // re-fetche à chaque montage du composant
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     retry: 2,
   });
 
-  const currentUser = useCurrentUser();
+  console.log("isSelected:", isSelected);
 
   return (
     <TouchableOpacity

@@ -3,11 +3,19 @@ import NoData from "@/components/announcement/NoData";
 import Container from "@/components/Container";
 import MerchantInfoSection from "@/components/Merchand/MerchantInfoSection";
 import PageHeader from "@/components/PageHeader";
-import { useGetAdsByUserId } from "@/hooks/services/ads/useGetAdsByUserId";
+import {
+  GetAdsByUserIdResult,
+  PageParam,
+  useGetAdsByUserId,
+} from "@/hooks/services/ads/useGetAdsByUserId";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { UserType } from "@/types";
-import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  InfiniteData,
+  QueryKey,
+  useInfiniteQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
 import { RefreshControl, StyleSheet } from "react-native";
@@ -32,18 +40,20 @@ export default function MerchantProfile() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery({
+  } = useInfiniteQuery<
+    GetAdsByUserIdResult,
+    Error,
+    InfiniteData<GetAdsByUserIdResult>,
+    QueryKey,
+    PageParam
+  >({
     queryKey: ["merchant-ads", user.id],
     queryFn: ({ pageParam }) =>
-      getAdsByUserId(
-        user.id as string,
-        "ACTIVATED",
-        pageParam as FirebaseFirestoreTypes.QueryDocumentSnapshot | null,
-      ),
-    initialPageParam: null as any,
+      getAdsByUserId(user.id as string, "ACTIVATED", pageParam),
+    initialPageParam: null as null,
 
     getNextPageParam: (lastPage) => {
-      return lastPage?.hasMore ? lastPage.lastCreatedAt : undefined;
+      return lastPage?.hasMore ? lastPage.lastDoc : undefined;
     },
   });
 

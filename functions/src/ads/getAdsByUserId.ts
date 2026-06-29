@@ -4,14 +4,29 @@ import { HttpsError, onCall } from "firebase-functions/v2/https";
 const db = admin.firestore();
 const PAGE_SIZE = 10;
 
+interface PageParam {
+  path: string;
+}
+
 export const getAdsByUserId = onCall(
   { consumeAppCheckToken: false, region: "europe-southwest1" },
   async (request) => {
-    const { userId, status = "ACTIVATED", lastCreatedAt } = request.data;
+    const {
+      userId,
+      status = "ACTIVATED",
+      pageParam: pageParamRaw,
+    } = request.data;
 
     if (!userId) {
       throw new HttpsError("invalid-argument", "Utilisateur introuvable.");
     }
+
+    const pageParam: PageParam | null =
+      pageParamRaw &&
+      typeof pageParamRaw.path === "string" &&
+      pageParamRaw.path.trim() !== ""
+        ? pageParamRaw
+        : null;
 
     try {
       let query = db
@@ -21,8 +36,15 @@ export const getAdsByUserId = onCall(
         .orderBy("createdAt", "desc")
         .limit(PAGE_SIZE);
 
-      if (lastCreatedAt) {
-        query = query.startAfter(lastCreatedAt);
+      if (pageParam) {
+        const lastDoc = await db.doc(pageParam.path).get();
+        if (!lastDoc.exists) {
+          throw new HttpsError(
+            "not-found",
+            "Document de pagination introuvable.",
+          );
+        }
+        query = query.startAfter(lastDoc);
       }
 
       const snap = await query.get();
@@ -32,11 +54,11 @@ export const getAdsByUserId = onCall(
         ...doc.data(),
       }));
 
-      const lastDoc = snap.docs[snap.docs.length - 1];
+      const lastDocSnap = snap.docs[snap.docs.length - 1] || null;
 
       return {
         ads,
-        lastCreatedAt: lastDoc?.data()?.createdAt ?? null,
+        lastDoc: lastDocSnap ? { path: lastDocSnap.ref.path } : null,
         hasMore: snap.docs.length === PAGE_SIZE,
       };
     } catch (error) {
@@ -45,4 +67,3 @@ export const getAdsByUserId = onCall(
     }
   },
 );
-
