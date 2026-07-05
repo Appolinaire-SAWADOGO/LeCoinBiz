@@ -2,17 +2,25 @@ import AppText from "@/components/custom/AppText";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ResizeMode, Video } from "expo-av";
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 
 export default function PostAnAdVideoCard({
   uri,
   onRemove,
+  style,
 }: {
   uri: string;
   onRemove: () => void;
+  style?: StyleProp<ViewStyle>;
 }) {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <Video
         source={{ uri }}
         style={styles.video}
@@ -20,13 +28,10 @@ export default function PostAnAdVideoCard({
         shouldPlay={false}
         isMuted
       />
-      {/* Overlay avec bouton supprimer */}
-      <View style={styles.overlay}>
-        {/* Icône play au centre */}
+      <View style={styles.overlay} pointerEvents="box-none">
         <View style={styles.playBadge}>
           <AppText style={styles.playIcon}>▶</AppText>
         </View>
-        {/* Bouton supprimer */}
         <TouchableOpacity
           onPress={onRemove}
           activeOpacity={0.5}
@@ -45,15 +50,10 @@ export default function PostAnAdVideoCard({
 
 const styles = StyleSheet.create({
   container: {
-    width: 100,
-    height: 100,
     borderRadius: 4,
     overflow: "hidden",
   },
-  video: {
-    width: "100%",
-    height: "100%",
-  },
+  video: { width: "100%", height: "100%" },
   overlay: {
     position: "absolute",
     top: 0,
@@ -72,10 +72,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  playIcon: {
-    color: "#fff",
-    fontSize: 16,
-  },
+  playIcon: { color: "#fff", fontSize: 16 },
   deleteBtn: {
     position: "absolute",
     top: 5,

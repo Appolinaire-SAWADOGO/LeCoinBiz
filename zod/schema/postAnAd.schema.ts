@@ -20,7 +20,11 @@ export const PostAnAddSchema = z.object({
   images: z
     .array(z.string())
     .min(1, "Veuillez ajouter au moins une image.")
-    .max(4, "Vous ne pouvez pas ajouter plus de 4 images."),
+    .max(5, "Vous ne pouvez pas ajouter plus de 5 images.")
+    .refine(
+      (images) => images.some((img) => img !== ""),
+      "Veuillez ajouter au moins une image.",
+    ),
 
   video: z.string().optional(),
 
@@ -38,6 +42,14 @@ export const PostAnAddSchema = z.object({
     .refine((val) => BURKINA_CITIES.includes(val), {
       message: "Veuillez sélectionner une ville valide.",
     }),
+
+  address: z
+    .object({
+      lat: z.number(),
+      lng: z.number(),
+      formattedAddress: z.string(),
+    })
+    .optional(),
 
   phoneNumber: z
     .string({ message: "Le numéro de téléphone est requis." })

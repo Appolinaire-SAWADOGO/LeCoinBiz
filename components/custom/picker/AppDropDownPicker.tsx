@@ -50,7 +50,9 @@ export default function AppDropDownPicker({
         placeholder={placeholder}
         dropDownDirection={"BOTTOM"}
         searchTextInputStyle={{
-          borderRadius: 8,
+          // borderRadius: 8,
+          borderWidth: 0,
+          borderBottomWidth: 1,
         }}
         open={open}
         value={value}

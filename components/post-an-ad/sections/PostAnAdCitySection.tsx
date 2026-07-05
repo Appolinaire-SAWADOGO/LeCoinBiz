@@ -17,6 +17,12 @@ export default function PostAnAdCitySection({
   const [cityValue, setCityValue] = React.useState<string>(value || "");
 
   React.useEffect(() => {
+    if (value && value !== cityValue) {
+      setCityValue(value);
+    }
+  }, [value]);
+
+  React.useEffect(() => {
     if (cityValue) onChange(cityValue);
   }, [cityValue, onChange]);
 

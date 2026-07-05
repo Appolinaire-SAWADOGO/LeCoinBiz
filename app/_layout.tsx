@@ -35,6 +35,7 @@ import { Stack, usePathname } from "expo-router";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useEffect, useRef } from "react";
 import { Platform, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -178,38 +179,40 @@ export default function RootLayout() {
         });
       }}
     >
-      <GluestackUIProvider mode="light">
-        <SafeAreaProvider>
-          <View style={{ flex: 1, backgroundColor: "#fff" }}>
-            <ExpoStatusBar style="dark" />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <GluestackUIProvider mode="light">
+          <SafeAreaProvider>
+            <View style={{ flex: 1, backgroundColor: "#fff" }}>
+              <ExpoStatusBar style="dark" />
 
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="(tabs)" />
-              <Stack.Screen name="(root)" />
-            </Stack>
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="(root)" />
+              </Stack>
 
-            <AuthModal />
-            <AuthAddUsernameModal />
-            <AppImagePickerAlertModal />
-            <AuthVerifyEmailModal />
-            <AuthChangeEmailModal />
-            <AuthChangePasswordModal />
+              <AuthModal />
+              <AuthAddUsernameModal />
+              <AppImagePickerAlertModal />
+              <AuthVerifyEmailModal />
+              <AuthChangeEmailModal />
+              <AuthChangePasswordModal />
 
-            <AppToast />
+              <AppToast />
 
-            <View
-              style={{
-                position: "absolute",
-                backgroundColor: "#fff",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: insets.bottom,
-              }}
-            />
-          </View>
-        </SafeAreaProvider>
-      </GluestackUIProvider>
+              <View
+                style={{
+                  position: "absolute",
+                  backgroundColor: "#fff",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: insets.bottom,
+                }}
+              />
+            </View>
+          </SafeAreaProvider>
+        </GluestackUIProvider>
+      </GestureHandlerRootView>
     </PersistQueryClientProvider>
   );
 }

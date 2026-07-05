@@ -5,7 +5,7 @@ export const useCheckAdFavorite = () => {
   const userId = useCurrentUser()?.uid;
 
   const ifAdIsAddedToFavorites = async (adId: string) => {
-    console.log("hello");
+    // console.log("hello");
 
     if (!userId) return false;
 

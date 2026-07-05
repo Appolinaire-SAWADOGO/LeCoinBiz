@@ -6,50 +6,68 @@ export const usePickImage = () => {
   const { open, close } = usePickerImageAlertModalStore();
 
   const pickImage = async (
-    callBack: (img: string) => void,
+    callBack: (imgs: string[]) => void, // ← accepte maintenant un tableau
     maxSizeInMB = 2,
+    maxFiles?: number,
   ) => {
     try {
-      const image = await ImageCropPicker.openPicker({
+      const isMultiple = !!maxFiles && maxFiles > 1;
+
+      const result = await ImageCropPicker.openPicker({
         mediaType: "photo",
-        cropping: true,
+        cropping: !isMultiple, // le crop n'est généralement pas dispo en mode multiple
         freeStyleCropEnabled: true,
         cropperToolbarColor: "#000000",
         cropperStatusBarColor: "#000000",
         cropperToolbarWidgetColor: "#ffffff",
+        multiple: isMultiple,
+        maxFiles: isMultiple ? maxFiles : 1,
       });
 
-      const uri = image.path;
+      // Normalise : toujours travailler avec un tableau
+      const images = Array.isArray(result) ? result : [result];
 
-      const fileInfo = await FileSystem.getInfoAsync(uri);
-      if (!fileInfo.exists || !fileInfo.size) {
-        open(
-          "Impossible de vérifier la taille de l'image. Veuillez réessayer.",
-        );
-        return null;
-      }
+      const validUris: string[] = [];
 
-      const sizeInMB = fileInfo.size / (1024 * 1024);
+      for (const img of images) {
+        const uri = img.path;
 
-      if (sizeInMB > maxSizeInMB) {
-        open(
-          `L'image sélectionnée est trop volumineuse. La taille maximale autorisée est de ${maxSizeInMB} MB. Votre fichier fait ${sizeInMB.toFixed(2)} MB.`,
-        );
-        return null;
+        if (!uri) {
+          open("Une image sélectionnée est invalide. Veuillez réessayer.");
+          return null;
+        }
+
+        const fileInfo = await FileSystem.getInfoAsync(uri);
+        if (!fileInfo.exists || !fileInfo.size) {
+          open(
+            "Impossible de vérifier la taille de l'image. Veuillez réessayer.",
+          );
+          return null;
+        }
+
+        const sizeInMB = fileInfo.size / (1024 * 1024);
+
+        if (sizeInMB > maxSizeInMB) {
+          open(
+            `Une image sélectionnée est trop volumineuse. La taille maximale autorisée est de ${maxSizeInMB} MB. Ce fichier fait ${sizeInMB.toFixed(2)} MB.`,
+          );
+          return null;
+        }
+
+        validUris.push(uri);
       }
 
       close();
-      callBack(uri);
+      callBack(validUris);
     } catch (e: any) {
-      // L'utilisateur a annulé — on ne montre pas d'erreur
       if (e?.code === "E_PICKER_CANCELLED") return null;
 
-      // Permission refusée
       if (e?.code === "E_NO_LIBRARY_PERMISSION") {
         open("Permission requise pour accéder à vos photos.");
         return null;
       }
 
+      console.error(e);
       open("Une erreur est survenue. Veuillez réessayer.");
     }
   };

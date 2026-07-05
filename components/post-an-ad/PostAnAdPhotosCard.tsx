@@ -1,65 +1,64 @@
 import { useAppTheme } from "@/hooks/useAppTheme";
-import { usePickImage } from "@/hooks/usePickImage";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 
 export default function PostAnAdPhotosCard({
   image,
+  imgNumber,
   images,
   setImages,
-  imgNumber,
+  style,
 }: {
   image: string;
+  imgNumber: number;
   images: string[];
   setImages: React.Dispatch<React.SetStateAction<string[]>>;
-  imgNumber: number;
+  style?: StyleProp<ViewStyle>;
 }) {
-  const { pickImage } = usePickImage();
-
   const { designSystem } = useAppTheme();
 
-  const editPhoto = () => {
-    pickImage((img: string) => {
-      const targetIndex = imgNumber - 1;
-      const newImages = [...images];
-      newImages[targetIndex] = img;
-      setImages(newImages);
+  const handleRemove = () => {
+    setImages((prevImages) => {
+      const newImages = [...prevImages];
+      newImages[imgNumber - 1] = ""; // Remplacer par une chaîne vide au lieu de supprimer
+      return newImages;
     });
   };
 
-  const removeImg = () => {
-    const targetIndex = imgNumber - 1;
-    const newImages = images.filter((_, index) => index !== targetIndex);
-    setImages([...newImages]);
-  };
-
   return (
-    <View style={styles.container}>
-      <Image source={{ uri: image }} style={styles.image} />
-      <View style={styles.rmORReplaceImg}>
-        <TouchableOpacity
-          onPress={() => editPhoto()}
-          activeOpacity={0.5}
-          style={[styles.icon, { backgroundColor: "#fff" }]}
+    <View style={[styles.container, style]}>
+      <Image source={{ uri: image }} style={styles.image} resizeMode="cover" />
+      <TouchableOpacity
+        onPress={handleRemove}
+        activeOpacity={0.7}
+        style={styles.deleteBtn}
+      >
+        <MaterialCommunityIcons
+          name="trash-can-outline"
+          size={18}
+          color="#fff"
+        />
+      </TouchableOpacity>
+      <View
+        style={[
+          styles.indexBadge,
+          { backgroundColor: designSystem.colors.infoCard },
+        ]}
+      >
+        <Text
+          style={[styles.indexText, { color: designSystem.colors.bigText }]}
         >
-          <MaterialCommunityIcons
-            name="pencil"
-            size={20}
-            color={designSystem.colors.bigText}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => removeImg()}
-          activeOpacity={0.5}
-          style={[styles.icon, { backgroundColor: "red" }]}
-        >
-          <MaterialCommunityIcons
-            name="trash-can-outline"
-            size={20}
-            color={"white"}
-          />
-        </TouchableOpacity>
+          {imgNumber}
+        </Text>
       </View>
     </View>
   );
@@ -67,32 +66,39 @@ export default function PostAnAdPhotosCard({
 
 const styles = StyleSheet.create({
   container: {
-    width: 100,
-    height: 100,
+    width: "100%",
+    height: "100%",
     borderRadius: 4,
     overflow: "hidden",
+    backgroundColor: "#f2f2f2",
   },
   image: {
     width: "100%",
     height: "100%",
-    objectFit: "cover",
   },
-  rmORReplaceImg: {
+  deleteBtn: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(0,0,0,.5)",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 15,
-  },
-  icon: {
+    top: 8,
+    right: 8,
     width: 30,
     height: 30,
-    borderRadius: 50,
+    borderRadius: 15,
+    backgroundColor: "rgba(0, 0, 0, 0.55)",
     alignItems: "center",
     justifyContent: "center",
+  },
+  indexBadge: {
+    position: "absolute",
+    bottom: 8,
+    left: 8,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  indexText: {
+    fontSize: 12,
+    fontWeight: "bold",
   },
 });

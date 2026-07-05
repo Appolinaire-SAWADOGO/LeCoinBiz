@@ -50,7 +50,7 @@ export default function AddAdFavoriteButton({
     retry: 2,
   });
 
-  console.log("isSelected:", isSelected);
+  // console.log("isSelected:", isSelected);
 
   return (
     <TouchableOpacity

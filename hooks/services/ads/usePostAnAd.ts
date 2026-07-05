@@ -67,7 +67,7 @@ export const usePostAnAd = () => {
         data: {
           ...data,
           images: uploadResult,
-          video: videoUrl, // ← NOUVEAU
+          video: videoUrl,
         },
       });
 

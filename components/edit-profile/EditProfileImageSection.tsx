@@ -21,7 +21,7 @@ export default function EditProfileImageSection({
 
   const handlePickImage = async () => {
     await pickImage(
-      async (img: string) => await editImage(value, img, setValue),
+      async (imgs: string[]) => await editImage(value, imgs[0], setValue),
     );
   };
 

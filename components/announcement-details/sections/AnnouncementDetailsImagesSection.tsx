@@ -5,14 +5,15 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
-  FlatList,
   Image,
   Modal,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
 } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
+import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import AppText from "../../custom/AppText";
 
 const { width } = Dimensions.get("window");
@@ -28,12 +29,12 @@ export default function AnnouncementDetailsImagesSection({
   const [subImageSelected, setSubImageSelected] = React.useState<number>(0);
   const [isZoomVisible, setIsZoomVisible] = React.useState<boolean>(false);
 
-  // ← NOUVEAU : état vidéo
   const [videoLoading, setVideoLoading] = useState(true);
-  const [videoLoaded, setVideoLoaded] = useState(false); // cache : déjà chargée ?
-  const videoRef = useRef<Video>(null);
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   const [videoThumb, setVideoThumb] = useState<string | null>(null);
+
+  const carouselRef = useRef<ICarouselInstance>(null);
 
   useEffect(() => {
     if (video) {
@@ -43,78 +44,88 @@ export default function AnnouncementDetailsImagesSection({
     }
   }, [video]);
 
-  const mediaItems = [
-    ...images.map((url) => ({ type: "image" as const, url })),
-    ...(video ? [{ type: "video" as const, url: video }] : []),
-  ];
+  //  Mémoïsés : gardent la même référence tant que video/images ne changent pas réellement
+  const mediaItems = React.useMemo(
+    () => [
+      ...(video ? [{ type: "video" as const, url: video }] : []),
+      ...images.map((url) => ({ type: "image" as const, url })),
+    ],
+    [video, images],
+  );
 
-  const imageUrls = images.map((url) => ({ url }));
+  const imageUrls = React.useMemo(
+    () => images.map((url) => ({ url })),
+    [images],
+  );
 
-  const isVideoSelected =
-    video && mediaItems[subImageSelected]?.type === "video";
-
-  // ← Quand on clique sur la vidéo dans les thumbnails
   const handleSelectMedia = (index: number) => {
     setSubImageSelected(index);
-    // Si c'est la vidéo et pas encore chargée → montrer loader
+    carouselRef.current?.scrollTo({ index, animated: true });
+
     if (mediaItems[index]?.type === "video" && !videoLoaded) {
       setVideoLoading(true);
     }
   };
 
-  // ← Callback quand la vidéo est prête
-  const handleVideoStatus = (status: AVPlaybackStatus) => {
-    if (status.isLoaded) {
-      setVideoLoading(false);
-      setVideoLoaded(true); // ← mémorise : plus besoin de recharger
+  const handleSnapToItem = (index: number) => {
+    setSubImageSelected(index);
+    if (mediaItems[index]?.type === "video" && !videoLoaded) {
+      setVideoLoading(true);
     }
   };
 
+  const handleVideoStatus = (status: AVPlaybackStatus) => {
+    if (status.isLoaded) {
+      setVideoLoading(false);
+      setVideoLoaded(true);
+    }
+  };
+
+  const isVideoSelected = mediaItems[subImageSelected]?.type === "video";
+
   return (
     <>
-      {/* Main media */}
+      {/* Main media carousel */}
       <View style={styles.imageGallery}>
-        {/* ← Vidéo TOUJOURS montée, juste cachée si pas sélectionnée */}
-        {video && (
-          <View
-            style={[
-              styles.videoContainer,
-              !isVideoSelected && {
-                position: "absolute",
-                opacity: 0,
-                zIndex: -1,
-              },
-            ]}
-          >
-            <Video
-              ref={videoRef}
-              source={{ uri: video }}
-              style={styles.mainImage}
-              useNativeControls
-              resizeMode={ResizeMode.CONTAIN}
-              shouldPlay={!!isVideoSelected} // ← joue automatiquement quand sélectionnée ✅
-              onPlaybackStatusUpdate={handleVideoStatus}
-            />
-            {videoLoading && (
-              <View style={styles.videoLoader}>
-                <ActivityIndicator size="large" color="#fff" />
-              </View>
-            )}
-          </View>
-        )}
+        <Carousel
+          ref={carouselRef}
+          width={width}
+          height={width * 0.9}
+          data={mediaItems}
+          defaultIndex={0}
+          onSnapToItem={handleSnapToItem}
+          renderItem={({ item, index }) => {
+            if (item.type === "video") {
+              const isCurrentVideo = index === subImageSelected;
+              return (
+                <View style={styles.videoContainer}>
+                  <Video
+                    source={{ uri: item.url }}
+                    style={styles.mainImage}
+                    useNativeControls
+                    resizeMode={ResizeMode.CONTAIN}
+                    shouldPlay={false}
+                    onPlaybackStatusUpdate={handleVideoStatus}
+                  />
+                  {videoLoading && isCurrentVideo && (
+                    <View style={styles.videoLoader}>
+                      <ActivityIndicator size="large" color="#fff" />
+                    </View>
+                  )}
+                </View>
+              );
+            }
 
-        {/* ← Image seulement si pas vidéo sélectionnée */}
-        {!isVideoSelected && (
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={() => setIsZoomVisible(true)}
-          >
-            <Image
-              source={{ uri: images[subImageSelected] }}
-              style={styles.mainImage}
-            />
-          </TouchableOpacity>
-        )}
+            return (
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => setIsZoomVisible(true)}
+              >
+                <Image source={{ uri: item.url }} style={styles.mainImage} />
+              </TouchableOpacity>
+            );
+          }}
+        />
 
         <View
           style={[styles.imageBadge, isVideoSelected && styles.imageBadgeVideo]}
@@ -126,14 +137,15 @@ export default function AnnouncementDetailsImagesSection({
       </View>
 
       {/* Sub thumbnails */}
-      <FlatList
-        data={mediaItems}
+      <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={styles.subImagesContainer}
         contentContainerStyle={styles.subImages}
-        keyExtractor={(_, i) => i.toString()}
-        renderItem={({ item, index }) => (
+      >
+        {mediaItems.map((item, index) => (
           <TouchableOpacity
+            key={`${item.type}-${index}`}
             onPress={() => handleSelectMedia(index)}
             style={[
               styles.subImageWrapper,
@@ -160,8 +172,8 @@ export default function AnnouncementDetailsImagesSection({
               <Image source={{ uri: item.url }} style={styles.subImage} />
             )}
           </TouchableOpacity>
-        )}
-      />
+        ))}
+      </ScrollView>
 
       {/* Modal zoom images */}
       <Modal
@@ -171,7 +183,7 @@ export default function AnnouncementDetailsImagesSection({
       >
         <ImageViewer
           imageUrls={imageUrls}
-          index={subImageSelected}
+          index={isVideoSelected ? 0 : subImageSelected - (video ? 1 : 0)}
           onSwipeDown={() => setIsZoomVisible(false)}
           enableSwipeDown={true}
           backgroundColor="black"
@@ -182,7 +194,9 @@ export default function AnnouncementDetailsImagesSection({
               </AppText>
             </View>
           )}
-          onChange={(index) => setSubImageSelected(index || 0)}
+          onChange={(index) =>
+            setSubImageSelected((index || 0) + (video ? 1 : 0))
+          }
         />
         <TouchableOpacity
           style={styles.closeButton}
@@ -229,16 +243,19 @@ const styles = StyleSheet.create({
   },
   imageBadgeVideo: {
     bottom: undefined,
-    top: 15, // ← en haut pour la vidéo
+    top: 15,
     right: 15,
   },
   badgeText: { color: "#fff", fontSize: 12 },
+  subImagesContainer: {
+    marginHorizontal: 20,
+  },
   subImages: {
-    paddingHorizontal: 20,
     paddingVertical: 20,
     gap: 10,
-    flex: 1,
+    alignItems: "center",
     justifyContent: "center",
+    flexGrow: 1,
   },
   subImageWrapper: {
     borderRadius: 8,

@@ -11,7 +11,7 @@ type FormData = z.infer<typeof PostAnAddSchema>;
 
 export const useEditAd = () => {
   const queryClient = useQueryClient();
-  const { uploadImgs } = useUploadImgs();
+  const { uploadImgs, uploadVideo } = useUploadImgs();
 
   const editAd = async (
     data: FormData,
@@ -48,6 +48,26 @@ export const useEditAd = () => {
         item.isLocal ? uploadedUrls?.[uploadIndex++] : item.img,
       );
 
+      // Gestion de la vidéo
+      let finalVideo = data.video;
+      const isVideoLocal =
+        data.video &&
+        (data.video.startsWith("file://") ||
+          (!data.video.startsWith("http://") &&
+            !data.video.startsWith("https://")));
+
+      if (isVideoLocal && data.video) {
+        const uploadedVideo = await uploadVideo(data.video);
+        if (uploadedVideo) {
+          finalVideo = uploadedVideo;
+        } else {
+          throw new Error("Erreur lors de l'upload de la vidéo.");
+        }
+      }
+
+      const deletedVideo =
+        preData.video && data.video !== preData.video ? preData.video : null;
+
       const updates: any = {};
 
       if (data.title !== preData.title) updates.title = data.title;
@@ -55,6 +75,8 @@ export const useEditAd = () => {
         updates.description = data.description;
       if (data.price !== preData.price) updates.price = data.price;
       if (data.city !== preData.city) updates.city = data.city;
+      if (JSON.stringify(data.address) !== JSON.stringify(preData.address))
+        updates.address = data.address;
       if (data.phoneNumber !== preData.phoneNumber)
         updates.phoneNumber = data.phoneNumber;
       if (data.whatsappNumber !== preData.whatsappNumber)
@@ -68,6 +90,10 @@ export const useEditAd = () => {
         updates.images = finalImages;
       }
 
+      if (finalVideo !== preData.video) {
+        updates.video = finalVideo;
+      }
+
       if (!Object.keys(updates).length) {
         showToast("error", "Aucune modification détectée.");
         return null;
@@ -78,6 +104,7 @@ export const useEditAd = () => {
         adId,
         updates,
         deletedImages,
+        deletedVideo,
       });
 
       console.log(preData.title, data.title);

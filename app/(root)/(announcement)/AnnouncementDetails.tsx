@@ -1,4 +1,5 @@
 import AnnouncementDetailsFloatingButtons from "@/components/announcement-details/AnnouncementDetailsFloatingButtons";
+import AnnouncementDetailsAddressSection from "@/components/announcement-details/sections/AnnouncementDetailsAddressSection";
 import AnnouncementDetailsHeaderSection from "@/components/announcement-details/sections/AnnouncementDetailsHeaderSection";
 import AnnouncementDetailsImagesSection from "@/components/announcement-details/sections/AnnouncementDetailsImagesSection";
 import AnnouncementDetailsInfoSection from "@/components/announcement-details/sections/AnnouncementDetailsInfoSection";
@@ -90,6 +91,8 @@ export default function AnnouncementDetails() {
   const safeTitle = currentAd?.title ?? "Annonce";
   const safePrice = currentAd?.price != null ? String(currentAd.price) : "";
 
+  console.log(ad?.address);
+
   return (
     <Container withBottom withGoBack>
       {/* {(isLoading || !ad) && <AppFullScreenLoader />}
@@ -127,6 +130,11 @@ export default function AnnouncementDetails() {
                 currentAnnouncement={currentAd}
                 from={from as "OtherPage" | "ProfilePage"}
               />
+            )}
+
+            {/* Adresse map */}
+            {currentAd?.address && (
+              <AnnouncementDetailsAddressSection address={currentAd?.address} />
             )}
 
             {/*profile */}

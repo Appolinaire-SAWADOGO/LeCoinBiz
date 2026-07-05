@@ -360,3 +360,51 @@ export const getUserToken = async (): Promise<string> => {
   }
   return token as string;
 };
+
+export function extractCityFromPlaceDetails(
+  details?: {
+    address_components?: Array<{
+      long_name?: string;
+      short_name?: string;
+      types?: string[];
+    }>;
+  } | null,
+): string | undefined {
+  const cityComponent = details?.address_components?.find((component) =>
+    component.types?.some((type) =>
+      [
+        "locality",
+        "sublocality",
+        "postal_town",
+        "administrative_area_level_2",
+        "administrative_area_level_1",
+      ].includes(type),
+    ),
+  );
+
+  return cityComponent?.long_name || cityComponent?.short_name || undefined;
+}
+
+export function matchBurkinaCity(
+  detectedCity: string,
+  cities: readonly string[],
+): string | undefined {
+  const normalize = (str: string) =>
+    str
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/['’]/g, "")
+      .replace(/[-\s]+/g, "");
+
+  const target = normalize(detectedCity);
+  if (!target) return undefined;
+
+  const exactMatch = cities.find((c) => normalize(c) === target);
+  if (exactMatch) return exactMatch;
+
+  const partialMatch = cities.find(
+    (c) => normalize(c).includes(target) || target.includes(normalize(c)),
+  );
+  return partialMatch;
+}

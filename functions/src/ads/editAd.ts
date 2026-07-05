@@ -6,7 +6,7 @@ const bucket = admin.storage().bucket();
 export const editAd = onCall(
   { consumeAppCheckToken: false, region: "europe-southwest1" },
   async (request) => {
-    const { adId, updates, deletedImages } = request.data;
+    const { adId, updates, deletedImages, deletedVideo } = request.data;
     const userId = request.auth?.uid;
 
     if (!userId) {
@@ -36,21 +36,30 @@ export const editAd = onCall(
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
+      const deleteFile = async (url: string) => {
+        try {
+          const decoded = decodeURIComponent(url);
+          const match = decoded.match(/\/o\/(.*?)\?/);
+          if (!match?.[1]) return;
+
+          await bucket.file(match[1]).delete();
+        } catch (e) {
+          console.error("File delete error:", e);
+        }
+      };
+
       // Supprimer les anciennes images
       if (Array.isArray(deletedImages)) {
-        const deletePromises = deletedImages.map(async (url: string) => {
-          try {
-            const decoded = decodeURIComponent(url);
-            const match = decoded.match(/\/o\/(.*?)\?/);
-            if (!match?.[1]) return;
-
-            await bucket.file(match[1]).delete();
-          } catch (e) {
-            console.error("Image delete error:", e);
-          }
+        const deleteImagesFn = deletedImages.map(async (url: string) => {
+          await deleteFile(url);
         });
 
-        await Promise.all(deletePromises);
+        await Promise.all(deleteImagesFn);
+      }
+
+      // Supprimer l'ancienne vidéo
+      if (deletedVideo) {
+        await deleteFile(deletedVideo);
       }
 
       return { success: true };

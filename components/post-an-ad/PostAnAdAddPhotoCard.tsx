@@ -15,23 +15,40 @@ export default function PostAnAdAddPhotoCard({
   setImages,
   pickerDisabled,
   style,
+  maxFiles,
+  slotIndex,
 }: {
   images: string[];
   setImages: React.Dispatch<React.SetStateAction<string[]>>;
   pickerDisabled: boolean;
   style?: StyleProp<ViewStyle>;
+  maxFiles?: number;
+  slotIndex?: number; // Index du slot vide à remplir
 }) {
   const { designSystem } = useAppTheme();
-
   const { pickImage } = usePickImage();
-
-  const isPickerDisabled = images.length >= 4;
 
   return (
     <TouchableOpacity
       onPress={async () => {
-        if (!isPickerDisabled)
-          await pickImage((img: string) => setImages([...images, img]));
+        if (!pickerDisabled)
+          await pickImage(
+            (imgs: string[]) => {
+              // Si slotIndex est fourni, on remplace le slot vide à cet index
+              if (slotIndex !== undefined) {
+                setImages((prevImages) => {
+                  const newImages = [...prevImages];
+                  newImages[slotIndex] = imgs[0]; // Prendre la première image sélectionnée
+                  return newImages;
+                });
+              } else {
+                // Sinon, on ajoute les images à la fin
+                setImages([...images, ...imgs]);
+              }
+            },
+            undefined,
+            maxFiles,
+          );
       }}
       disabled={pickerDisabled}
       activeOpacity={0.5}
@@ -44,15 +61,17 @@ export default function PostAnAdAddPhotoCard({
       <MaterialCommunityIcons
         name="camera-outline"
         size={36}
-        color={designSystem.colors.bigText}
+        color={
+          !pickerDisabled ? designSystem.colors.bigText : "rgba(0, 0, 0, 0.4)"
+        }
       />
       <View
         style={[
           styles.addImage,
           {
-            backgroundColor: !isPickerDisabled
+            backgroundColor: !pickerDisabled
               ? designSystem.colors.smallText
-              : "rgba(0, 0, 0, 0.5)",
+              : "rgba(0, 0, 0, 0.4)",
           },
         ]}
       >

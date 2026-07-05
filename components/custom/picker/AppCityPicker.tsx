@@ -35,7 +35,7 @@ export default function AppCityPicker({
 
   return (
     <AppDropDownPicker
-      withSearch={false}
+      withSearch={true}
       placeholder="Choisissez une Ville"
       items={itemsWithAllCity()}
       open={cityPickerOpen}

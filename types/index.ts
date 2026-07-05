@@ -28,6 +28,11 @@ export type AnnouncementType = {
   category: string;
   subCategory: string;
   city: string;
+  address?: {
+    lat: number;
+    lng: number;
+    formattedAddress: string;
+  };
   phoneNumber: string;
   whatsappNumber: string;
   userId: string;

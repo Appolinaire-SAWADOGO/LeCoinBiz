@@ -146,6 +146,21 @@ export default function TabLayout() {
           },
         }}
       />
+
+      {/* <Tabs.Screen
+        name="Test"
+        options={{
+          title: "Test",
+          tabBarIcon: ({ color }) => (
+            // <Settings size={24} fill={fill(color)} color={color} />
+            <></>
+          ),
+          tabBarLabelStyle: {
+            fontFamily: "BasisGrotesqueArabicPro-Regular",
+            fontSize: 11,
+          },
+        }}
+      /> */}
     </Tabs>
   );
 }
