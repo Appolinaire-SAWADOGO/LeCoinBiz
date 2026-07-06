@@ -7,11 +7,18 @@ const algoliaApiKey = defineSecret("ALGOLIA_API_KEY");
 
 const PAGE_SIZE = 10;
 
+// Replicas à créer sur l'index "Ads" côté Algolia :
+// - "Ads_createdAt_desc" -> customRanking: ["desc(createdAt)"]
+// - "Ads_clicks_desc"    -> customRanking: ["desc(stats.clicks)"]
+const INDEX_RECENT = "Ads_createdAt_desc";
+const INDEX_POPULAR = "Ads_clicks_desc";
+
+const POPULAR_OPTION_LABEL = "Annonces Populaire";
+
 export const getFilterAds = onCall(
   {
     secrets: [algoliaAppId, algoliaApiKey],
     consumeAppCheckToken: false,
-    invoker: "public",
     region: "europe-southwest1",
   },
   async (request) => {
@@ -66,10 +73,26 @@ export const getFilterAds = onCall(
         if (timestamp) filters.push(`createdAt >= ${timestamp}`);
       }
 
+      // "Annonces Populaire" est un critère de TRI, pas une option d'annonce.
+      // Il ne doit jamais être utilisé pour filtrer sur ad.options.
+      const isPopularActive = !!options?.some(
+        (o: any) => o.label === POPULAR_OPTION_LABEL && o.active,
+      );
+
+      // Vraies options d'annonce (Livraison Gratuite, Neuf, ...)
+      const realActiveOptions = options
+        ?.filter((o: any) => o.active && o.label !== POPULAR_OPTION_LABEL)
+        .map((o: any) => o.label);
+
+      // Choix de l'index :
+      // - "Annonces Populaire" actif -> tri par nombre de clics décroissant
+      // - sinon -> toujours les annonces les plus récentes en premier
+      const indexName = isPopularActive ? INDEX_POPULAR : INDEX_RECENT;
+
       const filtersString = filters.join(" AND ");
 
       const result = await client.searchSingleIndex({
-        indexName: "Ads",
+        indexName,
         searchParams: {
           query: search || "",
           hitsPerPage: PAGE_SIZE,
@@ -84,13 +107,9 @@ export const getFilterAds = onCall(
         ...hit,
       }));
 
-      const activeOptions = options
-        ?.filter((o: any) => o.active)
-        .map((o: any) => o.label);
-
-      if (activeOptions?.length) {
+      if (realActiveOptions?.length) {
         ads = ads.filter((ad: any) =>
-          activeOptions.every((opt: string) =>
+          realActiveOptions.every((opt: string) =>
             ad.options?.some((aOpt: any) => aOpt.label === opt && aOpt.active),
           ),
         );

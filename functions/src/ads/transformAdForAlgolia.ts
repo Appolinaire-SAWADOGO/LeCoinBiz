@@ -1,70 +1,36 @@
-import { onDocumentWritten } from "firebase-functions/v2/firestore";
+import { onCall } from "firebase-functions/v2/https";
 
-export const transformAdForAlgolia = onDocumentWritten(
-  { document: "Ads/{adId}", region: "europe-southwest1" },
-  (event) => {
-    type AdStatusType = "ACTIVATED" | "PENDING" | "DISABLED";
+export const transformAdForAlgolia = onCall(
+  {
+    region: "us-central1",
+    invoker: "public",
+  },
+  async (request) => {
+    const data = request.data;
 
-    type AnnouncementType = {
-      id: string;
-      title: string;
-      description: string;
-      price: number;
-      category: string;
-      subCategory: string;
-      city: string;
-      phoneNumber: string;
-      whatsappNumber: string;
-      userId: string;
-      options: {
-        label: string;
-        active: boolean;
-      }[];
-      images: string[];
-      stats: {
-        clicks: number;
-        favorites: number;
-        views: number;
-      };
-      status: AdStatusType;
-      createdAt: {
-        seconds: number;
-        nanoseconds: number;
-      };
-      updatedAt: {
-        seconds: number;
-        nanoseconds: number;
-      };
-    };
+    // Gère tous les formats possibles que peut prendre un Timestamp Firestore
+    // une fois sérialisé en JSON par l'extension.
+    function getTimestampMillis(value: any): number {
+      if (!value) return Date.now();
+      if (typeof value._seconds === "number") return value._seconds * 1000;
+      if (typeof value.seconds === "number") return value.seconds * 1000;
+      if (typeof value === "number") return value;
+      return Date.now();
+    }
 
-    const ad = event.data?.after?.data() as AnnouncementType | undefined;
-    const id = event.data?.after?.ref.id;
-
-    if (!ad || !id) return null;
+    const createdAtMs = getTimestampMillis(data.createdAt);
 
     return {
-      objectID: id,
-      title: ad.title,
-      description: ad.description,
-      price: ad.price,
-      category: ad.category,
-      subCategory: ad.subCategory,
-      city: ad.city,
-      userId: ad.userId,
-      images: ad.images || [],
-      imageNames: (ad.images || [])
-        .map((url) => url.split("/").pop()?.split(".")[0])
+      ...data,
+      clicks: data.stats?.clicks ?? 0,
+      imageNames: (data.images || [])
+        .map((url: any) => url.split("/").pop()?.split(".")[0])
         .join(" "),
-      options: ad.options,
-      optionsText: (ad.options || [])
+      optionsText: (data.options || [])
         .filter((opt: any) => opt.active)
         .map((opt: any) => opt.label)
         .join(" "),
-      clicks: ad.stats.clicks,
-      status: ad.status,
-      createdAt: ad.createdAt?.seconds
-        ? ad.createdAt.seconds * 1000
-        : Date.now(),
+      createdAt: createdAtMs,
     };
   },
 );

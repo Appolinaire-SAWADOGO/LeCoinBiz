@@ -19,6 +19,8 @@ export const useGetFilterAds = () => {
     try {
       const userToken = await getUserToken();
 
+      console.log(filtersStatesStore);
+
       const getFilterAdsFn = firebaseFunctions.httpsCallable<
         {
           page: number;
