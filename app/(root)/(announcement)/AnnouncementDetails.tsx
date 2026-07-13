@@ -69,7 +69,6 @@ export default function AnnouncementDetails() {
   });
 
   const currentAd = ad ?? initialAd;
-  if (!currentAd) return null;
 
   useEffect(() => {
     if (!currentAd) return;
@@ -91,7 +90,9 @@ export default function AnnouncementDetails() {
   const safeTitle = currentAd?.title ?? "Annonce";
   const safePrice = currentAd?.price != null ? String(currentAd.price) : "";
 
-  console.log(ad?.address);
+  // console.log(ad?.address);
+
+  if (!currentAd) return null;
 
   return (
     <Container withBottom withGoBack>
