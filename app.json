@@ -15,7 +15,8 @@
     "ios": {
       "googleServicesFile": "./GoogleService-Info.plist",
       "bundleIdentifier": "com.appolinaire-sdg.LeCoinBiz",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "associatedDomains": ["applinks:lecoinbiz-e43b7.web.app"]
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -35,6 +36,20 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.appolinaire_sdg.LeCoinBiz",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "lecoinbiz-e43b7.web.app",
+              "pathPrefix": "/annonce"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ],
       "orientation": "portrait"
     },
     "web": {

@@ -2,34 +2,57 @@ import AppText from "@/components/custom/AppText";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import * as Clipboard from "expo-clipboard";
 import React from "react";
-import { Alert, Share, StyleSheet, View } from "react-native";
+import { Alert, Linking, StyleSheet, View } from "react-native";
 import AnnouncementDetailsShareElmtCard from "../AnnouncementDetailsShareElmtCard";
 
 export default function AnnouncementDetailsShareSection({
   from,
+  adId,
+  adTitle,
 }: {
   from: string;
+  adId: string;
+  adTitle: string;
 }) {
   const { designSystem } = useAppTheme();
-  const shareLink = async () => {
+
+  const adLink = `https://lecoinbiz-e43b7.web.app/annonce/${adId}`;
+  const shareMessage = `Découvrez cette annonce sur LeCoinBiz : ${adTitle}\n${adLink}`;
+
+  const shareViaWhatsapp = async () => {
     try {
-      await Share.share({
-        message:
-          "Découvrez cette annonce incroyable : https://example.com/annonce/123",
-      });
+      const url = `whatsapp://send?text=${encodeURIComponent(shareMessage)}`;
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        await Linking.openURL(
+          `https://wa.me/?text=${encodeURIComponent(shareMessage)}`,
+        );
+      }
     } catch {
-      Alert.alert("Erreur", "Impossible de partager l'annonce.");
+      Alert.alert("Erreur", "Impossible de partager sur WhatsApp.");
+    }
+  };
+
+  const shareViaFacebook = async () => {
+    try {
+      const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(adLink)}`;
+      await Linking.openURL(url);
+    } catch {
+      Alert.alert("Erreur", "Impossible de partager sur Facebook.");
     }
   };
 
   const copyLink = async () => {
     try {
-      await Clipboard.setStringAsync("https://example.com/annonce/123");
+      await Clipboard.setStringAsync(adLink);
       Alert.alert("Lien copié", "Le lien de l'annonce a été copié.");
     } catch {
       Alert.alert("Erreur", "Impossible de copier le lien.");
     }
   };
+
   return (
     <View
       style={[
@@ -48,12 +71,14 @@ export default function AnnouncementDetailsShareSection({
 
       <View style={styles.buttonRow}>
         <AnnouncementDetailsShareElmtCard
-          label="facebook"
-          onPress={shareLink}
+          label="whatsapp"
+          onPress={shareViaWhatsapp}
         />
-        <AnnouncementDetailsShareElmtCard label="twitter" />
-        <AnnouncementDetailsShareElmtCard label="whatsapp" />
-        <AnnouncementDetailsShareElmtCard label="copyLink" />
+        <AnnouncementDetailsShareElmtCard
+          label="facebook"
+          onPress={shareViaFacebook}
+        />
+        <AnnouncementDetailsShareElmtCard label="copyLink" onPress={copyLink} />
       </View>
     </View>
   );
@@ -63,7 +88,6 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: 16,
     borderTopWidth: 1,
-
     borderColor: "#eee",
   },
   title: {
@@ -73,18 +97,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     gap: 12,
-  },
-  button: {
-    // backgroundColor: "#222",
-    padding: 10,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    width: 80,
-  },
-  buttonText: {
-    marginTop: 4,
-    fontSize: 12,
-    textAlign: "center",
   },
 });

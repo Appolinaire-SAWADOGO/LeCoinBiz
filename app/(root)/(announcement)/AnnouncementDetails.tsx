@@ -5,6 +5,7 @@ import AnnouncementDetailsImagesSection from "@/components/announcement-details/
 import AnnouncementDetailsInfoSection from "@/components/announcement-details/sections/AnnouncementDetailsInfoSection";
 import AnnouncementDetailsProfileSection from "@/components/announcement-details/sections/AnnouncementDetailsProfileSection";
 import AnnouncementDetailsPublicationReportingSection from "@/components/announcement-details/sections/AnnouncementDetailsPublicationReportingSection";
+import AnnouncementDetailsShareSection from "@/components/announcement-details/sections/AnnouncementDetailsShareSection";
 import AnnouncementDetailsSimilarsAdSection from "@/components/announcement-details/sections/AnnouncementDetailsSimilarsAdSection";
 import Container from "@/components/Container";
 import { useGetAdById } from "@/hooks/services/ads/useGetAdById";
@@ -28,7 +29,6 @@ export default function AnnouncementDetails() {
   const queryClient = useQueryClient();
   const { incrementAdClics } = useIncrementAdClics();
 
-  // Parse
   const initialAd: AnnouncementType | null = React.useMemo(() => {
     if (initialRslt) {
       try {
@@ -57,7 +57,7 @@ export default function AnnouncementDetails() {
         const fetchedAd = await getAdById(adId as string);
         return fetchedAd ?? (initialAd as AnnouncementType);
       } catch {
-        return initialAd as AnnouncementType; // ← fallback hors ligne
+        return initialAd as AnnouncementType;
       }
     },
     enabled: !!adId,
@@ -106,6 +106,7 @@ export default function AnnouncementDetails() {
           safeTitle.length > 15 ? safeTitle.slice(0, 15) + "..." : safeTitle
         }
         adId={currentAd?.id as string}
+        adTitle={currentAd.title}
         ad={currentAd as AnnouncementType}
       />
 
@@ -145,9 +146,13 @@ export default function AnnouncementDetails() {
             )}
 
             {/* share */}
-            {/* {currentAd.status === "ACTIVATED" && (
-                  <AnnouncementDetailsShareSection from={from as string} />
-                )} */}
+            {currentAd.status === "ACTIVATED" && (
+              <AnnouncementDetailsShareSection
+                from={from as string}
+                adId={currentAd.id}
+                adTitle={currentAd.title}
+              />
+            )}
 
             {/* report publication and similar ad */}
             {from === "OtherPage" && (

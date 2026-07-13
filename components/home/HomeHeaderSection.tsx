@@ -103,10 +103,11 @@ export default function HomeHeaderSection() {
               styles.filterInner,
               {
                 // width: "50%",
-                flex: 1,
+                // flex: 1,
                 justifyContent: "flex-end",
                 // backgroundColor: "red",
                 paddingRight: 16,
+                paddingLeft: 10,
                 paddingVertical: 10,
               },
             ]}
@@ -132,7 +133,10 @@ export default function HomeHeaderSection() {
             setHasNotifications(false);
             router.navigate("/(root)/Notifications");
           }}
-          style={styles.iconBtn}
+          style={[
+            styles.iconBtn,
+            { backgroundColor: designSystem.colors.primaryLight },
+          ]}
         >
           <MaterialCommunityIcons
             name="bell-ring-outline"
@@ -178,7 +182,6 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 50,
-    backgroundColor: "#6C27B8",
     alignItems: "center",
     justifyContent: "center",
   },

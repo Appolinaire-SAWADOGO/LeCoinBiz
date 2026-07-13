@@ -26,7 +26,7 @@ import { setGlobalOptions } from "firebase-functions";
 
 admin.initializeApp();
 
-setGlobalOptions({ 
+setGlobalOptions({
   maxInstances: 10,
   cpu: 0.333,
   memory: "256MiB",
@@ -40,6 +40,7 @@ setGlobalOptions({
 // ads
 export { activateAd } from "./ads/activateAd";
 export { addAdFavorite } from "./ads/addAdFavorite";
+export { adOgPage } from "./ads/adOgPage";
 export { ifAdIsAddedToFavorites } from "./ads/checkFavorite";
 export { dailyUpdateAdsClicks } from "./ads/dailyUpdateAdsClicks";
 export { deleteAd } from "./ads/deleteAd";

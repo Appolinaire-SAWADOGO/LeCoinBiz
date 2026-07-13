@@ -222,20 +222,42 @@ export default function PostAnAd() {
     <Container withBottom={false} withGoBack>
       <PageHeader
         name={parseAd ? "Modifier l'annonce" : "Poster une annonce"}
-        style={{ paddingHorizontal: 20, marginBottom: 20 }}
+        style={{
+          paddingHorizontal: 20,
+          marginBottom: 20,
+        }}
       />
 
       <View style={{ paddingHorizontal: 20 }}>
-        <View style={styles.progressTrack}>
-          <View
-            style={[
-              styles.progressFill,
-              {
-                width: `${progressPercent}%`,
-                backgroundColor: designSystem.colors.primary,
-              },
-            ]}
-          />
+        <View style={styles.segmentContainer}>
+          {STEPS.map((_, idx) => {
+            const segmentRange = 100 / STEPS.length;
+            const start = idx * segmentRange;
+            const fillPercent = Math.max(
+              0,
+              Math.min(100, ((progressPercent - start) / segmentRange) * 100),
+            );
+
+            return (
+              <View
+                key={idx}
+                style={[
+                  styles.segmentTrack,
+                  idx !== STEPS.length - 1 ? { marginRight: 8 } : {},
+                ]}
+              >
+                <View
+                  style={[
+                    styles.segmentFill,
+                    {
+                      width: `${fillPercent}%`,
+                      backgroundColor: designSystem.colors.primary,
+                    },
+                  ]}
+                />
+              </View>
+            );
+          })}
         </View>
         <View style={styles.stepLabelRow}>
           <AppText style={styles.stepLabelText}>
@@ -579,5 +601,20 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#666",
     lineHeight: 18,
+  },
+  segmentContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  segmentTrack: {
+    flex: 1,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#E5E5E5",
+    overflow: "hidden",
+  },
+  segmentFill: {
+    height: "100%",
+    borderRadius: 3,
   },
 });
