@@ -16,9 +16,9 @@ import { AdStatusType, AnnouncementType } from "@/types";
 import { formatCreatedAt } from "@/utils";
 import { getCurrentUserAuthMethod } from "@/utils/auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
 
 export default function AnnouncementDetails() {
   const { designSystem } = useAppTheme();
@@ -92,10 +92,21 @@ export default function AnnouncementDetails() {
 
   // console.log(ad?.address);
 
-  if (!currentAd) return null;
+  if (!currentAd)
+    return (
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          flex: 1,
+        }}
+      >
+        <ActivityIndicator size="large" color={designSystem.colors.primary} />
+      </View>
+    );
 
   return (
-    <Container withBottom withGoBack>
+    <Container withBottom onBackPress={() => router.navigate("/(tabs)/Home")}>
       {/* {(isLoading || !ad) && <AppFullScreenLoader />}
       {!isLoading && ad && (
         <> */}

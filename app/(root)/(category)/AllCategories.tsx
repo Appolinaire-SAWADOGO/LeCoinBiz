@@ -10,7 +10,7 @@ export default function AllCategories() {
   const { designSystem } = useAppTheme();
 
   return (
-    <Container style={styles.container}>
+    <Container style={styles.container} withGoBack>
       {/* header */}
       <PageHeader name="Toutes les catégories" />
 

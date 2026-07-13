@@ -9,16 +9,21 @@ export default function Container({
   style,
   withBottom = true,
   withGoBack = false,
+  onBackPress,
 }: {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   withBottom?: boolean;
   withGoBack?: boolean;
+  onBackPress?: () => void;
 }) {
   // const { isConnected } = useNetworkStore();
 
   useBackPress(() => {
     if (withGoBack) router.back();
+    if (onBackPress) {
+      onBackPress();
+    }
     return;
   });
 

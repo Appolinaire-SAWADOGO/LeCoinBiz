@@ -3,6 +3,7 @@ import PageHeader from "@/components/PageHeader";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AdStatusType, AnnouncementType } from "@/types";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React from "react";
 import { Alert, Share, StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -35,7 +36,11 @@ export default function AnnouncementDetailsHeaderSection({
   };
 
   return (
-    <PageHeader style={{ paddingHorizontal: 20, paddingTop: 15 }} name={name}>
+    <PageHeader
+      style={{ paddingHorizontal: 20, paddingTop: 15 }}
+      name={name}
+      onBack={() => router.navigate("/(tabs)/Home")}
+    >
       <View style={styles.rightIcons}>
         {from === "OtherPage" && (
           <AddAdFavoriteButton
