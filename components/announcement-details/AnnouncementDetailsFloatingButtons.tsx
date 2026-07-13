@@ -45,22 +45,9 @@ export default function AnnouncementDetailsFloatingButtons({
 }) {
   const insets = useSafeAreaInsets();
 
-  const message = `
-Bonjour,
+  const adLink = `https://lecoinbiz-e43b7.web.app/annonce/${adId}`;
 
-Je suis intéressé(e) par votre annonce : 
-
-- Titre : ${adTitle}
-- Catégorie : ${adCategory}
-- Sous-catégorie : ${adSubCategory}
-- Prix : ${adPrice} FCFA
-- Publiée le : ${adTempUb}
-- Image : ${adImage}
-
-Pourriez-vous me donner plus d’informations ou convenir d’un rendez-vous pour en discuter ?
-
-Merci beaucoup et bonne journée !
-`;
+  const message = `Bonjour, je suis intéressé(e) par votre annonce "${adTitle}" (${adPrice} FCFA). ${adLink}`;
 
   const [footerHeight, setFooterHeight] = React.useState(0);
 
