@@ -102,7 +102,7 @@ export default function AnnouncementDetailsInfoSection({
           }}
         >
           <MaterialCommunityIcons name="eye-outline" size={18} />
-          <AppText>{currentAnnouncement.stats?.clicks ?? 0} Clicks</AppText>
+          <AppText>{currentAnnouncement.stats?.clicks ?? 0} Vues</AppText>
         </View>
       )}
 
