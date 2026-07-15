@@ -99,7 +99,7 @@ export default function AnnouncementCard({
           <View style={styles.viewsRow}>
             <MaterialCommunityIcons name="eye-outline" color="#888" size={16} />
             <AppText fontSize={12} color={designSystem.colors.subText}>
-              {ad?.stats.clicks} Clicks
+              {ad?.stats.clicks} Vues
             </AppText>
           </View>
         )}
