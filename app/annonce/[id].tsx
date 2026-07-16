@@ -7,15 +7,21 @@ export default function AnnonceDeepLinkRedirect() {
   const { id } = useLocalSearchParams();
   const { designSystem } = useAppTheme();
 
-  console.log("AnnonceDeepLinkRedirect id:", id);
-
   useEffect(() => {
-    if (id) {
-      router.navigate({
-        pathname: "/(root)/(announcement)/AnnouncementDetails",
-        params: { initialAdId: id as string, from: "OtherPage" },
-      });
-    }
+    const redirection = () => {
+      if (id) {
+        router.navigate({
+          pathname: "/(root)/(announcement)/AnnouncementDetails",
+          params: {
+            initialAdId: id as string,
+            from: "OtherPage",
+            isDeepLink: "true",
+          },
+        });
+      }
+    };
+
+    redirection();
   }, [id]);
 
   return (

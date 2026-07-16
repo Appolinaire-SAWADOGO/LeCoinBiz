@@ -14,6 +14,7 @@ export default function AnnouncementDetailsHeaderSection({
   adId,
   adTitle,
   ad,
+  isDeepLink,
 }: {
   from: "OtherPage" | "ProfilePage";
   status?: AdStatusType;
@@ -21,6 +22,7 @@ export default function AnnouncementDetailsHeaderSection({
   adId: string;
   adTitle: string;
   ad: AnnouncementType;
+  isDeepLink?: string;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -39,7 +41,10 @@ export default function AnnouncementDetailsHeaderSection({
     <PageHeader
       style={{ paddingHorizontal: 20, paddingTop: 15 }}
       name={name}
-      onBack={() => router.navigate("/(tabs)/Home")}
+      onBack={() => {
+        if (isDeepLink === "true") router.navigate("/(tabs)/Home");
+        else router.back();
+      }}
     >
       <View style={styles.rightIcons}>
         {from === "OtherPage" && (

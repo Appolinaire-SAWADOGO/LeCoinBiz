@@ -23,7 +23,7 @@ import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
 export default function AnnouncementDetails() {
   const { designSystem } = useAppTheme();
   const { getAdById } = useGetAdById();
-  const { initialRslt, from, initialAdId } = useLocalSearchParams();
+  const { initialRslt, from, initialAdId, isDeepLink } = useLocalSearchParams();
   const currentUser = useCurrentUser();
   const currentUserAuthMethod = getCurrentUserAuthMethod(currentUser);
   const queryClient = useQueryClient();
@@ -106,7 +106,13 @@ export default function AnnouncementDetails() {
     );
 
   return (
-    <Container withBottom onBackPress={() => router.navigate("/(tabs)/Home")}>
+    <Container
+      withBottom
+      onBackPress={() => {
+        if (isDeepLink === "true") router.navigate("/(tabs)/Home");
+        else router.back();
+      }}
+    >
       {/* {(isLoading || !ad) && <AppFullScreenLoader />}
       {!isLoading && ad && (
         <> */}
@@ -120,6 +126,7 @@ export default function AnnouncementDetails() {
         adId={currentAd?.id as string}
         adTitle={currentAd.title}
         ad={currentAd as AnnouncementType}
+        isDeepLink={isDeepLink as string | undefined}
       />
 
       {/* main */}
