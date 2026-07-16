@@ -10,7 +10,6 @@ import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useGetUserById } from "@/hooks/services/user/useGetUserById";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { UserType } from "@/types";
-import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 import {
   useInfiniteQuery,
   useQuery,
@@ -112,14 +111,10 @@ export default function Profile() {
     queryKey: ["user-activated-ads", userId],
     enabled: !!userId,
     queryFn: ({ pageParam }) =>
-      getAdsByUserId(
-        userId as string,
-        "ACTIVATED",
-        pageParam as FirebaseFirestoreTypes.QueryDocumentSnapshot | null,
-      ),
+      getAdsByUserId(userId as string, "ACTIVATED", pageParam as any),
     initialPageParam: null as any,
     getNextPageParam: (lastPage) => {
-      return lastPage?.hasMore ? lastPage.lastCreatedAt : undefined;
+      return lastPage?.hasMore ? lastPage.lastDoc : undefined;
     },
 
     staleTime: Infinity, // ✅ Les données ne deviennent JAMAIS stale
@@ -142,14 +137,10 @@ export default function Profile() {
     queryKey: ["user-disabled-ads", userId],
     enabled: !!userId,
     queryFn: ({ pageParam }) =>
-      getAdsByUserId(
-        userId as string,
-        "DISABLED",
-        pageParam as FirebaseFirestoreTypes.QueryDocumentSnapshot | null,
-      ),
+      getAdsByUserId(userId as string, "DISABLED", pageParam as any),
     initialPageParam: null as any,
     getNextPageParam: (lastPage) => {
-      return lastPage?.hasMore ? lastPage.lastCreatedAt : undefined;
+      return lastPage?.hasMore ? lastPage.lastDoc : undefined;
     },
 
     staleTime: Infinity, // ✅ Les données ne deviennent JAMAIS stale
@@ -172,14 +163,10 @@ export default function Profile() {
     queryKey: ["user-pending-ads", userId],
     enabled: !!userId,
     queryFn: ({ pageParam }) =>
-      getAdsByUserId(
-        userId as string,
-        "PENDING",
-        pageParam as FirebaseFirestoreTypes.QueryDocumentSnapshot | null,
-      ),
+      getAdsByUserId(userId as string, "PENDING", pageParam as any),
     initialPageParam: null as any,
     getNextPageParam: (lastPage) => {
-      return lastPage?.hasMore ? lastPage.lastCreatedAt : undefined;
+      return lastPage?.hasMore ? lastPage.lastDoc : undefined;
     },
 
     staleTime: Infinity, // ✅ Les données ne deviennent JAMAIS stale

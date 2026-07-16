@@ -110,10 +110,7 @@ export default function Onboarding() {
             {slides[step].title}
           </AppText>
 
-          <AppText
-            color={designSystem.colors.subText}
-            style={styles.slideDescription}
-          >
+          <AppText style={styles.slideDescription}>
             {slides[step].description}
           </AppText>
         </View>
@@ -128,11 +125,16 @@ export default function Onboarding() {
           }}
         >
           <TouchableOpacity onPress={prevStep}>
-            {step > 0 && (
-              <AppText font={"Bold"} color={designSystem.colors.primary}>
-                Retour
-              </AppText>
-            )}
+            <AppText
+              font={"Bold"}
+              color={
+                step > 0
+                  ? designSystem.colors.primary
+                  : designSystem.colors.subText
+              }
+            >
+              Retour
+            </AppText>
           </TouchableOpacity>
 
           <AppButton
@@ -213,7 +215,7 @@ const styles = StyleSheet.create({
   primaryButton: {
     width: 130,
     height: 44,
-    borderRadius: 5,
+    borderRadius: 8,
   },
   skipButton: {
     marginTop: 16,

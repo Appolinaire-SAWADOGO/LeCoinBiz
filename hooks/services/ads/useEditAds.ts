@@ -107,7 +107,7 @@ export const useEditAd = () => {
         deletedVideo,
       });
 
-      console.log(preData.title, data.title);
+      // console.log(preData.title, data.title);
 
       if (adStatus === "ACTIVATED") {
         modifyAdToInfiniteList(

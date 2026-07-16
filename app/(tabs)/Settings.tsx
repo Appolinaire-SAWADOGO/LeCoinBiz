@@ -5,6 +5,7 @@ import SettingAppVersionSection from "@/components/settings/sections/SettingAppV
 import SettingContactSection from "@/components/settings/sections/SettingContactSection";
 import SettingHelpSupportSection from "@/components/settings/sections/SettingHelpSupportSection";
 import SettingLegalInformationSection from "@/components/settings/sections/SettingLegalInformationSection";
+import SettingNavigationSection from "@/components/settings/sections/SettingNavigationSection";
 import SettingSecuritySection from "@/components/settings/sections/SettingSecuritySection";
 import SettingsLoginSection from "@/components/settings/sections/SettingsLoginSection";
 import SettingsLogoutAndDelAcntSection from "@/components/settings/sections/SettingsLogoutOrDelAcntSection";
@@ -32,6 +33,9 @@ export default function Settings() {
             Paramètres
           </AppText>
         </View>
+
+        {/*  Ville de navigation */}
+        <SettingNavigationSection />
 
         {/*  Paramètres de l'application */}
         <SettingApplicationSection />

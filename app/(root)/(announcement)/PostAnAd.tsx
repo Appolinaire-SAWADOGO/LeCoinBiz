@@ -556,7 +556,7 @@ export default function PostAnAd() {
           {!isLastStep ? (
             <AppButton
               title="Suivant"
-              style={{ borderRadius: 8, elevation: 0, flex: 1 }}
+              style={{ borderRadius: 10, elevation: 0, flex: 1 }}
               onPress={goNext}
             />
           ) : (

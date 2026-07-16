@@ -5,6 +5,7 @@ import AppCityPicker from "@/components/custom/picker/AppCityPicker";
 import LocDynSvg from "@/components/svg/LocDynSvg";
 import { useGetHomeAds } from "@/hooks/services/ads/useGetHomeAds";
 import { useGetNotifications } from "@/hooks/services/notifications/useGetNotifications";
+import { useAppTheme } from "@/hooks/useAppTheme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
@@ -15,6 +16,7 @@ export default function ChooseCity() {
   const queryClient = useQueryClient();
   const { getHomeAds } = useGetHomeAds();
   const { getNotifications } = useGetNotifications();
+  const { designSystem } = useAppTheme();
 
   const [city, setCity] = useState<string>("");
   const [showPicker, setShowPicker] = useState(false);
@@ -94,7 +96,7 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FFFFFF", // Fond blanc
+    backgroundColor: "#FFFFFF",
   },
   headerTitle: {
     fontSize: 22,
@@ -105,19 +107,19 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     fontSize: 14,
-    color: "#444", // Gris foncé lisible
+    // color: "#444", // Gris foncé lisible
     textAlign: "center",
     marginBottom: 30,
   },
   cityPicker: {
     marginBottom: 15,
     backgroundColor: "#F3F4F6", // Gris clair pour contraste doux
-    borderRadius: 10,
+    borderRadius: 8,
     padding: 10,
   },
   button: {
     marginTop: 15,
-    borderRadius: 10,
+    borderRadius: 8,
     paddingVertical: 15,
     width: "100%",
   },

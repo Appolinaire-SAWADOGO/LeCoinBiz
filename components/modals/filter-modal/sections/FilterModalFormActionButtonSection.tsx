@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   applyButton: {
     marginTop: 24,
     paddingVertical: 14,
-    borderRadius: 10,
+    borderRadius: 8,
     alignItems: "center",
     elevation: 0,
   },

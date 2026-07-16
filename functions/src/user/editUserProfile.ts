@@ -3,7 +3,6 @@ import { getAuth } from "firebase-admin/auth";
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 
-
 const db = getFirestore();
 const auth = getAuth();
 
@@ -16,7 +15,7 @@ export const editUserProfile = onCall(
       throw new HttpsError("unauthenticated", "Utilisateur non authentifié");
     }
 
-    const { firstAndLastName, userName, gender, dateOfBirth, image } =
+    const { firstAndLastName, userName, gender, dateOfBirth, image, location } =
       request.data;
 
     const updates: any = {
@@ -42,6 +41,15 @@ export const editUserProfile = onCall(
       updates.dateOfBirth = admin.firestore.Timestamp.fromDate(date);
     }
 
+    if (location !== undefined) {
+      updates.location = {
+        ...(location.city !== undefined ? { city: location.city } : {}),
+        ...(location.country !== undefined
+          ? { country: location.country }
+          : {}),
+      };
+    }
+
     try {
       await db.collection("Users").doc(uid).update(updates);
 
@@ -60,4 +68,3 @@ export const editUserProfile = onCall(
     }
   },
 );
-

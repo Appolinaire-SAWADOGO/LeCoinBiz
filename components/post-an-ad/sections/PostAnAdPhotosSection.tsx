@@ -57,7 +57,7 @@ export default function PostAnAdPhotosSection({
 
   const canAddVideo = !video; // <-- ne dépend plus du nombre de photos
 
-  console.log(images);
+  // console.log(images);
 
   return (
     <PostAnAdSection label="Photos" placeholder="">

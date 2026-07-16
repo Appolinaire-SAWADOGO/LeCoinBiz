@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     height: 44,
-    borderRadius: 10,
+    borderRadius: 8,
     fontSize: 14,
     paddingHorizontal: 14,
     elevation: 3,

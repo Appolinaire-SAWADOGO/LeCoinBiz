@@ -1,4 +1,5 @@
 import Container from "@/components/Container";
+import EditProfileCitySection from "@/components/edit-profile/EditProfileCitySection";
 import EditProfileDateOfBirthSection from "@/components/edit-profile/EditProfileDateOfBirthSection";
 import EditProfileFirstAndLastNameSection from "@/components/edit-profile/EditProfileFirstAndLastNameSection";
 import EditProfileGenderSection from "@/components/edit-profile/EditProfileGenderSection";
@@ -67,6 +68,9 @@ export default function EditProfile() {
 
           {/* genre */}
           <EditProfileGenderSection gender={parseUser.gender} />
+
+          {/* ville */}
+          <EditProfileCitySection city={parseUser.location?.city} />
 
           {/* date de naissance */}
           <EditProfileDateOfBirthSection

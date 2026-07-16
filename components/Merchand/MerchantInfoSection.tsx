@@ -16,6 +16,16 @@ export default function MerchantInfoSection({
 }) {
   const { designSystem } = useAppTheme();
 
+  // console.log(data.location);
+
+  const capitalize = (str?: string | null): string => {
+    if (!str) return "";
+    return str
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
+
   return (
     <View style={styles.container}>
       <View>
@@ -34,7 +44,10 @@ export default function MerchantInfoSection({
             color={designSystem.colors.bigText}
             size={17}
           />
-          <AppText>Ouagadougou, Burkina</AppText>
+          <AppText>
+            {capitalize(data.location.city)},{" "}
+            {capitalize(data.location.country)}
+          </AppText>
         </View>
 
         <View style={styles.flex}>

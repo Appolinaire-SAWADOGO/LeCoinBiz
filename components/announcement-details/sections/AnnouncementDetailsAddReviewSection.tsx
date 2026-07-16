@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   input: {
-    borderRadius: 12,
+    borderRadius: 8,
     minHeight: 120,
     paddingHorizontal: 16,
     paddingVertical: 12,

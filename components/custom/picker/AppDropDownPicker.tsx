@@ -78,7 +78,7 @@ export default function AppDropDownPicker({
           {
             borderColor: "#ccc",
             backgroundColor: "#fff",
-            borderRadius: 10,
+            borderRadius: 8,
           },
           dropDownContainerStyle,
         ]}

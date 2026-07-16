@@ -12,7 +12,7 @@ export const useCheckAdFavorite = () => {
     if (!adId) return false;
 
     try {
-      console.log(adId, userId);
+      // console.log(adId, userId);
 
       const checkFavoriteFunction = firebaseFunctions.httpsCallable(
         "ifAdIsAddedToFavorites",

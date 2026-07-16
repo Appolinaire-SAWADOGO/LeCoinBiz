@@ -196,6 +196,52 @@ export const useEditProfile = () => {
       }
     },
 
+    editCity: async (
+      city: string,
+      setValue: React.Dispatch<React.SetStateAction<string>>,
+    ) => {
+      if (!city || !setValue) return null;
+
+      if (!userId) {
+        showToast("error", "Connectez-vous pour mettre à jour votre profil.");
+        return null;
+      }
+
+      showToast("loading", "Chargement...", 0);
+
+      try {
+        const currentProfile = queryClient.getQueryData([
+          "user",
+          userId,
+          "profile",
+        ]) as any;
+
+        await callUpdateProfile({
+          location: { city, country: currentProfile?.location?.country },
+        });
+
+        authEvents.emit("profile_updated");
+
+        setValue(city);
+
+        modifyAdToQueryData(
+          ["user", userId, "profile"],
+          { location: { ...currentProfile?.location, city } },
+          queryClient,
+        );
+
+        Toast.hide();
+        showToast("success", "Ville mise à jour.");
+      } catch (error) {
+        Toast.hide();
+        showToast("error", "Une erreur est survenue.");
+        console.error(
+          "Une erreur s'est produite lors de la mise à jour de la ville.",
+          error,
+        );
+      }
+    },
+
     editDateOfBirth: async (
       dateOfBirth: Date,
       setValue: React.Dispatch<React.SetStateAction<dayjs.Dayjs | null>>,
