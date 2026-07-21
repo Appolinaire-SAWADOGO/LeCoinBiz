@@ -11,6 +11,7 @@ import PageHeader from "@/components/PageHeader";
 import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { UserType } from "@/types";
+import { getCurrentUserAuthMethod } from "@/utils/auth";
 import { ProfileSchema } from "@/zod/schema/Profile.schema";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
@@ -32,6 +33,8 @@ export default function EditProfile() {
   const parseUser = JSON.parse(user as string) as UserType;
 
   const currentUser = useCurrentUser();
+
+  const currentUserAuthMethod = getCurrentUserAuthMethod(currentUser);
 
   return (
     <Container withBottom style={{ flex: 1 }}>
@@ -114,7 +117,7 @@ export default function EditProfile() {
             )}
           </View> */}
 
-          {parseUser.authMethod === "EMAIL_PASSWORD" && (
+          {currentUserAuthMethod === "password" && (
             <>
               {/* email */}
               <EditProfilEmailSection email={parseUser.email} />

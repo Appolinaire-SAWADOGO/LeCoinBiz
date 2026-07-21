@@ -74,6 +74,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "641604581560-1qt8c3r5reta1qfpl2dpa3e6asi2bj6g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.appolinaire_sdg.LeCoinBiz.dev",
+            "certificate_hash": "4c848561ef331ee82bc998f6410c72b3dcc59bd1"
+          }
+        },
+        {
           "client_id": "641604581560-t4g144v3odn6rgne0kcbajird3ho4as9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
