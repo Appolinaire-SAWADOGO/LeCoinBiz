@@ -32,19 +32,7 @@ function CategoryCard({ id, name, icon, style }: CategoryCardProps) {
     setCategory(name);
     router.navigate(`/(root)/Filters?category=${encodeURIComponent(name)}`);
     await queryClient.invalidateQueries({
-      queryKey: [
-        "filter-ads",
-        {
-          search,
-          category: name,
-          subCategory,
-          city,
-          min,
-          max,
-          tempPub,
-          options,
-        },
-      ],
+      queryKey: ["filter-ads"],
     });
   }, [
     name,

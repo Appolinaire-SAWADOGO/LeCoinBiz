@@ -70,6 +70,25 @@ export default function AnnouncementCard({
       {/* announcement image */}
       <Image source={{ uri: ad?.images[0] }} style={styles.image} />
 
+      {/* etiquette boost */}
+      {ad?.isBoosted && (
+        <View
+          style={[
+            styles.boostBadge,
+            { backgroundColor: designSystem.colors.primary },
+          ]}
+        >
+          <MaterialCommunityIcons
+            name="lightning-bolt"
+            size={12}
+            color="#fff"
+          />
+          <AppText fontSize={11} font="Bold" color="#fff">
+            Boosté
+          </AppText>
+        </View>
+      )}
+
       {/* announcement content */}
       <View style={styles.info}>
         {/* Prix */}
@@ -148,6 +167,18 @@ const styles = StyleSheet.create({
     height: 160,
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
+  },
+  boostBadge: {
+    position: "absolute",
+    top: 12,
+    left: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 6,
+    zIndex: 10,
   },
   info: {
     padding: 10,

@@ -49,8 +49,7 @@
           ],
           "category": ["BROWSABLE", "DEFAULT"]
         }
-      ],
-      "orientation": "portrait"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -93,7 +92,9 @@
           "requestLocationPermission": true,
           "locationPermission": "Allow $(PRODUCT_NAME) to use your location"
         }
-      ]
+      ],
+      "@react-native-community/datetimepicker",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

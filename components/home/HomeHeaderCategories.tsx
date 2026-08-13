@@ -22,10 +22,9 @@ export default function HomeCategories() {
   const scrollToNext = useCallback(() => {
     const next = (currentIndexRef.current + 1) % CATEGORIES.length;
     currentIndexRef.current = next;
-    flatListRef.current?.scrollToIndex({
-      index: next,
+    flatListRef.current?.scrollToOffset({
+      offset: next * ITEM_WIDTH,
       animated: true,
-      viewPosition: 0,
     });
   }, []);
 

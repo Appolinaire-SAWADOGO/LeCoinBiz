@@ -151,19 +151,16 @@ export default function AnnouncementDetails() {
                 from={from as "OtherPage" | "ProfilePage"}
               />
             )}
-
             {/* Adresse map */}
             {currentAd?.address && (
               <AnnouncementDetailsAddressSection address={currentAd?.address} />
             )}
-
             {/*profile */}
             {from === "OtherPage" && (
               <AnnouncementDetailsProfileSection
                 userId={currentAd?.userId as string}
               />
             )}
-
             {/* share */}
             {currentAd.status === "ACTIVATED" && (
               <AnnouncementDetailsShareSection
@@ -172,7 +169,6 @@ export default function AnnouncementDetails() {
                 adTitle={currentAd.title}
               />
             )}
-
             {/* report publication and similar ad */}
             {from === "OtherPage" && (
               <>

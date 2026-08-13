@@ -80,7 +80,7 @@ export default function FiltersSearchModal({
     onClose();
 
     await queryClient.invalidateQueries({
-      queryKey: ["filter-ads", filters],
+      queryKey: ["filter-ads"],
     });
   };
 

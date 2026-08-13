@@ -30,6 +30,23 @@ export default function AnnouncementDetailsInfoSection({
     <>
       {/* Titre et prix */}
       <View style={{ marginTop: 5 }}>
+        {currentAnnouncement.isBoosted && (
+          <View
+            style={[
+              styles.boostBadgeInline,
+              { backgroundColor: designSystem.colors.primary },
+            ]}
+          >
+            <MaterialCommunityIcons
+              name="lightning-bolt"
+              size={12}
+              color="#fff"
+            />
+            <AppText fontSize={11} font="Bold" color="#fff">
+              Boosté
+            </AppText>
+          </View>
+        )}
         <AppText
           font="Bold"
           color={designSystem.colors.primary}
@@ -151,6 +168,16 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     color: "#333",
+  },
+  boostBadgeInline: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    alignSelf: "flex-start",
+    marginBottom: 8,
   },
   sectionTitle: {
     fontSize: 16,

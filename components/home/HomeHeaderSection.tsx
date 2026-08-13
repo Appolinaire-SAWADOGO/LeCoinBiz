@@ -2,47 +2,69 @@ import HeaderTexture2 from "@/assets/images/textures/HeaderTexture2.png";
 import AppText from "@/components/custom/AppText";
 import HomeCategories from "@/components/home/HomeHeaderCategories";
 import { APP_NAME } from "@/constants";
+import { useGetBanners } from "@/hooks/services/banner/useGetBanners";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useFilterStatesStore } from "@/store/useFilterStatesStore";
 import { useNotificationStore } from "@/store/useNotificationStore";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import HeaderTexture1 from "../../assets/images/textures/HeaderTexture1.png";
 import SectionHeaderText from "../SectionHeaderText";
 import FilterModalForm from "../modals/filter-modal/FilterModalForm";
+import { HomeBannerCarousel } from "./HomeBannerCarousel";
 
-export default function HomeHeaderSection() {
+export default function HomeHeaderSection({
+  withBanner = true,
+}: {
+  withBanner?: boolean;
+}) {
   const {
     open: openFilterModal,
     isOpen,
     close,
-    search,
-    category,
-    subCategory,
-    city,
-    min,
-    max,
-    tempPub,
-    options,
+    // search,
+    // category,
+    // subCategory,
+    // city,
+    // min,
+    // max,
+    // tempPub,
+    // options,
   } = useFilterStatesStore();
 
   const { designSystem } = useAppTheme();
   const queryClient = useQueryClient();
   const { hasNotifications, setHasNotifications } = useNotificationStore();
 
-  const filters = {
-    search,
-    category,
-    subCategory,
-    city,
-    min,
-    max,
-    tempPub,
-    options,
-  };
+  const { getBanners } = useGetBanners();
+
+  const { data: bannersData } = useQuery({
+    queryKey: ["home-banners"],
+    queryFn: () => getBanners(),
+
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: Infinity, // cache conservé
+
+    refetchOnMount: true, // refetch si stale
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true, // recommandé pour app mobile
+
+    retry: 2,
+  });
+
+  // const filters = {
+  //   search,
+  //   category,
+  //   subCategory,
+  //   city,
+  //   min,
+  //   max,
+  //   tempPub,
+  //   options,
+  // };
 
   return (
     <>
@@ -66,7 +88,7 @@ export default function HomeHeaderSection() {
             onPress={async () => {
               router.navigate("/(root)/Filters");
               await queryClient.invalidateQueries({
-                queryKey: ["filter-ads", filters],
+                queryKey: ["filter-ads"],
               });
             }}
             style={{
@@ -147,24 +169,39 @@ export default function HomeHeaderSection() {
         </TouchableOpacity>
       </View>
 
+      {/* ── Banner carousel ── */}
+      {bannersData && bannersData.length > 0 && withBanner && (
+        <View
+          style={{
+            overflow: "hidden",
+            paddingTop: 10,
+            paddingHorizontal: 20,
+            backgroundColor: "#fff",
+          }}
+        >
+          <HomeBannerCarousel bannersData={bannersData} />
+        </View>
+      )}
+
       {/* ── Categories ── */}
       <View style={styles.categoryBar}>
         <SectionHeaderText
           name="Catégories"
           withViewAll
           style={{ paddingHorizontal: 20, paddingBottom: 10 }}
+          onPress={() => router.navigate("/(root)/(category)/AllCategories")}
         />
         <HomeCategories />
       </View>
 
       {/* ── Section title ── */}
-      <View style={styles.sectionTitle}>
+      {/* <View style={styles.sectionTitle}>
         <SectionHeaderText
           withViewAll={false}
           name="Annonces récentes"
           style={{ marginBottom: 0 }}
         />
-      </View>
+      </View> */}
     </>
   );
 }
@@ -173,7 +210,7 @@ const styles = StyleSheet.create({
   topBar: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 14,
+    paddingHorizontal: 20,
     paddingTop: 50,
     paddingBottom: 16,
     gap: 10,
@@ -229,8 +266,8 @@ const styles = StyleSheet.create({
   },
   categoryBar: {
     backgroundColor: "#fff",
-    paddingTop: 16,
-    paddingBottom: 6,
+    paddingTop: 12,
+    paddingBottom: 10,
   },
   sectionTitle: {
     backgroundColor: "#fff",

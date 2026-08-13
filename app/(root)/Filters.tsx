@@ -65,22 +65,28 @@ export default function Filters() {
     [search, categoryFilter, subCategory, city, min, max, tempPub, options],
   );
 
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: ["filter-ads", filters],
-      queryFn: (context) =>
-        getFilterAds({
-          pageParam: context.pageParam,
-          filtersStatesStore: filters,
-        }),
-      initialPageParam: 0,
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetching,
+  } = useInfiniteQuery({
+    queryKey: ["filter-ads"],
+    queryFn: (context) =>
+      getFilterAds({
+        pageParam: context.pageParam,
+        filtersStatesStore: filters,
+      }),
+    initialPageParam: 0,
 
-      getNextPageParam: (lastPage) => {
-        return lastPage.hasMore && typeof lastPage.lastDoc === "number"
-          ? lastPage.lastDoc + 1
-          : undefined;
-      },
-    });
+    getNextPageParam: (lastPage) => {
+      return lastPage.hasMore && typeof lastPage.lastDoc === "number"
+        ? lastPage.lastDoc + 1
+        : undefined;
+    },
+  });
 
   const allAds = useMemo(() => {
     if (!data?.pages) return [];
@@ -90,7 +96,7 @@ export default function Filters() {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await queryClient.invalidateQueries({
-      queryKey: ["filter-ads", filters],
+      queryKey: ["filter-ads"],
     });
     setRefreshing(false);
   }, [filters, queryClient]);
@@ -143,7 +149,7 @@ export default function Filters() {
       <Announcements
         refreshControl={
           <RefreshControl
-            refreshing={refreshing || initialLoading}
+            refreshing={refreshing || initialLoading || isFetching}
             onRefresh={onRefresh}
             colors={[designSystem.colors.primary]}
             tintColor={designSystem.colors.primary}

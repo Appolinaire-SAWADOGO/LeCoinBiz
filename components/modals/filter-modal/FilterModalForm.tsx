@@ -91,7 +91,7 @@ export default function FilterModalForm({ isOpen, close, useCase }: props) {
     searchTerm && (await addRecentSearch(searchTerm));
 
     await queryClient.invalidateQueries({
-      queryKey: ["filter-ads", newFilters],
+      queryKey: ["filter-ads"],
     });
 
     setIsLoading(false);

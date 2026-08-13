@@ -7,7 +7,7 @@ import AppText from "../custom/AppText";
 
 export default function ChangeCountryPicker() {
   const [selectedCountry, setSelectedCountry] = React.useState<Country | null>(
-    null
+    null,
   );
   const [showPicker, setShowPicker] = React.useState(false);
 
@@ -21,7 +21,7 @@ export default function ChangeCountryPicker() {
         JSON.stringify({
           name: country.name,
           code: country.cca2,
-        })
+        }),
       );
     } catch (error) {
       console.error("Erreur lors du stockage du pays :", error);
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 8,
     width: "100%",
     backgroundColor: "rgba(255 , 255 , 255 ,.15)",
   },

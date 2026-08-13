@@ -1,5 +1,5 @@
+import VerticalScollAnnoucements from "@/components/announcement/VerticalScollAnnoucements";
 import AppText from "@/components/custom/AppText";
-import SimilarAnnoucements from "@/components/similar-annoucements.tsx/SimilarAnnoucements";
 import { Skeleton, SkeletonText } from "@/components/ui/skeleton";
 import { VStack } from "@/components/ui/vstack";
 import { useGetSimilarAds } from "@/hooks/services/ads/useGetSimilarsAds";
@@ -135,7 +135,7 @@ export default function AnnouncementDetailsSimilarsAdSection({
           ))}
         </ScrollView>
       ) : (
-        <SimilarAnnoucements
+        <VerticalScollAnnoucements
           data={similarsAds!}
           style={{ paddingHorizontal: 20 }}
         />

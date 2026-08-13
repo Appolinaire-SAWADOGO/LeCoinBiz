@@ -1,7 +1,6 @@
 import AppText from "@/components/custom/AppText";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import React from "react";
 import {
   StyleProp,
@@ -15,10 +14,12 @@ export default function SectionHeaderText({
   name,
   withViewAll,
   style,
+  onPress,
 }: {
   name: string;
   withViewAll: boolean;
   style?: StyleProp<ViewStyle>;
+  onPress?: () => void;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -32,7 +33,7 @@ export default function SectionHeaderText({
         <TouchableOpacity
           activeOpacity={0.3}
           style={styles.right}
-          onPress={() => router.navigate("/(root)/(category)/AllCategories")}
+          onPress={onPress}
         >
           <AppText color={designSystem.colors.primary}>Voir tout</AppText>
           <MaterialCommunityIcons

@@ -8,19 +8,23 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import AnnouncementCard from "../announcement/AnnouncementCard";
+import AnnouncementCard from "./AnnouncementCard";
 
-export default function SimilarAnnoucements({
+export default function VerticalScollAnnoucements({
   scrollY,
   style,
+  containerStyle,
+  itemWrapperStyle,
   data,
 }: {
   scrollY?: Animated.Value;
   style?: StyleProp<ViewStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
+  itemWrapperStyle?: StyleProp<ViewStyle>;
   data: AnnouncementType[];
 }) {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle]}>
       <FlatList
         data={data}
         contentContainerStyle={[style]}
@@ -31,7 +35,7 @@ export default function SimilarAnnoucements({
           scrollY?.setValue(e.nativeEvent.contentOffset.y);
         }}
         renderItem={({ item, index }) => (
-          <View style={styles.itemWrapper}>
+          <View style={[styles.itemWrapper, itemWrapperStyle]}>
             <AnnouncementCard ad={item} type="similar" />
           </View>
         )}

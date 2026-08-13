@@ -1,20 +1,27 @@
 import Announcements from "@/components/announcement/Announcements";
 import NoData from "@/components/announcement/NoData";
-import Container from "@/components/Container";
+import VerticalScollAnnoucements from "@/components/announcement/VerticalScollAnnoucements";
 import HeaderHideAnimation from "@/components/HeaderHideAnimation";
 import HomeGoBackMoadal from "@/components/home/HomeGoBackMoadal";
 import HomeHeaderSection from "@/components/home/HomeHeaderSection";
 import PostAnAdButton from "@/components/PostAnAdButton";
+import SectionHeaderText from "@/components/SectionHeaderText";
+import { useGetBoostAds } from "@/hooks/services/ads/useGetBoostAds";
 import { useGetHomeAds } from "@/hooks/services/ads/useGetHomeAds";
 import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useBackPress } from "@/hooks/useBackPress";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useCallback, useMemo } from "react";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import React, { useCallback, useMemo, useRef } from "react";
 import {
   Animated,
   BackHandler,
   Image,
+  LayoutChangeEvent,
   RefreshControl,
   StyleSheet,
   View,
@@ -24,10 +31,12 @@ import HeaderTexture1 from "../../assets/images/textures/HeaderTexture1.png";
 export default function Home() {
   const { designSystem } = useAppTheme();
   const { getHomeAds } = useGetHomeAds();
-  const scrollY = new Animated.Value(0);
+  const { getBoostAds } = useGetBoostAds();
+  const scrollY = useRef(new Animated.Value(0)).current;
   const [goBackIsModalOpen, setGoBackIsModalOpen] = React.useState(false);
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = React.useState(false);
+  const [headerHeight, setHeaderHeight] = React.useState(350);
 
   const userId = useCurrentUser()?.uid;
 
@@ -60,6 +69,24 @@ export default function Home() {
     retry: 2,
   });
 
+  const {
+    data: boostAdsData,
+    isLoading: isBoostAdsLoading,
+    isFetching: isBoostAdsFetching,
+  } = useQuery({
+    queryKey: ["home-boost-ads"],
+    queryFn: () => getBoostAds(),
+
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: Infinity, // cache conservé
+
+    refetchOnMount: true, // refetch si stale
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true, // recommandé pour app mobile
+
+    retry: 2,
+  });
+
   const allAds = useMemo(() => {
     if (!data?.pages) return [];
     return data.pages.flatMap((page) => page?.ads || []).filter(Boolean);
@@ -68,6 +95,8 @@ export default function Home() {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await queryClient.invalidateQueries({ queryKey: ["home-ads"] });
+    await queryClient.invalidateQueries({ queryKey: ["home-boost-ads"] });
+    await queryClient.invalidateQueries({ queryKey: ["home-banners"] });
     await queryClient.invalidateQueries({
       queryKey: ["notifications", userId],
     });
@@ -80,8 +109,21 @@ export default function Home() {
     }
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  const onHeaderLayout = useCallback((e: LayoutChangeEvent) => {
+    const height = e.nativeEvent.layout.height;
+    if (height > 0) setHeaderHeight(Math.round(height));
+  }, []);
+
+  const headerHiddenValue = scrollY.interpolate({
+    inputRange: [0, headerHeight],
+    outputRange: [0, 100],
+    extrapolate: "clamp",
+  });
+
   const hasAds = allAds && allAds.length > 0;
-  const initialLoading = isLoading && !hasAds;
+  const hasBoostAds = boostAdsData && boostAdsData.length > 0;
+  const initialLoading =
+    (isLoading && !hasAds) || (isBoostAdsLoading && !hasBoostAds);
   const isOnlyFetching = isFetching && !isFetchingNextPage;
 
   return (
@@ -97,32 +139,79 @@ export default function Home() {
       />
 
       {/* content */}
-      <Container style={styles.container} withBottom={false}>
+      <View style={styles.container}>
         {/* button ajouter une annonce */}
         <PostAnAdButton />
 
-        {/* header */}
-        <HeaderHideAnimation scrollY={scrollY} headerHeight={350}>
+        {/* header animation */}
+        <HeaderHideAnimation
+          scrollY={scrollY}
+          headerHeight={headerHeight}
+          style={{ zIndex: headerHiddenValue }}
+        >
           <Image style={styles.headerTexture1} source={HeaderTexture1} />
-          <HomeHeaderSection />
+          <HomeHeaderSection withBanner={false} />
         </HeaderHideAnimation>
 
         {/* main */}
         <View style={styles.main}>
           {/* Liste d'annonces */}
           <Announcements
+            ListHeaderComponent={
+              <>
+                {/* header */}
+                <View
+                  style={{ marginHorizontal: -20 }}
+                  onLayout={onHeaderLayout}
+                >
+                  <Image
+                    style={styles.headerTexture1}
+                    source={HeaderTexture1}
+                  />
+                  <HomeHeaderSection />
+                </View>
+
+                {/* Annonces boostées */}
+                {boostAdsData && boostAdsData.length > 0 && (
+                  <View>
+                    <View style={styles.sectionTitle}>
+                      <SectionHeaderText
+                        withViewAll
+                        name="À la une"
+                        style={{ marginBottom: 0 }}
+                      />
+                    </View>
+
+                    <VerticalScollAnnoucements
+                      data={boostAdsData}
+                      style={{ marginBottom: 15 }}
+                      containerStyle={{ marginBottom: 0 }}
+                      itemWrapperStyle={{ marginBottom: 0 }}
+                    />
+                  </View>
+                )}
+
+                <View style={styles.sectionTitle}>
+                  <SectionHeaderText
+                    withViewAll={false}
+                    name="Annonces récentes"
+                    style={{ marginBottom: 0 }}
+                  />
+                </View>
+              </>
+            }
             refreshControl={
               <RefreshControl
                 refreshing={refreshing || isOnlyFetching || initialLoading}
                 onRefresh={onRefresh}
                 colors={[designSystem.colors.primary]}
                 tintColor={designSystem.colors.primary}
-                progressViewOffset={235}
+                progressViewOffset={headerHeight}
               />
             }
             values={allAds}
             scrollY={scrollY}
-            style={{ paddingBottom: 60, paddingTop: 235 }}
+            style={{ paddingBottom: 60 }}
             onEndReached={handleLoadMore}
             isLoadingMore={isFetchingNextPage}
           />
@@ -132,7 +221,7 @@ export default function Home() {
             <NoData text="Aucune annonce disponible pour le moment. Veuillez réessayer plus tard." />
           )}
         </View>
-      </Container>
+      </View>
     </>
   );
 }
@@ -154,5 +243,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderTopRightRadius: 10,
     borderTopStartRadius: 10,
+  },
+  sectionTitle: {
+    backgroundColor: "#fff",
+    paddingBottom: 5,
   },
 });

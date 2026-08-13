@@ -48,11 +48,16 @@ export type AnnouncementType = {
     views: number;
   };
   status: AdStatusType;
+  isBoosted: boolean;
   createdAt: {
     _seconds: number;
     _nanoseconds: number;
   };
   updatedAt: {
+    _seconds: number;
+    _nanoseconds: number;
+  };
+  BoostExpiredAt?: {
     _seconds: number;
     _nanoseconds: number;
   };
@@ -113,6 +118,27 @@ export type NotificationType = {
     _nanoseconds: number;
   };
   updatedAt: {
+    _seconds: number;
+    _nanoseconds: number;
+  };
+};
+
+export type BannerType = {
+  id: string;
+  image: string;
+  title: string;
+  description: string;
+  contact: {
+    phone: string;
+    email: string;
+    website: string;
+    address: string;
+  };
+  createdAt: {
+    _seconds: number;
+    _nanoseconds: number;
+  };
+  expiredAt: {
     _seconds: number;
     _nanoseconds: number;
   };

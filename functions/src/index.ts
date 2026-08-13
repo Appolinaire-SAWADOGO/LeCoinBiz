@@ -42,7 +42,6 @@ export { activateAd } from "./ads/activateAd";
 export { addAdFavorite } from "./ads/addAdFavorite";
 export { adOgPage } from "./ads/adOgPage";
 export { ifAdIsAddedToFavorites } from "./ads/checkFavorite";
-export { dailyUpdateAdsClicks } from "./ads/dailyUpdateAdsClicks";
 export { deleteAd } from "./ads/deleteAd";
 export { deleteImgs } from "./ads/deleteImgs";
 export { detectAdCategory } from "./ads/detectAdCategory";
@@ -50,6 +49,7 @@ export { disableAd } from "./ads/disableAd";
 export { editAd } from "./ads/editAd";
 export { getAdById } from "./ads/getAdById";
 export { getAdsByUserId } from "./ads/getAdsByUserId";
+export { getBoostAds } from "./ads/getBoostAds";
 export { getFilterAds } from "./ads/getFilterAds";
 export { getHomeAds } from "./ads/getHomeAds";
 export { getSimilarAds } from "./ads/getSimilarAds";
@@ -92,8 +92,7 @@ export { adminSetAdPending } from "./admin/ads/adminSetAdPending";
 // users
 export { adminGetUsers } from "./admin/users/adminGetUsers";
 
-// analytics
-export { getAdContactStats } from "./analytics/getAdContactStats";
-export { getDailyOpenStats } from "./analytics/getDailyOpenStats";
-export { trackAdContact } from "./analytics/trackAdContact";
-export { trackDailyOpen } from "./analytics/trackDailyOpen";
+// banner
+export { getBanners } from "./banner/getBanners";
+export { postBanner } from "./banner/postBanner";
+
