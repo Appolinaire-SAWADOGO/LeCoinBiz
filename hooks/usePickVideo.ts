@@ -1,5 +1,5 @@
 import { usePickerImageAlertModalStore } from "@/store/usePickerImageAlertModalStore";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import * as ImagePicker from "expo-image-picker";
 
 const MAX_SIZE_MB = 50;

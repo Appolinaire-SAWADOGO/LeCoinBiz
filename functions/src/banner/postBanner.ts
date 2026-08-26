@@ -28,7 +28,7 @@ export const postBanner = onCall(
         .set({
           ...data,
           createdAt: now,
-          expiredAt: expiredAt,
+          expiredAt,
         });
     } catch (error: any) {
       console.error("Erreur posting banner :", error);

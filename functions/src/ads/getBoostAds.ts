@@ -13,7 +13,8 @@ export const getBoostAds = onCall(
         .collection("Ads")
         .where("status", "==", "ACTIVATED")
         .where("isBoosted", "==", true)
-        .where("BoostExpiredAt", ">", now)
+        .where("boostExpiredAt", ">", now)
+        .where("boostStartAt", "<", now)
         .limit(20)
         .get();
 

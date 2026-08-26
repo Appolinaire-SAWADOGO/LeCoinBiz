@@ -86,7 +86,7 @@ export default function FiltersSearchModal({
 
   return (
     <AppFullModal isOpen={isOpen} onClose={onClose}>
-      <Container style={{ paddingHorizontal: 20 }}>
+      <Container style={{ paddingHorizontal: 20 }} onBackPress={onClose}>
         <PageHeader withBackButton={false}>
           <TouchableOpacity
             onPress={() => {

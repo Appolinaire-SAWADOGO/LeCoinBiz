@@ -8,6 +8,7 @@ import { router } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import AddAdFavoriteButton from "../favorites/AddAdFavoriteButton";
+import BoostAdModal from "../modals/boost-ad-modal/BoostAdModal";
 import ProfileDelOrEdAnnouncement from "../profile/ProfileDelOrEdAnnouncement";
 
 export default function AnnouncementCard({
@@ -27,6 +28,8 @@ export default function AnnouncementCard({
 }) {
   const { designSystem } = useAppTheme();
   const queryClient = useQueryClient();
+
+  const [boostAdModalOpen, setBoostAdModalOpen] = React.useState(false);
 
   const isSimilarType = type === "similar";
 
@@ -134,6 +137,41 @@ export default function AnnouncementCard({
               getTimeSinceMs(ad?.createdAt as unknown as number)}
           </AppText>
         </View>
+
+        {/* Bouton Booster (ProfilePage uniquement) */}
+        {useCase === "ProfilePage" && !ad?.isBoosted && (
+          <TouchableOpacity
+            style={[
+              styles.boostButton,
+              { backgroundColor: designSystem.colors.primary },
+            ]}
+            onPress={(e) => {
+              e.stopPropagation(); // évite d'ouvrir le détail de l'annonce en même temps
+              setBoostAdModalOpen(true);
+            }}
+            activeOpacity={0.8}
+          >
+            <MaterialCommunityIcons
+              name="lightning-bolt"
+              size={14}
+              color="#fff"
+            />
+            <AppText fontSize={12} font="Bold" color="#fff">
+              Booster
+            </AppText>
+          </TouchableOpacity>
+        )}
+
+        <BoostAdModal
+          isOpen={boostAdModalOpen}
+          onClose={() => setBoostAdModalOpen(false)}
+          ad={{
+            id: ad.id,
+            title: ad.title,
+            price: ad.price,
+            imageUrl: ad.images[0],
+          }}
+        />
       </View>
     </TouchableOpacity>
   );
@@ -203,5 +241,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 4,
     marginTop: 4,
+  },
+  boostButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+    marginTop: 8,
+    marginBottom: 10,
+    paddingVertical: 8,
+    borderRadius: 8,
   },
 });

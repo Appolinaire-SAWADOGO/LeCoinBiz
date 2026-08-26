@@ -1,5 +1,5 @@
 import { usePickerImageAlertModalStore } from "@/store/usePickerImageAlertModalStore";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import ImageCropPicker from "react-native-image-crop-picker";
 
 export const usePickImage = () => {

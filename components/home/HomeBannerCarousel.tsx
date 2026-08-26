@@ -58,7 +58,8 @@ export function HomeBannerCarousel({
 }) {
   const scrollRef = useRef<ScrollView>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [carrourelBannerOpen, setCarrourelBannerOpen] = useState(false);
+  const [carrourelBannerDetailModalOpen, setCarrourelBannerOpen] =
+    useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const indexRef = useRef(0);
 
@@ -83,7 +84,7 @@ export function HomeBannerCarousel({
   return (
     <>
       <AppFullModal
-        isOpen={carrourelBannerOpen}
+        isOpen={carrourelBannerDetailModalOpen}
         onClose={() => setCarrourelBannerOpen(false)}
         style={{ backgroundColor: "rgba(0,0,0,0.8)" }}
       >
