@@ -132,7 +132,9 @@ export function HomeBannerCarousel({
                 >
                   <AppText style={styles.contactValue}>
                     Numéro de téléphone :{" "}
-                    {bannersData[selectedIndex].contact.phone}
+                    <AppText style={styles.contactValueChild}>
+                      {bannersData[selectedIndex].contact.phone}
+                    </AppText>
                   </AppText>
                 </TouchableOpacity>
               )}
@@ -149,7 +151,10 @@ export function HomeBannerCarousel({
                   accessibilityLabel={`Envoyer un email à ${bannersData[selectedIndex].contact.email}`}
                 >
                   <AppText style={styles.contactValue}>
-                    Email : {bannersData[selectedIndex].contact.email}
+                    Email :{" "}
+                    <AppText style={styles.contactValueChild}>
+                      {bannersData[selectedIndex].contact.email}
+                    </AppText>
                   </AppText>
                 </TouchableOpacity>
               )}
@@ -171,7 +176,10 @@ export function HomeBannerCarousel({
                   accessibilityLabel={`Ouvrir le site ${bannersData[selectedIndex].contact.website}`}
                 >
                   <AppText style={styles.contactValue}>
-                    Site Web : {bannersData[selectedIndex].contact.website}
+                    Site Web :{" "}
+                    <AppText style={styles.contactValueChild}>
+                      {bannersData[selectedIndex].contact.website}
+                    </AppText>
                   </AppText>
                 </TouchableOpacity>
               )}
@@ -285,5 +293,11 @@ const styles = StyleSheet.create({
   contactValue: {
     fontSize: 13,
     color: "#333",
+  },
+
+  contactValueChild: {
+    fontSize: 13,
+    color: "blue",
+    textDecorationLine: "underline",
   },
 });

@@ -23,6 +23,7 @@ const Announcements = ({
   isLoadingMore,
   ListHeaderComponent,
   announcementCardUseCase,
+  profileAdsSelectedStatus,
 }: {
   scrollY?: Animated.Value;
   style?: StyleProp<ViewStyle>;
@@ -37,6 +38,7 @@ const Announcements = ({
     | null
     | undefined;
   announcementCardUseCase?: "OtherPage" | "ProfilePage";
+  profileAdsSelectedStatus?: number;
 }) => {
   const { designSystem } = useAppTheme();
 
@@ -88,6 +90,11 @@ const Announcements = ({
                 ad={item}
                 openAdId={openAdId}
                 setOpenAdId={setOpenAdId}
+                profileAdsSelectedStatus={
+                  announcementCardUseCase === "ProfilePage"
+                    ? (profileAdsSelectedStatus as number)
+                    : null
+                }
               />
             </View>
           );

@@ -116,6 +116,8 @@ export default function Filters() {
 
   const insets = useSafeAreaInsets();
 
+  // jsonLog("logs", allAds);
+
   return (
     <Container style={styles.container} withBottom withGoBack>
       {/* header */}

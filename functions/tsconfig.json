@@ -11,5 +11,12 @@
     "target": "es2017"
   },
   "compileOnSave": true,
-  "include": ["src", "constants", "firebase", "types"]
+  "include": [
+    "src",
+    "constants",
+    "firebase",
+    "types",
+    "utils/ranking.test.ts",
+    "utils/ranking.ts"
+  ]
 }

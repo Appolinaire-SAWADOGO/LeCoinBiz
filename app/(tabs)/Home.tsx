@@ -11,11 +11,13 @@ import { useGetHomeAds } from "@/hooks/services/ads/useGetHomeAds";
 import { useCurrentUser } from "@/hooks/services/auth/signIn/useCurrentUser";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useBackPress } from "@/hooks/useBackPress";
+import { useFilterStatesStore } from "@/store/useFilterStatesStore";
 import {
   useInfiniteQuery,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { router } from "expo-router";
 import React, { useCallback, useMemo, useRef } from "react";
 import {
   Animated,
@@ -37,6 +39,8 @@ export default function Home() {
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = React.useState(false);
   const [headerHeight, setHeaderHeight] = React.useState(350);
+
+  const { setOptions } = useFilterStatesStore();
 
   const userId = useCurrentUser()?.uid;
 
@@ -120,10 +124,23 @@ export default function Home() {
     extrapolate: "clamp",
   });
 
+  const handlePress = async () => {
+    setOptions([
+      { label: "Annonces Populaire", active: false },
+      { label: "Livraison Gratuite", active: false },
+      { label: "Neuf", active: false },
+      { label: "A la une", active: true },
+    ]);
+
+    router.navigate(`/(root)/Filters`);
+    await queryClient.invalidateQueries({
+      queryKey: ["filter-ads"],
+    });
+  };
+
   const hasAds = allAds && allAds.length > 0;
-  const hasBoostAds = boostAdsData && boostAdsData.length > 0;
-  const initialLoading =
-    (isLoading && !hasAds) || (isBoostAdsLoading && !hasBoostAds);
+  // const hasBoostAds = boostAdsData && boostAdsData.length > 0;
+  const initialLoading = isLoading && !hasAds;
   const isOnlyFetching = isFetching && !isFetchingNextPage;
 
   return (
@@ -179,6 +196,7 @@ export default function Home() {
                         withViewAll
                         name="À la une"
                         style={{ marginBottom: 0 }}
+                        onPress={handlePress}
                       />
                     </View>
 
@@ -202,7 +220,7 @@ export default function Home() {
             }
             refreshControl={
               <RefreshControl
-                refreshing={refreshing || isOnlyFetching || initialLoading}
+                refreshing={refreshing || isOnlyFetching}
                 onRefresh={onRefresh}
                 colors={[designSystem.colors.primary]}
                 tintColor={designSystem.colors.primary}

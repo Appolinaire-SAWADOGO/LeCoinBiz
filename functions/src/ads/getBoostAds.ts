@@ -1,33 +1,30 @@
-import * as admin from "firebase-admin";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 import { db } from "../../firebase";
-import { BannerType } from "../../types";
+import { AnnouncementType } from "../../types";
+import { prioritizeBoostedAds } from "../../utils/ranking";
 
 export const getBoostAds = onCall(
   { consumeAppCheckToken: false, region: "europe-southwest1" },
   async () => {
     try {
-      const now = admin.firestore.Timestamp.now();
-
       const boostAdsSnapshot = await db
         .collection("Ads")
         .where("status", "==", "ACTIVATED")
-        .where("isBoosted", "==", true)
-        .where("boostExpiredAt", ">", now)
-        .where("boostStartAt", "<", now)
+        .where("boostStatus", "==", "active")
         .limit(20)
         .get();
 
       const activeBoostAds = boostAdsSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      })) as BannerType[];
+      })) as AnnouncementType[];
 
-      const shuffled = activeBoostAds
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 8);
+      const rankedBoostAds = prioritizeBoostedAds(activeBoostAds, 2, 1).slice(
+        0,
+        8,
+      );
 
-      return shuffled;
+      return rankedBoostAds;
     } catch (error: any) {
       console.error("Erreur récupération des annonces boostées :", error);
       throw new HttpsError("internal", error.message);

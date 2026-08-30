@@ -1,5 +1,6 @@
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 import { db } from "../../firebase";
+import { rankSimilarAds } from "../../utils/ranking";
 
 interface SimilarAdsParams {
   currentAdId: string;
@@ -27,6 +28,7 @@ export const getSimilarAds = onCall(
       userId,
       city,
       price,
+      description,
       maxResults = 5,
     } = request.data as SimilarAdsParams;
 
@@ -92,13 +94,21 @@ export const getSimilarAds = onCall(
         return { ...ad, _score: score };
       });
 
-      // Tri par score décroissant
-      scored.sort((a, b) => b._score - a._score);
+      // Tri par score décroissant avec bonus boost limité et protection anti-monopole
+      const ranked = rankSimilarAds(
+        scored.map(({ _score, ...ad }) => ad),
+        {
+          currentAdId,
+          category,
+          subCategory,
+          city,
+          price,
+          description,
+          userId,
+        },
+      ).slice(0, maxResults);
 
-      // Nettoyage du champ interne avant retour
-      const ads = scored.slice(0, maxResults).map(({ _score, ...ad }) => ad);
-
-      return { ads };
+      return { ads: ranked };
     } catch (error) {
       console.error("Erreur getSimilarAds:", error);
       throw new HttpsError(

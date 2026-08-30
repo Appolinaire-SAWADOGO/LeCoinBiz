@@ -1,11 +1,7 @@
-import * as admin from "firebase-admin";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
+import { db } from "../../firebase";
+import { rankHomeAds } from "../../utils/ranking";
 
-if (!admin.apps.length) {
-  admin.initializeApp();
-}
-
-const db = admin.firestore();
 const PAGE_SIZE = 10;
 
 export const getHomeAds = onCall(
@@ -96,9 +92,14 @@ export const getHomeAds = onCall(
       }
 
       const hasMore = allAds.length === PAGE_SIZE;
+      const rankedAds = rankHomeAds(
+        allAds,
+        userCity,
+        request.data?.userId ?? undefined,
+      );
 
       return {
-        ads: allAds,
+        ads: rankedAds,
         lastDoc: lastDocRef
           ? {
               path: lastDocRef.ref.path,

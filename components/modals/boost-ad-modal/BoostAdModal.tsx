@@ -1,8 +1,9 @@
 import Container from "@/components/Container";
 import AppText from "@/components/custom/AppText";
 import PageHeader from "@/components/PageHeader";
-import { useBoostPayment } from "@/hooks/services/boostAdPayment/useBoostAdPayment";
+import { useCreateBoostPayment } from "@/hooks/services/boostPayment/useCreateBoostPayment";
 import { useAppTheme } from "@/hooks/useAppTheme";
+import { AdBoostStatusType } from "@/types";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import dayjs, { Dayjs } from "dayjs";
 import * as Clipboard from "expo-clipboard";
@@ -41,7 +42,6 @@ const PACKS = [
 const MIN_CUSTOM_DAYS = 1;
 const MAX_CUSTOM_DAYS = 60;
 
-// ⚠️ Remplace ces numéros par tes vrais numéros Mobile Money marchand
 const PAYMENT_METHODS = [
   {
     id: "orange",
@@ -60,7 +60,7 @@ const PAYMENT_METHODS = [
 ] as const;
 
 type Step = 1 | 2;
-type PaymentPhase = "form" | "waiting" | "success";
+type PaymentPhase = "form" | "waiting" | "success" | "error";
 
 export default function BoostAdModal({
   isOpen,
@@ -72,7 +72,9 @@ export default function BoostAdModal({
   onClose: () => void;
   ad: {
     id: string;
+    userId: string;
     title: string;
+    boostStatus?: AdBoostStatusType;
     price: number;
     imageUrl: string;
   };
@@ -88,7 +90,6 @@ export default function BoostAdModal({
 
   const [step, setStep] = useState<Step>(1);
 
-  // --- Étape 1 : formule + dates ---
   const [selectedPackId, setSelectedPackId] = useState<string>("7d");
   const [customDays, setCustomDays] = useState(10);
   const [startDate, setStartDate] = useState(() =>
@@ -97,19 +98,12 @@ export default function BoostAdModal({
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [tempDate, setTempDate] = useState<Dayjs | null>(null);
 
-  // --- Étape 2 : déclaration de paiement ---
   const [selectedMethodId, setSelectedMethodId] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [paymentPhase, setPaymentPhase] = useState<PaymentPhase>("form");
   const [copied, setCopied] = useState(false);
 
-  const { declareBoostPayment, subscribeToPaymentStatus, cancelSubscription } =
-    useBoostPayment();
-
-  // Coupe l'écoute si le modal se ferme pendant qu'on attend la validation
-  React.useEffect(() => {
-    return () => cancelSubscription();
-  }, []);
+  const { createBoostPayment } = useCreateBoostPayment();
 
   const selectedMethod = PAYMENT_METHODS.find((m) => m.id === selectedMethodId);
 
@@ -126,6 +120,10 @@ export default function BoostAdModal({
     const pack = PACKS.find((p) => p.id === selectedPackId);
     return { days: pack?.days ?? 0, price: pack?.price ?? 0 };
   }, [isCustom, customDays, selectedPackId]);
+
+  const paymentCode = selectedMethod
+    ? `${selectedMethodId === "orange" ? "*144*10" : "*555*10"}*${selectedMethod.merchantNumber}*${price}#`
+    : "";
 
   const endDate = useMemo(() => {
     const d = new Date(startDate);
@@ -165,8 +163,8 @@ export default function BoostAdModal({
   };
 
   const handleCopyNumber = async () => {
-    if (!selectedMethod) return;
-    await Clipboard.setStringAsync(selectedMethod.merchantNumber);
+    if (!paymentCode) return;
+    await Clipboard.setStringAsync(paymentCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -176,8 +174,11 @@ export default function BoostAdModal({
 
     setPaymentPhase("waiting");
 
-    const paymentId = await declareBoostPayment({
+    const paymentId = await createBoostPayment({
       adId: ad.id,
+      userId: ad.userId,
+      adTitle: ad.title,
+      adBoostStatus: ad.boostStatus,
       days,
       price,
       startDate,
@@ -186,29 +187,11 @@ export default function BoostAdModal({
     });
 
     if (!paymentId) {
-      // declareBoostPayment a déjà affiché le toast d'erreur
-      setPaymentPhase("form");
+      setPaymentPhase("error");
       return;
     }
 
-    subscribeToPaymentStatus(paymentId, {
-      onCompleted: () => {
-        setPaymentPhase("success");
-        setTimeout(() => {
-          onConfirm?.({
-            days,
-            price,
-            startDate,
-            paymentMethod: selectedMethodId,
-            phoneNumber,
-          });
-          onClose();
-        }, 900);
-      },
-      onFailed: () => {
-        setPaymentPhase("form");
-      },
-    });
+    setPaymentPhase("success");
   };
 
   const handleModalClose = () => {
@@ -487,16 +470,49 @@ export default function BoostAdModal({
                         fontSize={15}
                         style={{ marginTop: 16, textAlign: "center" }}
                       >
-                        Vérification en cours
+                        Enregistrement du paiement en cours
+                      </AppText>
+                    </>
+                  ) : paymentPhase === "error" ? (
+                    <>
+                      <View style={styles.errorIconWrap}>
+                        <MaterialCommunityIcons
+                          name="alert-circle"
+                          size={52}
+                          color="#D92D20"
+                        />
+                      </View>
+                      <AppText
+                        font="Bold"
+                        fontSize={16}
+                        style={{ marginTop: 16, textAlign: "center" }}
+                      >
+                        Échec de l'enregistrement
                       </AppText>
                       <AppText
                         fontSize={13}
                         color={designSystem.colors.subText}
-                        style={{ marginTop: 6, textAlign: "center" }}
+                        style={{ marginTop: 8, textAlign: "center" }}
                       >
-                        Nous vérifions la réception de votre paiement. Cela
-                        prend généralement quelques minutes.
+                        Une erreur est survenue lors de l'enregistrement de
+                        votre déclaration. Veuillez réessayer.
                       </AppText>
+                      <TouchableOpacity
+                        style={[
+                          styles.retryButton,
+                          { borderColor: designSystem.colors.primary },
+                        ]}
+                        onPress={() => setPaymentPhase("form")}
+                        activeOpacity={0.85}
+                      >
+                        <AppText
+                          fontSize={14}
+                          font="Bold"
+                          color={designSystem.colors.primary}
+                        >
+                          Réessayer
+                        </AppText>
+                      </TouchableOpacity>
                     </>
                   ) : (
                     <>
@@ -512,7 +528,19 @@ export default function BoostAdModal({
                         fontSize={15}
                         style={{ marginTop: 16, textAlign: "center" }}
                       >
-                        Paiement confirmé
+                        Paiement enregistré
+                      </AppText>
+                      <AppText
+                        fontSize={13}
+                        color={designSystem.colors.subText}
+                        style={{ marginTop: 6, textAlign: "center" }}
+                      >
+                        Nous avons bien enregistré votre déclaration de
+                        paiement. Nous vérifions maintenant que le paiement a
+                        bien été reçu et que votre annonce respecte nos règles
+                        de publication avant d'activer le boost. Vous serez
+                        automatiquement notifié(e) dès que votre demande sera
+                        validée.
                       </AppText>
                     </>
                   )}
@@ -568,6 +596,17 @@ export default function BoostAdModal({
                   {selectedMethod && (
                     <>
                       <View style={styles.payInstructions}>
+                        <AppText
+                          fontSize={20}
+                          font="Bold"
+                          color={designSystem.colors.primary}
+                          style={[
+                            styles.accountName,
+                            { textTransform: "uppercase" },
+                          ]}
+                        >
+                          Wendpouire Appolinaire Sawadogo
+                        </AppText>
                         <AppText fontSize={13} font="Medium">
                           Envoyez{" "}
                           <AppText
@@ -577,7 +616,7 @@ export default function BoostAdModal({
                           >
                             {price.toLocaleString()} FCFA
                           </AppText>{" "}
-                          via {selectedMethod.label} au numéro :
+                          via {selectedMethod.label} avec ce code :
                         </AppText>
 
                         <TouchableOpacity
@@ -586,7 +625,7 @@ export default function BoostAdModal({
                           activeOpacity={0.8}
                         >
                           <AppText fontSize={20} font="Bold">
-                            {selectedMethod.merchantNumber}
+                            {paymentCode}
                           </AppText>
                           <MaterialCommunityIcons
                             name={copied ? "check" : "content-copy"}
@@ -602,7 +641,7 @@ export default function BoostAdModal({
                         >
                           {copied
                             ? "Numéro copié !"
-                            : "Appuyez pour copier le numéro"}
+                            : "Appuyez pour copier le code"}
                         </AppText>
                       </View>
 
@@ -803,6 +842,10 @@ const styles = StyleSheet.create({
     marginTop: 14,
     alignItems: "center",
   },
+  accountName: {
+    textAlign: "center",
+    marginBottom: 10,
+  },
   merchantNumberRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -817,6 +860,16 @@ const styles = StyleSheet.create({
   },
   successIconWrap: {
     marginTop: 4,
+  },
+  errorIconWrap: {
+    marginTop: 4,
+  },
+  retryButton: {
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 28,
+    marginTop: 20,
   },
   adPreview: {
     flexDirection: "row",

@@ -18,11 +18,11 @@ export const FilterModalFormSchema = z
       .optional()
       .refine(
         (val) => val === undefined || /^[A-Za-z0-9À-ÿ\s'-]+$/.test(val),
-        "Caractères non autorisés"
+        "Caractères non autorisés",
       )
       .refine(
         (val) => val === undefined || (val.length >= 2 && val.length <= 50),
-        "Recherche trop courte ou trop longue"
+        "Recherche trop courte ou trop longue",
       ),
     category: z.enum(CATEGORIES_NAMES_WITH_ALL as [string, ...string[]]),
     subCategory: z.string().optional(),
@@ -35,9 +35,9 @@ export const FilterModalFormSchema = z
         z.object({
           label: z.string(),
           active: z.boolean(),
-        })
+        }),
       )
-      .length(3),
+      .length(4),
   })
   .refine(
     (data) => {
@@ -61,5 +61,5 @@ export const FilterModalFormSchema = z
       message:
         "Les prix doivent être compris entre 100 et 10 000 000 F CFA, et le minimum ne peut pas dépasser le maximum.",
       path: ["max"],
-    }
+    },
   );

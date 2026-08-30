@@ -1,6 +1,7 @@
+import { AdBoostStatusType } from "@/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { RemoteMessage } from "@react-native-firebase/messaging";
 import { QueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import "react-native-get-random-values";
 import Toast from "react-native-toast-message";
 import { v4 as uuidv4 } from "uuid";
@@ -302,7 +303,7 @@ export const modifyAdToQueryData = (
   queryClient: QueryClient,
 ) => {
   queryClient.setQueryData(queryKey, (oldData: any) => {
-    console.log(JSON.stringify(oldData, null, 2));
+    // console.log(JSON.stringify(oldData, null, 2));
 
     if (!oldData) return oldData;
 
@@ -322,13 +323,16 @@ export const filterNotificationsQueryData = (
 
 export const addNotificationToQueryData = (
   queryClient: QueryClient,
-  notification: RemoteMessage,
+  notification: {
+    id?: string;
+    title: string;
+    body: string;
+    type: "USER_NOTIFICATION" | "GENERAL_NOTIFICATION";
+  },
   userId?: string,
 ) => {
-  queryClient.setQueryData(["notifications"], (oldData: any) => {
-    console.log("oldData:", oldData);
-
-    const time = notification.sentTime ?? Date.now();
+  queryClient.setQueryData(["notifications", userId], (oldData: any) => {
+    const time = Date.now();
 
     const timestamp = {
       _seconds: Math.floor(time / 1000),
@@ -336,12 +340,11 @@ export const addNotificationToQueryData = (
     };
 
     const newNotification = {
-      id: notification.data?.id ?? uuidv4(),
-      title: notification.notification?.title ?? "",
-      body: notification.notification?.body ?? "",
-      type: notification.data?.type,
-      userId:
-        notification.data?.type === "USER_NOTIFICATION" ? userId : undefined,
+      id: notification.id ?? uuidv4(),
+      title: notification.title ?? "",
+      body: notification.body ?? "",
+      type: notification.type,
+      userId: notification.type === "USER_NOTIFICATION" ? userId : undefined,
       createdAt: timestamp,
       updatedAt: timestamp,
     };
@@ -408,3 +411,72 @@ export function matchBurkinaCity(
   );
   return partialMatch;
 }
+
+export function jsonLog(text: string, log: any) {
+  console.log(text, JSON.stringify(log, null, 2));
+}
+
+export const adbadge = (
+  isBostedColor: string,
+  from: "OtherPage" | "ProfilePage",
+  profileAdsSelectedStatusIsActive?: boolean,
+  boostStatus?: AdBoostStatusType,
+) => [
+  {
+    text: "Boosté",
+    icon: "lightning-bolt",
+    color: isBostedColor,
+    active:
+      (from === "OtherPage" && boostStatus === "active") ||
+      (from === "ProfilePage" &&
+        boostStatus === "active" &&
+        profileAdsSelectedStatusIsActive),
+  },
+  {
+    text: "Programmé",
+    icon: "calendar-clock",
+    color: "#6366F1",
+    active:
+      from === "ProfilePage" &&
+      boostStatus === "scheduled" &&
+      profileAdsSelectedStatusIsActive,
+  },
+  {
+    text: "Expiré",
+    icon: "timer-off-outline",
+    color: "#9CA3AF",
+    active:
+      from === "ProfilePage" &&
+      boostStatus === "expired" &&
+      profileAdsSelectedStatusIsActive,
+  },
+  {
+    text: "Vérification",
+    icon: "clock-outline",
+    color: "#F59E0B",
+    active:
+      from === "ProfilePage" &&
+      boostStatus === "pending_verification" &&
+      profileAdsSelectedStatusIsActive,
+  },
+];
+
+export const formatBoostDate = (ts?: Timestamp) =>
+  ts ? dayjs(ts._seconds * 1000).format("DD MMM, HH:mm") : null;
+
+export const boostDateLabelFn = (
+  adBoostStatus?: AdBoostStatusType,
+  adBoostStartAt?: Timestamp,
+  adBoostExpiredAt?: Timestamp,
+) => {
+  switch (adBoostStatus) {
+    case "scheduled":
+      return adBoostStatus ? `Déb. ${formatBoostDate(adBoostStartAt)}` : null;
+    case "active":
+      adBoostStatus ? `Fin ${formatBoostDate(adBoostExpiredAt)}` : null;
+    case "expired":
+      return adBoostStatus ? `Exp. ${formatBoostDate(adBoostExpiredAt)}` : null;
+    default:
+      return null;
+  }
+};

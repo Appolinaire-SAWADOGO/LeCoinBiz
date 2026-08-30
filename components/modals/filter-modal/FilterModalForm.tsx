@@ -66,6 +66,7 @@ export default function FilterModalForm({ isOpen, close, useCase }: props) {
         { label: "Annonces Populaire", active: false },
         { label: "Livraison Gratuite", active: false },
         { label: "Neuf", active: false },
+        { label: "A la une", active: false },
       ],
     },
   });

@@ -359,6 +359,7 @@ export default function Profile() {
         announcementCardUseCase="ProfilePage"
         onEndReached={handleLoadMore}
         isLoadingMore={isFetchingNextPage}
+        profileAdsSelectedStatus={contentHeadSelected}
       />
 
       {!isLoading &&

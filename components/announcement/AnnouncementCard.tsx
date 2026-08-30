@@ -1,7 +1,13 @@
 import AppText from "@/components/custom/AppText";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AnnouncementType } from "@/types";
-import { getTimeSinceCreated, getTimeSinceMs, Timestamp } from "@/utils";
+import {
+  adbadge,
+  boostDateLabelFn,
+  getTimeSinceCreated,
+  getTimeSinceMs,
+  Timestamp,
+} from "@/utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
@@ -18,6 +24,7 @@ export default function AnnouncementCard({
   ad,
   openAdId,
   setOpenAdId,
+  profileAdsSelectedStatus,
 }: {
   useCase?: "OtherPage" | "ProfilePage";
   type?: "similar" | "primary";
@@ -25,6 +32,7 @@ export default function AnnouncementCard({
   ad: AnnouncementType;
   openAdId?: string | null;
   setOpenAdId?: (id: string | null) => void;
+  profileAdsSelectedStatus: number | null;
 }) {
   const { designSystem } = useAppTheme();
   const queryClient = useQueryClient();
@@ -32,6 +40,12 @@ export default function AnnouncementCard({
   const [boostAdModalOpen, setBoostAdModalOpen] = React.useState(false);
 
   const isSimilarType = type === "similar";
+
+  const boostDateLabel = boostDateLabelFn(
+    ad.boostStatus,
+    ad.boostStartAt,
+    ad.boostExpiredAt,
+  );
 
   return (
     <TouchableOpacity
@@ -49,6 +63,7 @@ export default function AnnouncementCard({
             initialAdId: ad.id,
             from: useCase,
             status: ad.status,
+            profileAdsSelectedStatus,
           },
         });
       }}
@@ -73,24 +88,46 @@ export default function AnnouncementCard({
       {/* announcement image */}
       <Image source={{ uri: ad?.images[0] }} style={styles.image} />
 
-      {/* etiquette boost */}
-      {ad?.isBoosted && (
-        <View
-          style={[
-            styles.boostBadge,
-            { backgroundColor: designSystem.colors.primary },
-          ]}
-        >
-          <MaterialCommunityIcons
-            name="lightning-bolt"
-            size={12}
-            color="#fff"
-          />
-          <AppText fontSize={11} font="Bold" color="#fff">
-            Boosté
-          </AppText>
-        </View>
-      )}
+      {adbadge(
+        designSystem.colors.primary,
+        useCase,
+        profileAdsSelectedStatus === 0,
+        ad?.boostStatus,
+      ).map((state, index) => {
+        if (!state.active) return;
+
+        return (
+          <View
+            style={[styles.boostBadge, { backgroundColor: state.color }]}
+            key={index}
+          >
+            <View style={styles.boostBadgeTopRow}>
+              <MaterialCommunityIcons
+                name={state.icon as any}
+                size={12}
+                color="#fff"
+              />
+              <AppText fontSize={11} font="Bold" color="#fff" numberOfLines={1}>
+                {state.text}
+              </AppText>
+            </View>
+
+            {useCase === "ProfilePage" &&
+              profileAdsSelectedStatus === 0 &&
+              boostDateLabel && (
+                <AppText
+                  fontSize={9}
+                  font="Medium"
+                  color="#fff"
+                  numberOfLines={1}
+                  style={styles.boostBadgeDate}
+                >
+                  {boostDateLabel}
+                </AppText>
+              )}
+          </View>
+        );
+      })}
 
       {/* announcement content */}
       <View style={styles.info}>
@@ -139,35 +176,39 @@ export default function AnnouncementCard({
         </View>
 
         {/* Bouton Booster (ProfilePage uniquement) */}
-        {useCase === "ProfilePage" && !ad?.isBoosted && (
-          <TouchableOpacity
-            style={[
-              styles.boostButton,
-              { backgroundColor: designSystem.colors.primary },
-            ]}
-            onPress={(e) => {
-              e.stopPropagation(); // évite d'ouvrir le détail de l'annonce en même temps
-              setBoostAdModalOpen(true);
-            }}
-            activeOpacity={0.8}
-          >
-            <MaterialCommunityIcons
-              name="lightning-bolt"
-              size={14}
-              color="#fff"
-            />
-            <AppText fontSize={12} font="Bold" color="#fff">
-              Booster
-            </AppText>
-          </TouchableOpacity>
-        )}
+        {useCase === "ProfilePage" &&
+          profileAdsSelectedStatus === 0 &&
+          (!ad.boostStatus || ad.boostStatus === "expired") && (
+            <TouchableOpacity
+              style={[
+                styles.boostButton,
+                { backgroundColor: designSystem.colors.primary },
+              ]}
+              onPress={(e) => {
+                e.stopPropagation(); // évite d'ouvrir le détail de l'annonce en même temps
+                setBoostAdModalOpen(true);
+              }}
+              activeOpacity={0.8}
+            >
+              <MaterialCommunityIcons
+                name="lightning-bolt"
+                size={14}
+                color="#fff"
+              />
+              <AppText fontSize={12} font="Bold" color="#fff">
+                Booster
+              </AppText>
+            </TouchableOpacity>
+          )}
 
         <BoostAdModal
           isOpen={boostAdModalOpen}
           onClose={() => setBoostAdModalOpen(false)}
           ad={{
             id: ad.id,
+            userId: ad.userId,
             title: ad.title,
+            boostStatus: ad.boostStatus,
             price: ad.price,
             imageUrl: ad.images[0],
           }}
@@ -206,18 +247,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
   },
-  boostBadge: {
-    position: "absolute",
-    top: 12,
-    left: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 6,
-    zIndex: 10,
-  },
   info: {
     padding: 10,
     gap: 4,
@@ -251,5 +280,27 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingVertical: 8,
     borderRadius: 8,
+  },
+
+  boostBadge: {
+    position: "absolute",
+    top: 12,
+    left: 12,
+    maxWidth: 130,
+    flexDirection: "column",
+    alignItems: "flex-start",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 6,
+    zIndex: 10,
+  },
+  boostBadgeTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+  },
+  boostBadgeDate: {
+    marginTop: 2,
+    opacity: 0.9,
   },
 });

@@ -1,7 +1,7 @@
 import { subCategoryIcon } from "@/constants/categories";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { AnnouncementType } from "@/types";
-import { getTimeSinceCreated } from "@/utils";
+import { adbadge, boostDateLabelFn, getTimeSinceCreated } from "@/utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, View } from "react-native";
@@ -10,9 +10,11 @@ import AppText from "../../custom/AppText";
 export default function AnnouncementDetailsInfoSection({
   currentAnnouncement,
   from,
+  profileAdsSelectedStatus,
 }: {
   currentAnnouncement: AnnouncementType;
   from: "OtherPage" | "ProfilePage";
+  profileAdsSelectedStatus: string | null;
 }) {
   const { designSystem } = useAppTheme();
 
@@ -26,27 +28,52 @@ export default function AnnouncementDetailsInfoSection({
       (option) => option.label === "Livraison Gratuite" && option.active,
     ) ?? false;
 
+  const boostDateLabel = boostDateLabelFn(
+    currentAnnouncement.boostStatus,
+    currentAnnouncement.boostStartAt,
+    currentAnnouncement.boostExpiredAt,
+  );
+
   return (
     <>
-      {/* Titre et prix */}
+      {/* Titre et prix et badge */}
       <View style={{ marginTop: 5 }}>
-        {currentAnnouncement.isBoosted && (
-          <View
-            style={[
-              styles.boostBadgeInline,
-              { backgroundColor: designSystem.colors.primary },
-            ]}
-          >
-            <MaterialCommunityIcons
-              name="lightning-bolt"
-              size={12}
-              color="#fff"
-            />
-            <AppText fontSize={11} font="Bold" color="#fff">
-              Boosté
-            </AppText>
-          </View>
-        )}
+        {adbadge(
+          designSystem.colors.primary,
+          from,
+          profileAdsSelectedStatus === "0",
+          currentAnnouncement.boostStatus,
+        ).map((state, index) => {
+          if (!state.active) return;
+
+          return (
+            <View
+              key={index}
+              style={[
+                styles.boostBadgeInline,
+                { backgroundColor: state.color },
+              ]}
+            >
+              <MaterialCommunityIcons
+                name={state.icon as any}
+                size={12}
+                color="#fff"
+              />
+              <AppText fontSize={11} font="Bold" color="#fff">
+                {state.text}
+              </AppText>
+
+              {from === "ProfilePage" &&
+                boostDateLabel &&
+                profileAdsSelectedStatus === "0" && (
+                  <AppText fontSize={11} font={"Bold"} color={"#fff"}>
+                    - {boostDateLabel}
+                  </AppText>
+                )}
+            </View>
+          );
+        })}
+
         <AppText
           font="Bold"
           color={designSystem.colors.primary}

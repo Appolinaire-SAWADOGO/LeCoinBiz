@@ -12,6 +12,7 @@ import { Linking, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AppText from "../custom/AppText";
 import AppCenterModal from "../modals/AppCenterModal";
+import BoostAdModal from "../modals/boost-ad-modal/BoostAdModal";
 import { HStack } from "../ui/hstack";
 import { Switch } from "../ui/switch";
 import AnnouncementDetailsFloatingButtonsCard from "./AnnouncementDetailsFloatingButtonsCard";
@@ -52,6 +53,8 @@ export default function AnnouncementDetailsFloatingButtons({
   const [footerHeight, setFooterHeight] = React.useState(0);
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [boostAdModalOpen, setBoostAdModalOpen] = React.useState(false);
+
   const [modalMessage, setModalMessage] = React.useState("");
 
   const [switchValue, setSwitchValue] = React.useState(false);
@@ -205,6 +208,20 @@ export default function AnnouncementDetailsFloatingButtons({
         </HStack>
       </AppCenterModal>
 
+      {/* boost modal  */}
+      <BoostAdModal
+        isOpen={boostAdModalOpen}
+        onClose={() => setBoostAdModalOpen(false)}
+        ad={{
+          id: ad.id,
+          userId: ad.userId,
+          title: ad.title,
+          boostStatus: ad.boostStatus,
+          price: ad.price,
+          imageUrl: ad.images[0],
+        }}
+      />
+
       {/* delete ad Alert modal  */}
       <AppCenterModal
         isOpen={isDeleteAdModalOpen}
@@ -266,6 +283,14 @@ export default function AnnouncementDetailsFloatingButtons({
 
         {from === "ProfilePage" && (
           <>
+            {status === "ACTIVATED" &&
+              (!ad.boostStatus || ad.boostStatus === "expired") && (
+                <AnnouncementDetailsFloatingButtonsCard
+                  useCase="boost"
+                  onPress={async () => setBoostAdModalOpen(true)}
+                />
+              )}
+
             <AnnouncementDetailsFloatingButtonsCard
               useCase="edit"
               onPress={() =>

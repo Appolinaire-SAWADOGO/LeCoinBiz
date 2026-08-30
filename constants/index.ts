@@ -13,6 +13,10 @@ export const FILTER_OPTIONS: FilterOptionsType = [
     label: "Neuf",
     icon: "new-box",
   },
+  {
+    label: "A la une",
+    icon: "lightning-bolt",
+  },
 ];
 
 export const AD_OPTIONS: AdOptionsType = [
@@ -28,7 +32,7 @@ export const AD_OPTIONS: AdOptionsType = [
 
 export const APP_NAME = "LeCoinBiz";
 
-export const APP_VERION = "1.2.2";
+export const APP_VERION = "1.3.0";
 
 export const DEFAULT_PROFILE_IMG =
   "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg";

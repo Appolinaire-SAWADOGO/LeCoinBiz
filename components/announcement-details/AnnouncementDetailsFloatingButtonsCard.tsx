@@ -16,7 +16,8 @@ export default function AnnouncementDetailsFloatingButtonsCard({
     | "edit"
     | "disable"
     | "enable"
-    | "delete";
+    | "delete"
+    | "boost";
   onPress?: () => void;
 }) {
   const { designSystem } = useAppTheme();
@@ -29,6 +30,7 @@ export default function AnnouncementDetailsFloatingButtonsCard({
     disable: "eye-off-outline",
     enable: "eye-outline",
     delete: "trash-can-outline",
+    boost: "lightning-bolt",
   }[useCase];
 
   const ButtonText = {
@@ -39,6 +41,7 @@ export default function AnnouncementDetailsFloatingButtonsCard({
     disable: "Désactiver",
     enable: "Activer",
     delete: "Supprimer",
+    boost: "Booster",
   }[useCase];
 
   const getBackgroundColor = () => {

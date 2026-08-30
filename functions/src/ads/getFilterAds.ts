@@ -1,6 +1,7 @@
 import { algoliasearch } from "algoliasearch";
 import { defineSecret } from "firebase-functions/params";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
+import { prioritizeBoostedAds } from "../../utils/ranking";
 
 const algoliaAppId = defineSecret("ALGOLIA_APP_ID");
 const algoliaApiKey = defineSecret("ALGOLIA_API_KEY");
@@ -14,6 +15,7 @@ const INDEX_RECENT = "Ads_createdAt_desc";
 const INDEX_POPULAR = "Ads_clicks_desc";
 
 const POPULAR_OPTION_LABEL = "Annonces Populaire";
+const BOOST_OPTION_LABEL = "A la une";
 
 export const getFilterAds = onCall(
   {
@@ -38,6 +40,11 @@ export const getFilterAds = onCall(
         options,
       } = filtersStatesStore || {};
 
+      // annonce booste
+      const isBoostActive = !!options?.some(
+        (o: any) => o.label === BOOST_OPTION_LABEL && o.active,
+      );
+
       const filters: string[] = [];
       filters.push(`status:ACTIVATED`);
 
@@ -52,6 +59,10 @@ export const getFilterAds = onCall(
       }
       if (min) filters.push(`price >= ${Number(min)}`);
       if (max) filters.push(`price <= ${Number(max)}`);
+
+      if (isBoostActive) {
+        filters.push(`boostStatus:active`);
+      }
 
       if (tempPub && tempPub !== "ALL") {
         let timestamp: number | null = null;
@@ -81,7 +92,12 @@ export const getFilterAds = onCall(
 
       // Vraies options d'annonce (Livraison Gratuite, Neuf, ...)
       const realActiveOptions = options
-        ?.filter((o: any) => o.active && o.label !== POPULAR_OPTION_LABEL)
+        ?.filter(
+          (o: any) =>
+            o.active &&
+            o.label !== POPULAR_OPTION_LABEL &&
+            o.label !== BOOST_OPTION_LABEL,
+        )
         .map((o: any) => o.label);
 
       // Choix de l'index :
@@ -115,8 +131,10 @@ export const getFilterAds = onCall(
         );
       }
 
+      const finalAds = isBoostActive ? ads : prioritizeBoostedAds(ads, 2, 1);
+
       return {
-        ads,
+        ads: finalAds,
         currentPage: result.page,
         hasMore: result.page! < result.nbPages! - 1,
         lastDoc: result.page,

@@ -32,6 +32,7 @@ export const useAppNotificationStore = create<AppNotificationType>((set) => ({
   setIsAppNotificationClosed: (val: boolean) =>
     set({ isAppNotificationClosed: val }),
   isAppNotificationBackground: false,
+
   setIsAppNotificationBackground: (val: boolean) =>
     set({ isAppNotificationBackground: val }),
 }));

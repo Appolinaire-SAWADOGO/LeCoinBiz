@@ -20,6 +20,12 @@ export type SubCategoriesType = {
 
 export type AdStatusType = "ACTIVATED" | "PENDING" | "DISABLED";
 
+export type AdBoostStatusType =
+  | "pending_verification"
+  | "active"
+  | "scheduled"
+  | "expired";
+
 export type AnnouncementType = {
   id: string;
   title: string;
@@ -48,7 +54,8 @@ export type AnnouncementType = {
     views: number;
   };
   status: AdStatusType;
-  isBoosted: boolean;
+  boostStatus?: AdBoostStatusType;
+  pendingBoostPaymentId?: string;
   createdAt: {
     _seconds: number;
     _nanoseconds: number;
@@ -57,7 +64,11 @@ export type AnnouncementType = {
     _seconds: number;
     _nanoseconds: number;
   };
-  BoostExpiredAt?: {
+  boostExpiredAt?: {
+    _seconds: number;
+    _nanoseconds: number;
+  };
+  boostStartAt?: {
     _seconds: number;
     _nanoseconds: number;
   };
@@ -152,7 +163,7 @@ export type SortByType = {
 export type BurkinaCitiesType = string[];
 
 export type FilterOptionsType = {
-  label: "Annonces Populaire" | "Livraison Gratuite" | "Neuf";
+  label: "Annonces Populaire" | "Livraison Gratuite" | "Neuf" | "A la une";
   icon: MaterialCommunityIconsNameType;
 }[];
 

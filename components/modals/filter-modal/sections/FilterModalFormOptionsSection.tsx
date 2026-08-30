@@ -14,6 +14,7 @@ export default function FilterModalFormOptionsSection({
     { label: "Annonces Populaire", active: false },
     { label: "Livraison Gratuite", active: false },
     { label: "Neuf", active: false },
+    { label: "A la une", active: false },
   ]);
 
   React.useEffect(() => {

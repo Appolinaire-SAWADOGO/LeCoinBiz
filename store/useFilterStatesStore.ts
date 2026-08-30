@@ -52,6 +52,7 @@ export const useFilterStatesStore = create<FilterStates>((set, get) => ({
     { label: "Annonces Populaire", active: false },
     { label: "Livraison Gratuite", active: false },
     { label: "Neuf", active: false },
+    { label: "A la une", active: false },
   ],
   isFiltered: false,
 
@@ -114,6 +115,7 @@ export const useFilterStatesStore = create<FilterStates>((set, get) => ({
         { label: "Annonces Populaire", active: false },
         { label: "Livraison Gratuite", active: false },
         { label: "Neuf", active: false },
+        { label: "A la une", active: false },
       ],
       isFiltered: false,
     }),

@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions";
-import { onCall } from "firebase-functions/v2/https";
+import { HttpsError, onCall } from "firebase-functions/v2/https";
 import { admin, db } from "../../firebase";
+import { sendUserNotification } from "../../utils/notifications";
 
 export const validateBoostPayment = onCall(
   {
@@ -8,66 +9,93 @@ export const validateBoostPayment = onCall(
     region: "europe-southwest1",
   },
   async (request) => {
-    const { paymentId, action } = request.data as {
-      paymentId: string;
-      action: "approve" | "reject";
-    };
+    try {
+      const { paymentId, action } = request.data as {
+        paymentId: string;
+        action: "approve" | "reject";
+      };
 
-    if (!paymentId || !action) {
-      throw new functions.https.HttpsError(
-        "invalid-argument",
-        "paymentId et action sont requis.",
-      );
-    }
+      if (!paymentId || !action) {
+        throw new functions.https.HttpsError(
+          "invalid-argument",
+          "paymentId et action sont requis.",
+        );
+      }
 
-    const paymentRef = db.collection("BoostPayments").doc(paymentId);
-    const paymentSnap = await paymentRef.get();
+      const paymentRef = db.collection("BoostPayments").doc(paymentId);
+      const paymentSnap = await paymentRef.get();
 
-    if (!paymentSnap.exists) {
-      throw new functions.https.HttpsError(
-        "not-found",
-        "Paiement introuvable.",
-      );
-    }
+      if (!paymentSnap.exists) {
+        throw new functions.https.HttpsError(
+          "not-found",
+          "Paiement introuvable.",
+        );
+      }
 
-    const paymentData = paymentSnap.data()!;
+      const paymentData = paymentSnap.data()!;
 
-    // Idempotency : évite de re-traiter un paiement déjà validé
-    if (paymentData.status !== "pending_verification") {
-      return { status: "already_processed" };
-    }
+      // pending_verification || failed || completed
+      if (paymentData.status !== "pending_verification") {
+        return { status: "already_processed" };
+      }
 
-    if (action === "reject") {
-      await paymentRef.update({
-        status: "failed",
+      const batch = db.batch();
+
+      const adRef = db.collection("Ads").doc(paymentData.adId);
+
+      if (action === "reject") {
+        batch.update(paymentRef, {
+          status: "failed",
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+
+        batch.update(adRef, {
+          boostStatus: admin.firestore.FieldValue.delete(),
+          pendingBoostPaymentId: admin.firestore.FieldValue.delete(),
+        });
+
+        await batch.commit();
+
+        return { status: "rejected" };
+      }
+
+      batch.update(paymentRef, {
+        status: "completed",
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
-      return { status: "rejected" };
+
+      const boostExpiredAt = admin.firestore.Timestamp.fromDate(
+        new Date(
+          paymentData.startDate.toDate().getTime() +
+            paymentData.days * 24 * 60 * 60 * 1000,
+        ),
+      );
+
+      const boostStartMs = paymentData.startDate.toDate().getTime();
+      const nowMs = Date.now();
+
+      batch.update(adRef, {
+        boostStartAt: paymentData.startDate,
+        boostExpiredAt,
+        boostStatus: boostStartMs <= nowMs ? "active" : "scheduled",
+        pendingBoostPaymentId: admin.firestore.FieldValue.delete(),
+      });
+
+      await batch.commit();
+
+      const notifTitle = "Boost activé 🎉";
+      const notifBody = `Votre paiement pour le boost de l'annonce « ${paymentData.adId} » a été vérifié et accepté. Votre boost pour ${paymentData.days} jour${paymentData.days > 1 ? "s" : ""} est maintenant actif.`;
+
+      await sendUserNotification({
+        title: notifTitle,
+        body: notifBody,
+        userId: paymentData.userId,
+      });
+
+      return { status: "approved" };
+    } catch (error: any) {
+      console.error("Erreur  l'ors de la validation du boost payment :", error);
+      throw new HttpsError("internal", error.message);
     }
-
-    const batch = db.batch();
-
-    batch.update(paymentRef, {
-      status: "completed",
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
-
-    const adRef = db.collection("Ads").doc(paymentData.adId);
-    const boostExpiredAt = admin.firestore.Timestamp.fromDate(
-      new Date(
-        paymentData.startDate.toDate().getTime() +
-          paymentData.days * 24 * 60 * 60 * 1000,
-      ),
-    );
-
-    batch.update(adRef, {
-      isBoosted: true,
-      boostStartAt: paymentData.startDate,
-      boostExpiredAt,
-    });
-
-    await batch.commit();
-
-    return { status: "approved" };
   },
 );

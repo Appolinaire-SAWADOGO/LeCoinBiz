@@ -31,6 +31,7 @@ export const transformAdForAlgolia = onCall(
         .map((opt: any) => opt.label)
         .join(" "),
       createdAt: createdAtMs,
+      boostStatus: data.boostStatus ?? null,
     };
   },
 );

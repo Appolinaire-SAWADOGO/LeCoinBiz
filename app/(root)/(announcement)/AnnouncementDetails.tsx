@@ -23,7 +23,13 @@ import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
 export default function AnnouncementDetails() {
   const { designSystem } = useAppTheme();
   const { getAdById } = useGetAdById();
-  const { initialRslt, from, initialAdId, isDeepLink } = useLocalSearchParams();
+  const {
+    initialRslt,
+    from,
+    initialAdId,
+    isDeepLink,
+    profileAdsSelectedStatus,
+  } = useLocalSearchParams();
   const currentUser = useCurrentUser();
   const currentUserAuthMethod = getCurrentUserAuthMethod(currentUser);
   const queryClient = useQueryClient();
@@ -149,6 +155,7 @@ export default function AnnouncementDetails() {
               <AnnouncementDetailsInfoSection
                 currentAnnouncement={currentAd}
                 from={from as "OtherPage" | "ProfilePage"}
+                profileAdsSelectedStatus={profileAdsSelectedStatus as string}
               />
             )}
             {/* Adresse map */}
